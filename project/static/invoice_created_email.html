@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura #{{ invoice.transaction_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #464646;
+            /* Color de fondo */
+            color: #ffffff;
+            /* Color del texto */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-section {
+            display: flex;
+            /* Utilizar el modelo de caja flexible */
+            justify-content: space-between;
+            /* Alinear los elementos al extremo derecho */
+            align-items: center;
+            /* Centrar verticalmente los contenidos */
+            margin-bottom: 20px;
+            /* Espacio inferior */
+        }
+
+        .left-column,
+        .right-column {
+            flex-basis: 45%;
+            /* Establecer el ancho de las columnas */
+        }
+
+        .left-column {
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            /* Tamaño de fuente del título */
+            margin: 0;
+            /* Eliminar el margen para evitar espacio adicional */
+        }
+
+        h2 {
+            font-size: 20px;
+            /* Tamaño de fuente del subtítulo */
+            margin: 0;
+            /* Eliminar el margen para evitar espacio adicional */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #464646;
+            /* Color de fondo de las celdas del encabezado */
+            color: #ffffff;
+            /* Color del texto del encabezado */
+            font-size: 16px;
+            /* Tamaño de fuente del encabezado */
+        }
+
+        .total {
+            font-size: 18px;
+            /* Tamaño de fuente del total */
+            margin-top: 20px;
+            color: #000000;
+            /* Color del texto del total (negro) */
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #0C4896;
+            /* Color del texto del mensaje */
+        }
+
+        .warning-message {
+            color: #FF4500;
+            /* Color de advertencia */
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 20px;
+            /* Tamaño de fuente de los subtítulos */
+            margin-top: 20px;
+            /* Espacio superior entre los subtítulos */
+            margin-bottom: 10px;
+            /* Espacio inferior entre los subtítulos */
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <div class="left-column" style="width: 100%; white-space: nowrap;">
+            <h1 style="display: inline;">Orden #{{ invoice.transaction_number }} - </h1>
+            <h2 style="display: inline;">{{ invoice.status }}</h2>
+        </div>
+
+        <p>Fecha de pedido: {{ invoice.created_at|date:"d/m/Y" }} a las {{ invoice.created_at|time:"H:i:s" }}</p>
+
+        <h3>Comprador</h3>
+        <ul>
+            <li>Nombre: {{ invoice.buyer.firs_name }} {{ invoice.buyer.last_name }}</li>
+            <li>Identificación: {{ invoice.buyer.identification }}
+
+            <li>Correo electrónico: {{ invoice.buyer.user.email }}</li>
+            <li>Teléfono: {{ invoice.buyer.phone }}</li>
+            <li>Dirección: {{ invoice.shipping_location.address_line_1 }} {{ invoice.shipping_location.address_line_2 }}
+                {{ invoice.shipping_location.city.nombre }}</li>
+
+            <li>Notas: {{ invoice.shipping_location.delivery_notes }}</li>
+        </ul>
+
+        <h3>Información de entrega:</h3>
+        <ul>
+            <li>Método: {{ invoice.shipping_method.name }}</li>
+            <li>Précio: $ {{ invoice.shipping_method.price }}</li>
+            <li>Tiempo: {{ invoice.shipping_method.time_to_delivery }}</li>
+        </ul>
+
+        <h3>Información de la Tienda:</h3>
+        <ul>
+            <li>Nombre: {{ invoice.store.name }}</li>
+            {% if invoice.store.address %}
+            <li>Dirección: {{ invoice.store.address }}</li>
+            {% else %}
+            <li>Dirección: Online</li>
+            {% endif %}
+            <li>Teléfono: {{ invoice.store.phone }}</li>
+            <li>Correo electrónico: {{ invoice.store.email }}</li>
+        </ul>
+
+
+        <h3>Tus Productos:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Impuesto</th>
+                    <th>Cantidad</th>
+                    <th>Valor</th>
+                    <th>Precio</th>
+                    <th>Moneda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if invoice.cart.items.all %}
+                {% for item in invoice.cart.items.all %}
+                <tr>
+                    <td>{{ item.product_option.product.name }} {{ item.product_option.option }}</td>
+                    <td>{{ item.product_option.product.tax }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.product_option.product.price }}</td>
+                    <td>${{ item.subtotal }}</td>
+                    <td>$ {{ invoice.store.city.estado_o_departamento.pais.currency.typecurrency }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6">No hay productos asociados a esta factura.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+
+        </table>
+        <p class="total">Total: ${{ invoice.total_amount }}
+            {{invoice.store.city.estado_o_departamento.pais.currency.name }}</p>
+
+            <div class="message" style="background-color: #f0f0f0; color: #333; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
+                Gracias por confiar en nosotros. Esperamos que tu experiencia con <strong>{{ invoice.store.name }}</strong> sea excepcional. Te invitamos a seguir el estado de tu pedido haciendo clic <a href="http://127.0.0.1:8000/" style="color: #007bff; text-decoration: none;">aquí</a>.
+            </div>
+            
+            <div class="message warning-message" style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
+                Advertencia: Por favor, asegúrate de revisar los productos recibidos y reportar cualquier problema dentro del plazo especificado en política de devolución de {{ invoice.store.name }}.
+            </div>
+            
+            <div class="message warning-message" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 10px;">
+                Aviso Importante: Si en algún momento consideras que es necesario reportar incumplimientos o cualquier otra situación grave relacionada con aspectos económicos, éticos o morales en la tienda {{ invoice.store.name }}, por favor, <a href="loce.co" style="color: #155724; text-decoration: underline;">presiona aquí para abrir un caso especial</a>. Tu opinión es fundamental para mantener la integridad y el buen funcionamiento de nuestra plataforma. ¡Gracias por tu colaboración!
+            </div>
+            
+        <h2 style="background-color: #0C4896; color: #ffffff; padding: 10px; border-radius: 10px;">Estado de la Factura: {{ invoice.status }}</h2>
+
+    </div>
+</body>
+
+</html>
