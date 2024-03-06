@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import TotalAPIView
+from .views import TotalAPIView, SellerLoginView, CustomMeView, CustomSellerRefresh, CustomSellerVerify
 
 
 urlpatterns = [
@@ -38,7 +38,11 @@ urlpatterns = [
 
     path('total/', TotalAPIView.as_view(), name='panel_de_control_api'),
 
+    path('seller/login/', SellerLoginView.as_view(), name='seller_login'),
 
+    path('seller/me/', CustomMeView.as_view(), name='custom_me'),
+    path('seller/refresh/', CustomSellerRefresh.as_view(), name='custom_seller_refresh_jwt'),
+    path('seller/verify/', CustomSellerVerify.as_view(), name='custom_seller_verify_jwt'),
 
 
 

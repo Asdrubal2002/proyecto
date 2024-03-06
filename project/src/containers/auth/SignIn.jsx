@@ -13,7 +13,12 @@ import { login } from "../../redux/actions/auth";
 import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
-const SignIn = ({ login, loading }) => {
+const SignIn = ({ login, loading, isAuthenticated }) => {
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />
+  }
+
 
   const [email, changeMail] = useState({ campo: "", valido: null });
   const [password, changePass] = useState({ campo: "", valido: null });
@@ -41,6 +46,8 @@ const SignIn = ({ login, loading }) => {
   };
 
   if (activated) return <Navigate to="/" replace={true} />;
+
+ 
 
 
   return (
@@ -70,7 +77,7 @@ const SignIn = ({ login, loading }) => {
       </Helmet>
       <div className="flex items-center justify-center py-4 pt-10">
         <div className="max-w-md w-full space-y-8 ">
-        <h2 className="text-xl font-bold text-center">Iniciar sesión</h2> {/* Título agregado */}
+        <h2 className="text-3xl font-bold text-center">Iniciar sesión</h2> {/* Título agregado */}
 
           <ContenedorFormulario>
             <ContenedorFormulario2>
@@ -198,6 +205,8 @@ const SignIn = ({ login, loading }) => {
 };
 const mapStateToProps = (state) => ({
   loading: state.Auth.loading,
+  isAuthenticated: state.Auth.isAuthenticated,
+
 });
 
 export default connect(mapStateToProps, {

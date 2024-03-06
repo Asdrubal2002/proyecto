@@ -14,7 +14,11 @@ import {
 
 import axios from 'axios'
 
+const exito = '#00B906';
 
+const error = '#E74C3C';
+
+import { setAlert } from "../alert/alert";
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -33,7 +37,7 @@ export const check_authenticated = () => async (dispatch) => {
 
         try {
             const res = await axios.post(
-                `${apiUrl}/auth/jwt/verify/`,
+                `${apiUrl}/seller/verify/`,
                 body,
                 config
             );
@@ -70,7 +74,7 @@ export const load_user = () => async (dispatch) => {
 
         try {
             const res = await axios.get(
-                `${apiUrl}/auth/users/me/`,
+                `${apiUrl}/seller/me/`,
                 config
             );
 
@@ -114,7 +118,7 @@ export const login = (email, password) => async (dispatch) => {
 
     try {
         const res = await axios.post(
-            `${apiUrl}/auth/jwt/create/`,
+            `${apiUrl}/seller/login/`,
             body,
             config
         );
@@ -128,15 +132,15 @@ export const login = (email, password) => async (dispatch) => {
             dispatch({
                 type: REMOVE_AUTH_LOADING,
             });
-           
-        } else {
+        }
+        else {
             dispatch({
                 type: LOGIN_FAIL,
             });
             dispatch({
                 type: REMOVE_AUTH_LOADING,
             });
-          
+
         }
     } catch (err) {
         dispatch({
@@ -145,6 +149,8 @@ export const login = (email, password) => async (dispatch) => {
         dispatch({
             type: REMOVE_AUTH_LOADING,
         });
+        dispatch(setAlert("Lo sentimos, parece que no tienes privilegios de vendedor o tus credenciales no son válidas. Por favor, verifica que estás utilizando las credenciales correctas.", error));
+
     }
 };
 
@@ -163,7 +169,7 @@ export const refresh = () => async (dispatch) => {
 
         try {
             const res = await axios.post(
-                `${apiUrl}/auth/jwt/refresh/`,
+                `${apiUrl}/seller/refresh/`,
                 body,
                 config
             );

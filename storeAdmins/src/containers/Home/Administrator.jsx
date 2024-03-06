@@ -6,7 +6,7 @@ function Administrator() {
   return (
     <Layout>
       <h1 className="text-3xl font-bold underline">
-      Admin Hello
+      Admin Hello 1:29:42
       </h1>
     </Layout>
 
