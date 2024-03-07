@@ -23,6 +23,7 @@ import { setAlert } from "../alert/alert";
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const check_authenticated = () => async (dispatch) => {
+   
     if (localStorage.getItem("access")) {
         const config = {
             headers: {
@@ -35,9 +36,11 @@ export const check_authenticated = () => async (dispatch) => {
             token: localStorage.getItem("access"),
         });
 
+        console.log("legan el token", body)
+
         try {
             const res = await axios.post(
-                `${apiUrl}/seller/verify/`,
+                `${apiUrl}/auth/jwt/verify/`,
                 body,
                 config
             );
@@ -74,7 +77,7 @@ export const load_user = () => async (dispatch) => {
 
         try {
             const res = await axios.get(
-                `${apiUrl}/seller/me/`,
+                `${apiUrl}/auth/users/me/`,
                 config
             );
 
@@ -169,7 +172,7 @@ export const refresh = () => async (dispatch) => {
 
         try {
             const res = await axios.post(
-                `${apiUrl}/seller/refresh/`,
+                `${apiUrl}/auth/jwt/refresh/`,
                 body,
                 config
             );

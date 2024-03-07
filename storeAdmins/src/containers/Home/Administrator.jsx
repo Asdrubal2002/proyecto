@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
+import StadisticsStore from '../../components/home/MyStoreNumbers'
 
 function Administrator() {
   return (
     <Layout>
       <h1 className="text-3xl font-bold underline">
-      Admin Hello 1:29:42
+        <StadisticsStore/>
       </h1>
     </Layout>
 

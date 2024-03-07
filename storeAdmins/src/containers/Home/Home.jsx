@@ -4,6 +4,8 @@ import Layout from '../../hocs/Layout';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 import { login, load_user, check_authenticated, refresh } from '../../redux/actions/auth/auth.js'
 import { Navigate } from 'react-router-dom';
+import { Rings } from "react-loader-spinner";
+
 
 import Alerta from '../../components/alert/Alerta.jsx';
 
@@ -12,7 +14,8 @@ function Home({
   check_authenticated,
   load_user,
   refresh,
-  isAuthenticated
+  isAuthenticated,
+  loading
 }) {
 
   useEffect(() => {
@@ -190,7 +193,16 @@ function Home({
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <LockClosedIcon className="h-5 w-5 text-azul_corp_ho group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
-                Ingresar
+                {
+                  loading ? (
+                    <Rings width={20} height={20} color="#fff" radius="6" />
+
+
+                  ) : (
+                    <>Ingresar</>
+                  )
+                }
+                
               </button>
             </div>
           </form>
@@ -203,6 +215,7 @@ function Home({
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.Auth.isAuthenticated,
+  loading: state.Auth.loading,
 
 });
 
