@@ -9,6 +9,7 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
+  BuildingStorefrontIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -26,7 +27,7 @@ export default function ItemsSidebar() {
 
   const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: location.pathname==='/store_admin_home' ? true:false },
-    { name: 'Blog', href: '/create_store', icon: UsersIcon, current: location.pathname==='/create_store' ? true:false },
+    { name: 'Tienda', href: '/create_store', icon: BuildingStorefrontIcon, current: location.pathname==='/create_store' ? true:false },
     { name: 'Projects', href: '#', icon: FolderIcon, current: false },
     { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
     { name: 'Documents', href: '#', icon: InboxIcon, current: false },

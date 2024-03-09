@@ -1,349 +1,434 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
+import Autosuggest from 'react-autosuggest';
 
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
+import { get_categories } from '../../../../project/src/redux/actions/store_categories'
+import { get_cities } from '../../redux/actions/cities/cities'
+function Create({
+  get_categories,
+  categories,
+  get_cities,
+  cities
+}) {
+  const [suggestions, setSuggestions] = useState([]);
 
-function Create() {
+  useEffect(() => {
+    get_categories()
+    window.scrollTo(0, 0);
+    get_cities();
+  }, []);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    slug: '',
+    location: '',
+    address: '',
+    phone: '',
+    email: '',
+    schedule: '',
+    nit: '',
+    city: '',
+    city_id: '',
+    url_pay: '',
+    account_pay: '',
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    category: '',
+    slug: '',
+    location: '',
+    address: '',
+    phone: '',
+    email: '',
+    schedule: '',
+    nit: '',
+    city: '',
+    city_id: '',
+    url_pay: '',
+    account_pay: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validar el formulario aquí y actualizar formErrors
+    const errors = validateForm(formData);
+    setFormErrors(errors);
+
+    // Solo enviar el formulario si no hay errores
+    if (Object.values(errors).every(error => error === '')) {
+      console.log('Formulario válido, enviando datos:', formData);
+      // Aquí puedes enviar los datos del formulario
+      //await update_user_location(formData.address_line_1,formData.address_line_2, formData.city_id, formData.postal_zip_code,formData.delivery_notes );
+
+    } else {
+      console.log('Formulario inválido, por favor revisa los campos');
+    }
+  };
+
+  const validateForm = (formData) => {
+    // Lógica de validación de campos aquí
+    let errors = {
+      name: '',
+      category: '',
+      slug: '',
+      location: '',
+      address: '',
+      phone: '',
+      email: '',
+      schedule: '',
+      nit: '',
+      city: '',
+      city_id: '',
+      url_pay: '',
+      account_pay: '',
+    };
+
+
+    // Ejemplo de validación de longitud mínima para la dirección principal
+
+    if (formData.name.trim() === '') {
+      errors.name = 'El nombre es obligatorio.';
+    } else if (formData.name.trim().length > 20) {
+      errors.name = 'El nombre no puede sobrepasar el límite de 20 caracteres.';
+    }
+
+    if (!formData.category) {
+      errors.category = 'Por favor, selecciona una categoria';
+    }
+    if (!formData.slug) {
+      errors.slug = 'Por favor, crea tu dirección';
+    }
+    if (!formData.location) {
+      errors.location = 'Completa tu alcance de tiendas';
+    }
+    if (!formData.phone) {
+      errors.phone = 'Completa tu teléfono';
+    }
+    if (!formData.email) {
+      errors.email = 'Completa tu email';
+    }
+    if (!formData.schedule) {
+      errors.schedule = 'Completa tu Horario';
+    }
+    if (!formData.schedule) {
+      errors.schedule = 'Completa tu Horario';
+    }
+    if (!formData.city) {
+      errors.city = 'Por favor, selecciona una ciudad';
+    }
+
+
+
+
+
+
+    return errors;
+  };
+
+
+
+
+
+  const handleCitySelection = (event, { suggestion }) => {
+    if (suggestion) {
+      // Actualizar el estado con el nombre de la ciudad y su ID
+      setFormData({
+        ...formData,
+        city: suggestion.nombre,
+        city_id: suggestion.id
+      });
+    } else {
+      // Limpiar el campo de ciudad y su ID si no se selecciona ninguna sugerencia
+      setFormData({
+        ...formData,
+        city: '',
+        city_id: ''
+      });
+    }
+  };
+
+  const getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+
+    return inputLength === 0
+      ? []
+      : cities.filter(city =>
+        city.nombre.toLowerCase().slice(0, inputLength) === inputValue
+      );
+  };
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value));
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+
+  const getSuggestionValue = (suggestion) => suggestion.nombre;
+
+  const renderSuggestion = (suggestion) => (
+    <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white'>
+      {suggestion.nombre} - {suggestion.estado_o_departamento.nombre} - {suggestion.estado_o_departamento.pais.nombre}
+    </div>
+  );
+
+  const inputProps = {
+    placeholder: 'Escribe tu ciudad *',
+    value: formData.city,
+    className: 'bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm',
+    onChange: (event, { newValue }) => {
+      setFormData({
+        ...formData,
+        city: newValue
+      });
+    }
+  };
+
+
+
+
   return (
     <Layout>
-      <form>
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-200">Creación de tu negocio</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-300">
-            La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.</p>
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto mt-8 p-8 bg-stone-900 shadow-md rounded-lg">
+        <h2 className="text-2xl font-semibold text-gray-100 mb-6">Crear tu negocio</h2>
+        <p className="text-sm text-gray-300 mb-8">
+          La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.
+        </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-4">
-                <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-300">
-                  Username
-                </label>
-                <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-azul_corp_ho sm:max-w-md">
-                    <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">ruvlo.com/</span>
-                    <input
-                      type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
-                      className="focus:outline-none block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="la dirección que le quieres poner a tu tienda"
-                    />
-                  </div>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
 
-              <div className="col-span-full">
-                <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-300">
-                  About
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="about"
-                    name="about"
-                    rows={3}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue={''}
-                  />
-                </div>
-                <p className="mt-3 text-sm leading-6 text-gray-200">Write a few sentences about yourself.</p>
-              </div>
 
-              <div className="col-span-full">
-                <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-300">
-                  Photo
-                </label>
-                <div className="mt-2 flex items-center gap-x-3">
-                  <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <button
-                    type="button"
-                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                  >
-                    Change
-                  </button>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-300">
-                  Cover photo
-                </label>
-                <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                  <div className="text-center">
-                    <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-200">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-200">PNG, JPG, GIF up to 10MB</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div>
+            {/* <label htmlFor="name" className="block text-sm font-semibold text-gray-300 my-2">Nombre de la tienda</label> */}
+            <input
+              placeholder='Nombre de tu tienda *'
+              type="text"
+              name="name"
+              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+            {formErrors.name && (
+              <p className="text-red-500 text-sm">{formErrors.name}</p>
+            )}
           </div>
 
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-300">Personal Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-200">Use a permanent address where you can receive mail.</p>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-3">
-                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-300">
-                  First name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="first-name"
-                    id="first-name"
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-300">
-                  Last name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-4">
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-300">
-                  Country
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="country"
-                    name="country"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-300">
-                  Street address
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2 sm:col-start-1">
-                <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-300">
-                  City
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    autoComplete="address-level2"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-300">
-                  State / Province
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="region"
-                    id="region"
-                    autoComplete="address-level1"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-300">
-                  ZIP / Postal code
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="postal-code"
-                    id="postal-code"
-                    autoComplete="postal-code"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-            </div>
+          <div>
+            {/* <label htmlFor="category" className="block text-sm font-semibold text-gray-300 my-2">Categoría de productos</label> */}
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-gray-100 text-sm"
+            >
+              <option value="" disabled hidden>
+                {formData.slug === '' ? '¿De productos vendes? *' : ''}
+              </option>
+              {
+                categories &&
+                categories !== null &&
+                categories !== undefined &&
+                categories.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.name}
+                  </option>
+                ))
+              }
+            </select>
+            {formErrors.category && (
+              <p className="text-red-500 text-sm">{formErrors.category}</p>
+            )}
           </div>
 
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-300">Notifications</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-200">
-              We'll always let you know about important changes, but you pick what else you want to hear about.
-            </p>
-
-            <div className="mt-10 space-y-10">
-              <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-300">By Email</legend>
-                <div className="mt-6 space-y-6">
-                  <div className="relative flex gap-x-3">
-                    <div className="flex h-6 items-center">
-                      <input
-                        id="comments"
-                        name="comments"
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="text-sm leading-6">
-                      <label htmlFor="comments" className="font-medium text-gray-300">
-                        Comments
-                      </label>
-                      <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
-                    </div>
-                  </div>
-                  <div className="relative flex gap-x-3">
-                    <div className="flex h-6 items-center">
-                      <input
-                        id="candidates"
-                        name="candidates"
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="text-sm leading-6">
-                      <label htmlFor="candidates" className="font-medium text-gray-300">
-                        Candidates
-                      </label>
-                      <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
-                    </div>
-                  </div>
-                  <div className="relative flex gap-x-3">
-                    <div className="flex h-6 items-center">
-                      <input
-                        id="offers"
-                        name="offers"
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="text-sm leading-6">
-                      <label htmlFor="offers" className="font-medium text-gray-300">
-                        Offers
-                      </label>
-                      <p className="text-gray-500">Get notified when a candidate accepts or rejects an offer.</p>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-300">Push Notifications</legend>
-                <p className="mt-1 text-sm leading-6 text-gray-200">These are delivered via SMS to your mobile phone.</p>
-                <div className="mt-6 space-y-6">
-                  <div className="flex items-center gap-x-3">
-                    <input
-                      id="push-everything"
-                      name="push-notifications"
-                      type="radio"
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                    <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-300">
-                      Everything
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-x-3">
-                    <input
-                      id="push-email"
-                      name="push-notifications"
-                      type="radio"
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                    <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-300">
-                      Same as email
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-x-3">
-                    <input
-                      id="push-nothing"
-                      name="push-notifications"
-                      type="radio"
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                    <label htmlFor="push-nothing" className="block text-sm font-medium leading-6 text-gray-300">
-                      No push notifications
-                    </label>
-                  </div>
-                </div>
-              </fieldset>
+          <div>
+            {/* <label htmlFor="slug" className="block text-sm font-semibold text-gray-300 my-2">¿Qué dirección quieres para tu identificación?</label> */}
+            <div className="bg-stone-800 flex rounded-md shadow-sm  text-sm">
+              <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">ruvlo.com/</span>
+              <input
+                type="text"
+                name="slug"
+                id="slug"
+                value={formData.slug}
+                onChange={handleChange}
+                className="rounded-md focus:outline-none focus:ring focus:ring-blue-500 flex-1 bg-transparent py-2 pl-1 pr-4 text-base text-gray-700 placeholder:text-gray-400 text-white text-sm"
+                placeholder="dirección de ruvlo *"
+              />
+               
             </div>
+            {formErrors.slug && (
+              <p className="text-red-500 text-sm">{formErrors.slug}</p>
+            )}
+          </div>
+
+          <div>
+            {/* <label htmlFor="location" className="block text-sm font-semibold text-gray-300 my-2">Localidades de tu tienda</label> */}
+            <input
+              placeholder='Localidades de tu tienda *'
+              type="text"
+              id="location"
+              name='location'
+              value={formData.location}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+            {formErrors.location && (
+              <p className="text-red-500 text-sm">{formErrors.location}</p>
+            )}
+          </div>
+
+          <div>
+            {/* <label htmlFor="address" className="block text-sm font-semibold text-gray-300 my-2">Dirección de tu tienda</label> */}
+            <input
+              placeholder='Dirección de tu tienda'
+              type="text"
+              id="address"
+              name='address'
+              value={formData.address}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+            
+          </div>
+
+          <div>
+            {/* <label htmlFor="phone" className="block text-sm font-semibold text-gray-300 my-2">Teléfono de tu tienda</label> */}
+            <input
+              placeholder='Teléfono de tu tienda *'
+              type="text"
+              id="phone"
+              name='phone'
+              value={formData.phone}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+             {formErrors.phone && (
+              <p className="text-red-500 text-sm">{formErrors.phone}</p>
+            )}
+          </div>
+
+          <div>
+            {/* <label htmlFor="email" className="block text-sm font-semibold text-gray-300 my-2">Correo de tu tienda</label> */}
+            <input
+              placeholder='Correo de tu tienda *'
+              type="text"
+              id="email"
+              name='email'
+              value={formData.email}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+             {formErrors.email && (
+              <p className="text-red-500 text-sm">{formErrors.email}</p>
+            )}
+          </div>
+          <div>
+            {/* <label htmlFor="schedule" className="block text-sm font-semibold text-gray-300 my-2">Horario de atención</label> */}
+            <input
+              placeholder='Horario de atención'
+              type="text"
+              id="schedule"
+              name='schedule'
+              value={formData.schedule}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+             {formErrors.schedule && (
+              <p className="text-red-500 text-sm">{formErrors.schedule}</p>
+            )}
+          </div>
+          <div>
+            {/* <label htmlFor="nit" className="block text-sm font-semibold text-gray-300 my-2">NIT, Identificador tributario</label> */}
+            <input
+              placeholder='NIT, Identificador tributario'
+              type="text"
+              id="nit"
+              name='nit'
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+          </div>
+          <div>
+            {/* <label htmlFor="city" className="block text-sm font-semibold text-gray-300 my-2">Ciudad</label> */}
+            <Autosuggest
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={onSuggestionsClearRequested}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={inputProps}
+              onSuggestionSelected={handleCitySelection} // Manejar la selección de la ciudad
+            />
+             {formErrors.city && (
+              <p className="text-red-500 text-sm">{formErrors.city}</p>
+            )}
           </div>
         </div>
+        <br />
+        <h2 className="text-base font-semibold leading-7 text-gray-300">Pagos</h2>
+        <p className="mt-1 text-sm leading-6 text-gray-200 mb-4">
+          Si tu tienda acepta métodos de pago como pasarelas de pago o transacciones bancarias, también podrás registrarlos. 
+          Estos métodos se mostrarán al comprador según su elección, más adelante puedes llenarlo. </p>
 
-        <div className="mt-6 flex items-center justify-end gap-x-6">
-          <button type="button" className="text-sm font-semibold leading-6 text-gray-300">
-            Cancel
-          </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            {/* <label htmlFor="url_pay" className="block text-sm font-semibold text-gray-300 my-2">¿TIenes pasarela de pagos?</label> */}
+            <input
+              placeholder='¿TIenes pasarela de pagos?'
+              type="text"
+              name="url_pay"
+              id="url_pay"
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+          </div>
+
+          <div>
+            {/* <label htmlFor="account_pay" className="block text-sm font-semibold text-gray-300 my-2">Cuenta bancaria transacciones</label> */}
+            <input
+              placeholder='Cuenta bancaria transacciones'
+              type="text"
+              name="account_pay"
+              id="account_pay"
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+          </div>
+        </div>
+        <div className="flex justify-end col-span-2 m-4">
           <button
             type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="px-4 py-2 text-sm font-semibold bg-azul_corp text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-700"
           >
-            Save
+            Crear negocio
           </button>
         </div>
       </form>
     </Layout>
-
   )
 }
 
 const mapStateToProps = state => ({
+  categories: state.Store_Categories.categories,
+  cities: state.Cities.cities
+
 
 })
 
 export default connect(mapStateToProps, {
-
+  get_categories,
+  get_cities
 })(Create)

@@ -129,7 +129,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
     const getSuggestionValue = (suggestion) => suggestion.nombre;
 
     const renderSuggestion = (suggestion) => (
-        <div className='mt-1 p-2 rounded-md w-full bg-blue-300'>
+        <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white'>
             {suggestion.nombre} - {suggestion.estado_o_departamento.nombre} - {suggestion.estado_o_departamento.pais.nombre}
         </div>
     );
@@ -145,6 +145,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
     const inputProps = {
         placeholder: 'Escribe tu ciudad *',
         value: formData.city,
+        className:'mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900',
         onChange: (event, { newValue }) => {
             setFormData({
                 ...formData,
@@ -157,7 +158,6 @@ function LocationForm({ get_cities, cities, update_user_location }) {
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-8 bg-white shadow-lg rounded-lg">
             <div className="mb-4">
                 {/* <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ciudad *</label> */}
-                <div className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:border-indigo-500 sm:text-sm sm:leading-6 text-stone-800">
                     <Autosuggest
                         suggestions={suggestions}
                         onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -167,7 +167,6 @@ function LocationForm({ get_cities, cities, update_user_location }) {
                         inputProps={inputProps}
                         onSuggestionSelected={handleCitySelection} // Manejar la selección de la ciudad
                     />
-                </div>
                 {formErrors.city && (
                     <p className="text-red-500 text-sm">{formErrors.city}</p>
                 )}
