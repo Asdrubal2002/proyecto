@@ -33,4 +33,12 @@ class StoreSerializer(serializers.ModelSerializer):
             'complaints',
             'city',
         ]
+
+class CreateStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+       
+        exclude = ['is_active', 'likes', 'complaints', 'verified', 'created_on','logo','banner','delivery']
+
+        
         

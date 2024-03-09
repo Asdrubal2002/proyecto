@@ -7,11 +7,16 @@ from django.db.models import Q
 
 
 from apps.store.models import Store
-from apps.store.serializers import StoreSerializer
+from apps.store.serializers import StoreSerializer, CreateStoreSerializer
 from apps.store_category.models import Category
 from django.shortcuts import get_object_or_404
 
 from .pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
+from rest_framework.permissions import IsAuthenticated, BasePermission
+
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 
 # Create your views here.
@@ -115,7 +120,6 @@ class ListSearchView(APIView):
         else:
             return Response({'error': 'No stores found'}, status=status.HTTP_404_NOT_FOUND)
 
-
 class ListRelatedView(APIView):
     permission_classes = (permissions.AllowAny, )
 
@@ -196,3 +200,45 @@ class ListStoreByCategoryView(APIView):
             return paginator.get_paginated_response({'store_list_category': serializer.data})
         else:
             return Response({'error':'No stores found'}, status=status.HTTP_404_NOT_FOUND)
+
+class IsSellerOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        # Implementa la lógica para verificar si el usuario es un vendedor o no
+        return request.user.is_authenticated and request.user.is_seller
+
+class CreateStoreAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsSellerOrReadOnly]
+
+    def post(self, request, *args, **kwargs):
+        # Asignar el usuario autenticado como administrador de la tienda
+        print("llega a python")
+
+        request.data['administrator'] = request.user.id
+
+        print(request.data)
+        
+        serializer = CreateStoreSerializer(data=request.data)
+        if serializer.is_valid():
+            # Guardar la tienda en la base de datos
+            store = serializer.save()
+
+            # Renderizar la plantilla HTML
+            html_message = render_to_string('store_created_email.html', {'username': request.user.email})
+
+            # Enviar correo electrónico al usuario
+            subject = 'Tienda creada exitosamente'
+            from_email = 'tu_correo@example.com'
+            to_email = [request.user.email]
+            send_mail(subject, strip_tags(html_message), from_email, to_email, html_message=html_message, fail_silently=True)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+

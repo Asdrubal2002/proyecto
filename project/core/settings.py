@@ -250,7 +250,7 @@ AUTH_USER_MODEL="user.UserAccount"
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 
 # Si solo esta en depuración osea prueba, manda al correo si solo esta asi: if not debug, si esta en if debug lo muestra por consola.
-if not DEBUG:
+if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

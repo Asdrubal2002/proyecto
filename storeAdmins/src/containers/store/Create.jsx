@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
 import Autosuggest from 'react-autosuggest';
-
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-
 import { get_categories } from '../../../../project/src/redux/actions/store_categories'
 import { get_cities } from '../../redux/actions/cities/cities'
+
+import { createStore } from '../../redux/actions/store/store';
+
+
 function Create({
   get_categories,
   categories,
   get_cities,
-  cities
+  cities,
+  createStore
 }) {
   const [suggestions, setSuggestions] = useState([]);
 
@@ -35,6 +37,7 @@ function Create({
     city_id: '',
     url_pay: '',
     account_pay: '',
+    description: '',
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -51,6 +54,7 @@ function Create({
     city_id: '',
     url_pay: '',
     account_pay: '',
+    description: '',
   });
 
   const handleChange = (e) => {
@@ -71,9 +75,22 @@ function Create({
     // Solo enviar el formulario si no hay errores
     if (Object.values(errors).every(error => error === '')) {
       console.log('Formulario válido, enviando datos:', formData);
-      // Aquí puedes enviar los datos del formulario
-      //await update_user_location(formData.address_line_1,formData.address_line_2, formData.city_id, formData.postal_zip_code,formData.delivery_notes );
-
+      
+      await createStore(
+        formData.name,
+        formData.category,
+        formData.description,
+        formData.location,
+        formData.address,
+        formData.phone,
+        formData.email,
+        formData.schedule,
+        formData.nit,
+        formData.url_pay,
+        formData.account_pay,
+        formData.slug,
+        formData.city_id,
+      )
     } else {
       console.log('Formulario inválido, por favor revisa los campos');
     }
@@ -95,6 +112,7 @@ function Create({
       city_id: '',
       url_pay: '',
       account_pay: '',
+      description: '',
     };
 
 
@@ -111,6 +129,12 @@ function Create({
     }
     if (!formData.slug) {
       errors.slug = 'Por favor, crea tu dirección';
+    } else if (/\s/.test(formData.slug)) {
+      errors.slug = 'La dirección no puede contener espacios';
+    } else if (/[A-Z]/.test(formData.slug)) {
+      errors.slug = 'La dirección no puede contener letras mayúsculas';
+    } else if (/[^\w\s]/.test(formData.slug)) {
+      errors.slug = 'La dirección no puede contener símbolos';
     }
     if (!formData.location) {
       errors.location = 'Completa tu alcance de tiendas';
@@ -131,17 +155,13 @@ function Create({
       errors.city = 'Por favor, selecciona una ciudad';
     }
 
-
-
-
-
-
+    if (formData.description.trim() === '') {
+      errors.description = 'La descripción es obligatorio.';
+    } else if (formData.description.trim().length > 500) {
+      errors.description = 'La descripción no sobrepasar el límite de 100 caracteres.';
+    }
     return errors;
   };
-
-
-
-
 
   const handleCitySelection = (event, { suggestion }) => {
     if (suggestion) {
@@ -199,9 +219,6 @@ function Create({
     }
   };
 
-
-
-
   return (
     <Layout>
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto mt-8 p-8 bg-stone-900 shadow-md rounded-lg">
@@ -210,9 +227,7 @@ function Create({
           La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
-
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
           <div>
             {/* <label htmlFor="name" className="block text-sm font-semibold text-gray-300 my-2">Nombre de la tienda</label> */}
             <input
@@ -270,7 +285,7 @@ function Create({
                 className="rounded-md focus:outline-none focus:ring focus:ring-blue-500 flex-1 bg-transparent py-2 pl-1 pr-4 text-base text-gray-700 placeholder:text-gray-400 text-white text-sm"
                 placeholder="dirección de ruvlo *"
               />
-               
+
             </div>
             {formErrors.slug && (
               <p className="text-red-500 text-sm">{formErrors.slug}</p>
@@ -304,7 +319,7 @@ function Create({
               onChange={handleChange}
               className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
             />
-            
+
           </div>
 
           <div>
@@ -318,7 +333,7 @@ function Create({
               onChange={handleChange}
               className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
             />
-             {formErrors.phone && (
+            {formErrors.phone && (
               <p className="text-red-500 text-sm">{formErrors.phone}</p>
             )}
           </div>
@@ -334,14 +349,14 @@ function Create({
               onChange={handleChange}
               className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
             />
-             {formErrors.email && (
+            {formErrors.email && (
               <p className="text-red-500 text-sm">{formErrors.email}</p>
             )}
           </div>
           <div>
             {/* <label htmlFor="schedule" className="block text-sm font-semibold text-gray-300 my-2">Horario de atención</label> */}
             <input
-              placeholder='Horario de atención'
+              placeholder='Horario de atención *'
               type="text"
               id="schedule"
               name='schedule'
@@ -349,7 +364,7 @@ function Create({
               onChange={handleChange}
               className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
             />
-             {formErrors.schedule && (
+            {formErrors.schedule && (
               <p className="text-red-500 text-sm">{formErrors.schedule}</p>
             )}
           </div>
@@ -374,15 +389,32 @@ function Create({
               inputProps={inputProps}
               onSuggestionSelected={handleCitySelection} // Manejar la selección de la ciudad
             />
-             {formErrors.city && (
+            {formErrors.city && (
               <p className="text-red-500 text-sm">{formErrors.city}</p>
             )}
           </div>
         </div>
+
+        <div>
+          {/* <label htmlFor="nit" className="block text-sm font-semibold text-gray-300 my-2">NIT, Identificador tributario</label> */}
+          <textarea
+            placeholder='Presenta tu tienda'
+            type="text"
+            id="description"
+            name='description'
+            value={formData.description}
+            onChange={handleChange}
+            className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+          />
+          {formErrors.description && (
+            <p className="text-red-500 text-sm">{formErrors.description}</p>
+          )}
+        </div>
+
         <br />
         <h2 className="text-base font-semibold leading-7 text-gray-300">Pagos</h2>
         <p className="mt-1 text-sm leading-6 text-gray-200 mb-4">
-          Si tu tienda acepta métodos de pago como pasarelas de pago o transacciones bancarias, también podrás registrarlos. 
+          Si tu tienda acepta métodos de pago como pasarelas de pago o transacciones bancarias, también podrás registrarlos.
           Estos métodos se mostrarán al comprador según su elección, más adelante puedes llenarlo. </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -413,7 +445,7 @@ function Create({
             type="submit"
             className="px-4 py-2 text-sm font-semibold bg-azul_corp text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-700"
           >
-            Crear negocio
+            Registrar datos basicos de tu tienda
           </button>
         </div>
       </form>
@@ -430,5 +462,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   get_categories,
-  get_cities
+  get_cities,
+  createStore
 })(Create)
