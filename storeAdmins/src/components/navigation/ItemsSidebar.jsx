@@ -27,8 +27,7 @@ export default function ItemsSidebar() {
 
   const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: location.pathname==='/store_admin_home' ? true:false },
-    { name: 'Tienda', href: '/create_store', icon: BuildingStorefrontIcon, current: location.pathname==='/create_store' ? true:false },
-    { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+    { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: false },
     { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
     { name: 'Documents', href: '#', icon: InboxIcon, current: false },
     { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },

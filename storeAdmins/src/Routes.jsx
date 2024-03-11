@@ -6,6 +6,8 @@ import Errors404 from './containers/errors/Errors404'
 
 import Create from './containers/store/Create'
 import Administrator from './containers/Home/Administrator'
+import Store from './containers/store/Store'
+
 function AnimatedRoutes() {
   return (
 
@@ -18,6 +20,9 @@ function AnimatedRoutes() {
 
 
               <Route exact path='/create_store' element={<Create />} />
+
+              <Route exact path='/store' element={<Store />} />
+
 
         
 

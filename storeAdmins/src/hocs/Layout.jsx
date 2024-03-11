@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import Sidebar from '../components/navigation/Sidebar';
 
 import { load_user, check_authenticated, refresh, logout } from '../redux/actions/auth/auth';
+
 import { Navigate } from 'react-router-dom';
+import { get_user_profile } from '../redux/actions/profile/profile';
 
 
 function Layout({
@@ -14,24 +16,29 @@ function Layout({
     load_user,
     refresh,
     isAuthenticated,
-    logout
+    logout,
+    get_user_profile,
+    profile,
+    user
 }) {
 
     if (!isAuthenticated)
-    return <Navigate to='/' />;
+        return <Navigate to='/' />;
 
     useEffect(() => {
-        isAuthenticated ?  <></>:
-    <>
-      {check_authenticated()}
-      {load_user()}
-      {refresh()}
-    </>    
+        get_user_profile()
+        isAuthenticated ? <></> :
+            <>
+                {check_authenticated()}
+                {load_user()}
+                {refresh()}
+
+            </>
     }, [])
 
     return (
         <div>
-            <Sidebar children={children} logout={logout} />
+            <Sidebar children={children} logout={logout} profile={profile} user={user}/>
         </div>
     )
 }
@@ -40,12 +47,14 @@ function Layout({
 const mapStateToProps = state => ({
     user_loading: state.Auth.loading,
     isAuthenticated: state.Auth.isAuthenticated,
-    user:state.Auth.user
+    user: state.Auth.user,
+    profile: state.Profile.profile
 })
 
 export default connect(mapStateToProps, {
     check_authenticated,
     load_user,
     refresh,
-    logout
+    logout,
+    get_user_profile
 })(Layout)

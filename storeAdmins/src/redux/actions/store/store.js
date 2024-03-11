@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-import { CREATE_STORE_SUCCESS, CREATE_STORE_FAIL, SET_LOADED_STORE, REMOVE_LOADED_STORE } from './types';
+import { 
+    CREATE_STORE_SUCCESS, 
+    CREATE_STORE_FAIL, 
+    SET_LOADED_STORE, 
+    REMOVE_LOADED_STORE,
+    GET_STORE_SUCCESS,
+    GET_STORE_FAIL
+ } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -84,5 +91,36 @@ export const createStore = (
             });
         }
 
+    }
+}
+
+
+export const get_user_store = () => async dispatch => {
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        try {
+            const res = await axios.get(`${apiUrl}/api/store/user-store/`, config);
+
+            if (res.status === 200) {
+                dispatch({
+                    type: GET_STORE_SUCCESS,
+                    payload: res.data
+                });
+            } else {
+                dispatch({
+                    type: GET_STORE_FAIL
+                });
+            }
+        } catch(err) {
+            dispatch({
+                type: GET_STORE_FAIL
+            });
+        }
     }
 }

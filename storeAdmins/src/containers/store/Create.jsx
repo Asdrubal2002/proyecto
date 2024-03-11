@@ -6,6 +6,7 @@ import { get_categories } from '../../../../project/src/redux/actions/store_cate
 import { get_cities } from '../../redux/actions/cities/cities'
 
 import { createStore } from '../../redux/actions/store/store';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 function Create({
@@ -16,6 +17,8 @@ function Create({
   createStore
 }) {
   const [suggestions, setSuggestions] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     get_categories()
@@ -91,6 +94,10 @@ function Create({
         formData.slug,
         formData.city_id,
       )
+      navigate('/store'); // Reemplaza '/store' con la URL real de la página de la tienda
+
+
+
     } else {
       console.log('Formulario inválido, por favor revisa los campos');
     }
@@ -398,7 +405,7 @@ function Create({
         <div>
           {/* <label htmlFor="nit" className="block text-sm font-semibold text-gray-300 my-2">NIT, Identificador tributario</label> */}
           <textarea
-            placeholder='Presenta tu tienda'
+            placeholder='Presenta tu tienda *'
             type="text"
             id="description"
             name='description'
