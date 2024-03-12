@@ -231,7 +231,6 @@ class CreateStoreAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         # Asignar el usuario autenticado como administrador de la tienda
-        print("llega a python")
 
         request.data["administrator"] = request.user.id
 

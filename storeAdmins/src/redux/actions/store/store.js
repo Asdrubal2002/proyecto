@@ -70,12 +70,11 @@ export const createStore = (
                 });
                 dispatch(
                     setAlert('Tienda creada correctamente.', exito));
-            } else {
+            }else if (res.status === 400) {
                 dispatch({
-                    type: CREATE_STORE_FAIL
+                    type: GET_STORE_FAIL
                 });
-                dispatch(
-                    setAlert('Fallo al crear tienda', error));
+                dispatch(setAlert("Lo sentimos, ya existe una tienda con esa dirección.", error));
             }
             dispatch({
                 type: REMOVE_LOADED_STORE,
@@ -85,7 +84,7 @@ export const createStore = (
                 type: CREATE_STORE_FAIL
             });
             dispatch(
-                setAlert('Fallo al crear tienda', error));
+                setAlert("Lo sentimos", error));
             dispatch({
                 type: REMOVE_LOADED_STORE,
             });

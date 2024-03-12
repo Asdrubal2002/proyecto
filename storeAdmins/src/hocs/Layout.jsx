@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import Sidebar from '../components/navigation/Sidebar';
-
+import Alerta from '../components/alert/Alerta'
 import { load_user, check_authenticated, refresh, logout } from '../redux/actions/auth/auth';
 
 import { Navigate } from 'react-router-dom';
@@ -38,7 +38,10 @@ function Layout({
 
     return (
         <div>
-            <Sidebar children={children} logout={logout} profile={profile} user={user}/>
+            <div className="absolute z-[100]">
+                <Alerta />
+            </div>
+            <Sidebar children={children} logout={logout} profile={profile} user={user} />
         </div>
     )
 }

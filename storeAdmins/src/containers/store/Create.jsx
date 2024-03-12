@@ -7,18 +7,18 @@ import { get_cities } from '../../redux/actions/cities/cities'
 
 import { createStore } from '../../redux/actions/store/store';
 import { Navigate, useNavigate } from 'react-router-dom';
-
+import { Rings } from 'react-loader-spinner';
 
 function Create({
   get_categories,
   categories,
   get_cities,
   cities,
-  createStore
+  createStore,
+  loading
 }) {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     get_categories()
@@ -78,7 +78,7 @@ function Create({
     // Solo enviar el formulario si no hay errores
     if (Object.values(errors).every(error => error === '')) {
       console.log('Formulario válido, enviando datos:', formData);
-      
+
       await createStore(
         formData.name,
         formData.category,
@@ -94,7 +94,7 @@ function Create({
         formData.slug,
         formData.city_id,
       )
-      navigate('/store'); // Reemplaza '/store' con la URL real de la página de la tienda
+      // navigate('/store'); // Reemplaza '/store' con la URL real de la página de la tienda
 
 
 
@@ -129,8 +129,9 @@ function Create({
       errors.name = 'El nombre es obligatorio.';
     } else if (formData.name.trim().length > 20) {
       errors.name = 'El nombre no puede sobrepasar el límite de 20 caracteres.';
+    } else if (/[^\w\s]/.test(formData.name)) {
+      errors.name = 'El nombre no puede contener símbolos';
     }
-
     if (!formData.category) {
       errors.category = 'Por favor, selecciona una categoria';
     }
@@ -227,7 +228,7 @@ function Create({
   };
 
   return (
-    <Layout>
+   
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto mt-8 p-8 bg-stone-900 shadow-md rounded-lg">
         <h2 className="text-2xl font-semibold text-gray-100 mb-6">Crear tu negocio</h2>
         <p className="text-sm text-gray-300 mb-8">
@@ -448,21 +449,35 @@ function Create({
           </div>
         </div>
         <div className="flex justify-end col-span-2 m-4">
-          <button
-            type="submit"
-            className="px-4 py-2 text-sm font-semibold bg-azul_corp text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-700"
-          >
-            Registrar datos basicos de tu tienda
-          </button>
+
+          {
+            loading ? (
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-semibold bg-azul_corp text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-700"
+              >
+                <Rings width={20} height={20} color="#fff" radius="6" />
+              </button>
+
+            ) : (
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-semibold bg-azul_corp text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-700"
+              >
+                Registrar datos basicos de tu tienda
+              </button>
+            )
+          }
+
         </div>
       </form>
-    </Layout>
   )
 }
 
 const mapStateToProps = state => ({
   categories: state.Store_Categories.categories,
-  cities: state.Cities.cities
+  cities: state.Cities.cities,
+  loading: state.Store.loading
 
 
 })

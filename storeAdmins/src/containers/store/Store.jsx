@@ -4,29 +4,9 @@ import Layout from '../../hocs/Layout'
 
 import { get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/24/outline';
+import { CloudArrowUpIcon, LockClosedIcon, PaperClipIcon, ServerIcon } from '@heroicons/react/24/outline';
+import Create from './Create';
 
-const features = [
-  {
-    name: 'Tratado de manejo de tu tienda',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
-    icon: CloudArrowUpIcon,
-    linkTo: '/push-to-deploy',
-  },
-  {
-    name: 'Tratamiento de datos',
-    description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
-    icon: LockClosedIcon,
-    linkTo: '/ssl-certificates',
-  },
-  {
-    name: 'Crear mi tienda',
-    description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: ServerIcon,
-    linkTo: '/create_store',
-  },
-];
 
 function Store({
   get_user_store,
@@ -35,50 +15,94 @@ function Store({
 
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     get_user_store()
   }, []);
 
   return (
     <Layout>
       {userStore ? (
-        <h1 className="text-3xl font-bold underline">Tienda</h1>
-      ) : (
-        <div className="overflow-hidden ">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-              <div className="lg:pr-8 lg:pt-4">
-                <div className="lg:max-w-lg">
-                  <h2 className="text-base font-semibold leading-7 text-azul_corp_ho">Con ruvlo</h2>
-                  <p className="mt-2 text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">Crea tu negocio</p>
-                  <p className="mt-6 text-lg leading-8 text-gray-300">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
-                    iste dolor cupiditate blanditiis ratione.
-                  </p>
-                  <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
-                    {features.map((feature) => (
-                      <div key={feature.name} className="relative pl-9">
-                        <dt className="inline font-semibold text-gray-200">
-                          <feature.icon className="absolute left-1 top-1 h-5 w-5 text-azul_corp_ho" aria-hidden="true" />
-                          <Link to={feature.linkTo} className="text-azul_corp_ho hover:text-azul_corp">
-                            {feature.name}
-                          </Link>
-                        </dt>{' '}
-                        <dd className="inline text-sm">{feature.description}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
+        <div>
+          <div className="px-4 sm:px-0">
+            <h3 className="text-base font-semibold leading-7 text-gray-100">Información de tienda</h3>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-300">Personal details and application.</p>
+          </div>
+          <div className="mt-6 border-t border-gray-100">
+            <dl className="divide-y divide-gray-100">
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Nombre de tu tienda</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.name}</dd>
               </div>
-              <img
-                src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
-                alt="Product screenshot"
-                className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
-                width={2432}
-                height={1442}
-              />
-            </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Categoria</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.category.name}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Correo</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.email}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Teléfono</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.phone}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Horario de atención</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.schedule}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Alcance barrial</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.location}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Identificación tributaria</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">{userStore.nit}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Presentación</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-200 sm:col-span-2 sm:mt-0">
+                {userStore.description}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-100">Imagenes</dt>
+                <dd className="mt-2 text-sm text-gray-100 sm:col-span-2 sm:mt-0">
+                  <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
+                    <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                      <div className="flex w-0 flex-1 items-center">
+                        <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                        <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                          <span className="truncate font-medium">resume_back_end_developer.pdf</span>
+                          <span className="flex-shrink-0 text-gray-400">2.4mb</span>
+                        </div>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                          Download
+                        </a>
+                      </div>
+                    </li>
+                    <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                      <div className="flex w-0 flex-1 items-center">
+                        <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                        <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                          <span className="truncate font-medium">coverletter_back_end_developer.pdf</span>
+                          <span className="flex-shrink-0 text-gray-400">4.5mb</span>
+                        </div>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                          Download
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
+      ) : (
+        <Create />
 
       )}
     </Layout>

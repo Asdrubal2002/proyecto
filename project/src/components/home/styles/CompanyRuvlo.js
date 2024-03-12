@@ -77,7 +77,7 @@ export const Detalles1 = tw.li`
 
 export const Items = tw.p`
     ml-3 
-    text-base 
+    text-sm 
     text-gray-800
 `;
 
