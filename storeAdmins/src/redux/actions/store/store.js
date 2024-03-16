@@ -31,7 +31,6 @@ export const createStore = (
     slug,
     city
 ) => async dispatch => {
-    console.log("llega aqui")
     dispatch({
         type: SET_LOADED_STORE,
     });

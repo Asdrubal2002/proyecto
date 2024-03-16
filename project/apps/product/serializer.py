@@ -46,4 +46,7 @@ class ProductOptionSerializer(serializers.ModelSerializer):
         model = ProductOption
         fields = ['id','option','quantity','product']
 
-    
+class CreateOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = ['id', 'value', 'store']    

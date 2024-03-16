@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from .serializer import ProductSerializer, ProductOptionSerializer
-from .models import Product, ViewCount, ProductOption
+from .serializer import ProductSerializer, ProductOptionSerializer, OptionSerializer, CreateOptionSerializer
+from .models import Product, ViewCount, ProductOption, Option
 from apps.store.models import Store
 from apps.product_category.models import Category
 from django.http import JsonResponse
@@ -111,7 +111,52 @@ class ProductOptionListView(APIView):
             return Response({'options': []}, status=status.HTTP_200_OK)
         
         
-        
+class OptionListView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Obtener el usuario autenticado
+        user = request.user
 
+        # Filtrar las opciones asociadas al usuario autenticado
+        options = Option.objects.filter(store__administrator=user)
 
+        if not options:
+            return Response({"message": "No hay opciones asociadas al usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Serializar las opciones
+        serializer = OptionSerializer(options, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
+class CreateOptionAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Obtener los datos de la solicitud
+        data = request.data
+
+        # Agregar el usuario autenticado como administrador de la tienda
+        data['store'] = request.user.store.id
+
+        print(data['store'])
+
+        # Crear un serializador con los datos de la solicitud
+        serializer = CreateOptionSerializer(data=data)
+
+        if serializer.is_valid():
+            # Guardar la opción en la base de datos
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,6 +14,8 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='categories_store')
     slug =  models.SlugField(max_length=255)
+    is_active = models.BooleanField(default=True)
+
 
 
     def __str__(self):

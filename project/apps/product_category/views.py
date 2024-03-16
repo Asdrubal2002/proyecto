@@ -2,15 +2,14 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from .serializer import CategoriesStoreSerializer
+from .serializer import CategoriesStoreSerializer, CreateCategorySerializer, CategorieStoreSerializer
 from .models import Category
 from apps.store.models import Store
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-
-
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -46,8 +45,57 @@ class ListCategoriesStoreView(APIView):
             # Manejar el caso en que la tienda no exista
             return JsonResponse({'error': 'Store not found'}, status=404)
 
+class CategoryListViewAdmin(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        # Obtener el usuario autenticado
+        user = request.user
 
+        # Obtener la tienda asociada al usuario autenticado
+        store = user.store
 
+        # Obtener las categorías asociadas a la tienda del usuario autenticado
+        categories = Category.objects.filter(store=store)
 
-   
+        if not categories:
+            return Response({"message": "No hay categorías asociadas a esta tienda."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Serializar las categorías
+        serializer = CategorieStoreSerializer(categories, many=True)
+
+        return Response({"categories":serializer.data}, status=status.HTTP_200_OK)
+
+class CreateCategoryAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request, *args, **kwargs):
+        serializer = CreateCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            # Agregar la tienda del usuario autenticado como propietario de la categoría
+            serializer.validated_data['store'] = request.user.store
+            # Crear la categoría
+            category = serializer.save()
+
+            # Listar todas las categorías después de crear una nueva
+            categories = Category.objects.filter(store=request.user.store)
+            serializer = CategorieStoreSerializer(categories, many=True)
+
+            return Response({"categories":serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CategoryDeleteAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, category_id):
+        # Buscar la categoría por su ID
+        category = Category.objects.filter(id=category_id).first()
+        if not category:
+            return Response({"message": "La categoría no existe"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Verificar si la categoría pertenece a la tienda del usuario autenticado
+        if category.store != request.user.store:
+            return Response({"message": "No tienes permiso para eliminar esta categoría"}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Eliminar la categoría
+        category.delete()
+        
+        return Response({"message": "Categoría eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)

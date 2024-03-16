@@ -8,6 +8,10 @@ import Create from './containers/store/Create'
 import Administrator from './containers/Home/Administrator'
 import Store from './containers/store/Store'
 
+import Products from './containers/product/Products'
+
+import Categories from './containers/categories/Categories'
+
 function AnimatedRoutes() {
   return (
 
@@ -23,10 +27,9 @@ function AnimatedRoutes() {
 
               <Route exact path='/store' element={<Store />} />
 
+              <Route exact path='/products' element={<Products />} />
 
-        
-
-
+              <Route exact path='/categorie' element={<Categories />} />
 
 
       </Routes>
