@@ -6,7 +6,9 @@ import {
     SET_CATEGORY_LOADING,
     REMOVE_CATEGORY_LOADING, 
     CREATE_CATEGORY_SUCCESS,
-    CREATE_CATEGORY_FAIL
+    CREATE_CATEGORY_FAIL,
+    DELETE_CATEGORY_SUCCESS,
+    DELETE_CATEGORY_FAIL
 } from './types';
 import { setAlert } from '../alert/alert';
 
@@ -101,3 +103,47 @@ export const create_category = (
 
     }
 }
+
+
+export const delete_category = (
+    id
+) => async dispatch => {
+    dispatch({
+        type: SET_CATEGORY_LOADING,
+    });
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        try {
+            const res = await axios.delete(`${apiUrl}/api/product_category/eliminar_categoria/${id}/`, config);
+
+            if (res.status === 200) {
+                dispatch({
+                    type: DELETE_CATEGORY_SUCCESS,
+                    payload: res.data
+                });
+                dispatch(
+                    setAlert('Categoria eliminada correctamente.', exito));
+            }
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        } catch (err) {
+            dispatch({
+                type: DELETE_CATEGORY_FAIL
+            });
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        }
+
+    }
+}
+
+

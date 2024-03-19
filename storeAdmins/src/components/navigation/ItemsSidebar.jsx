@@ -9,7 +9,8 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
-  BuildingStorefrontIcon
+  BuildingStorefrontIcon,
+  PencilSquareIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -28,12 +29,11 @@ export default function ItemsSidebar() {
   const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: location.pathname==='/store_admin_home' ? true:false },
     { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Categorias', href: '/categories', icon: PencilSquareIcon, current: false },
+
     { name: 'Productos', href: '/products', icon: CalendarIcon, current: false },
-    { name: 'Categorias', href: '/categorie', icon: InboxIcon, current: false },
     { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
   ]
-
-
 
   return (
     <nav className="mt-5 space-y-1 px-2">

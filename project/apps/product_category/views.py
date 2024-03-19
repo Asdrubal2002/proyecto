@@ -82,6 +82,7 @@ class CreateCategoryAPIView(APIView):
             return Response({"categories":serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CategoryDeleteAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -98,4 +99,8 @@ class CategoryDeleteAPIView(APIView):
         # Eliminar la categoría
         category.delete()
         
-        return Response({"message": "Categoría eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)
+        # Listar las categorías restantes
+        remaining_categories = Category.objects.filter(store=request.user.store)
+        serializer = CategorieStoreSerializer(remaining_categories, many=True)
+        
+        return Response({"categories":serializer.data}, status=status.HTTP_200_OK)

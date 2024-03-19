@@ -29,7 +29,7 @@ function AnimatedRoutes() {
 
               <Route exact path='/products' element={<Products />} />
 
-              <Route exact path='/categorie' element={<Categories />} />
+              <Route exact path='/categories' element={<Categories />} />
 
 
       </Routes>

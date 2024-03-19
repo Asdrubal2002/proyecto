@@ -4,7 +4,9 @@ import {
     SET_CATEGORY_LOADING,
     REMOVE_CATEGORY_LOADING,
     CREATE_CATEGORY_SUCCESS,
-    CREATE_CATEGORY_FAIL
+    CREATE_CATEGORY_FAIL,
+    DELETE_CATEGORY_SUCCESS,
+    DELETE_CATEGORY_FAIL
 
 } from "../../actions/categories_product/types";
 
@@ -39,13 +41,21 @@ export default function Product_category(state = initialState, action) {
                 ...state,
                 categories: null
             }
-
         case CREATE_CATEGORY_SUCCESS:
             return {
                 ...state,
                 categories: payload.categories
             }
         case CREATE_CATEGORY_FAIL:
+            return {
+                ...state
+            }
+        case DELETE_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                categories: payload.categories
+            }
+        case DELETE_CATEGORY_FAIL:
             return {
                 ...state
             }
