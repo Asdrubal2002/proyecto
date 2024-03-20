@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ListCategoriesStoreView, CategoryListViewAdmin, CreateCategoryAPIView, CategoryDeleteAPIView
+from .views import ListCategoriesStoreView, CategoryListViewAdmin, CreateCategoryAPIView, CategoryDeleteAPIView, CategoryStateAPIView
 
 
 urlpatterns = [
@@ -7,5 +7,5 @@ urlpatterns = [
     path('categories_products/', CategoryListViewAdmin.as_view()),
     path('create_categories_products/', CreateCategoryAPIView.as_view()),
     path('eliminar_categoria/<int:category_id>/', CategoryDeleteAPIView.as_view(), name='eliminar_categoria'),
-
+    path('estado_categoria/<int:category_id>/', CategoryStateAPIView.as_view(), name='cambiar_estado_categoria'),
 ]

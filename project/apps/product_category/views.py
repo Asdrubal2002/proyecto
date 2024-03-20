@@ -20,7 +20,7 @@ class ListCategoriesStoreView(APIView):
         try:
             # Obtener la tienda por slug
             store = Store.objects.get(slug=storeSlug)
-            categories = Category.objects.filter(store=store)
+            categories = Category.objects.filter(store=store, is_active=True)
             result = []
             for category in categories:
                 if not category.parent:
@@ -82,7 +82,6 @@ class CreateCategoryAPIView(APIView):
             return Response({"categories":serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CategoryDeleteAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -104,3 +103,34 @@ class CategoryDeleteAPIView(APIView):
         serializer = CategorieStoreSerializer(remaining_categories, many=True)
         
         return Response({"categories":serializer.data}, status=status.HTTP_200_OK)
+    
+class CategoryStateAPIView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def put(self, request, category_id):
+        # Buscar la categoría por su ID
+        category = Category.objects.filter(id=category_id).first()
+        if not category:
+            return Response({"message": "La categoría no existe"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Verificar si la categoría pertenece a la tienda del usuario autenticado
+        if category.store != request.user.store:
+            return Response({"message": "No tienes permiso para modificar esta categoría"}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Actualizar el estado de is_active de la categoría
+        is_active = request.data.get('is_active')
+        if is_active is not None:
+            category.is_active = is_active
+            category.save()
+            return Response({"message": f"El estado de la categoría se ha actualizado a {is_active}"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Se requiere el campo is_active para actualizar la categoría"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+

@@ -72,10 +72,13 @@ function Categories({
     setOpen(true);
   };
 
-  const handleDelete = (categoryId) => {
-    console.log(categoryId)
-    delete_category(categoryId)
+  const handleDelete = async (categoryId) => {
+    await delete_category(categoryId)
     setOpen(false);
+  }
+
+  const handleToggleActive = async (categoryId) => {
+    console.log(categoryId)
   }
 
   return (
@@ -176,7 +179,7 @@ function Categories({
                           <td className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             <button onClick={() => handleOpenModal(category.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
                             <button onClick={() => handleEdit(category.id)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
-                            <button onClick={() => handleToggleActive(category.id)} className="text-green-600 dark:text-green-500 hover:underline">{category.active ? 'Desactivar' : 'Activar'}</button>
+                            <button onClick={() => handleToggleActive(category.id)} className="text-green-600 dark:text-green-500 hover:underline">{category.is_active ? 'Desactivar' : 'Activar'}</button>
                           </td>
                         </tr>
                       ))}
