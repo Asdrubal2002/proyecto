@@ -1,15 +1,13 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
-import { create_category, delete_category, get_categories } from '../../redux/actions/categories_product/categories_product';
+import { create_category, delete_category, get_categories, change_status_category } from '../../redux/actions/categories_product/categories_product';
 import { Rings } from 'react-loader-spinner';
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { CheckIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { get_user_store } from '../../redux/actions/store/store';
 import { Link } from 'react-router-dom';
 import Create from '../store/Create';
-
-
 
 
 function Categories({
@@ -19,7 +17,8 @@ function Categories({
   create_category,
   delete_category,
   get_user_store,
-  userStore
+  userStore,
+  change_status_category
 
 }) {
 
@@ -79,6 +78,7 @@ function Categories({
 
   const handleToggleActive = async (categoryId) => {
     console.log(categoryId)
+    await change_status_category(categoryId)
   }
 
   return (
@@ -274,5 +274,6 @@ export default connect(mapStateToProps, {
   get_categories,
   create_category,
   delete_category,
-  get_user_store
+  get_user_store,
+  change_status_category
 })(Categories)

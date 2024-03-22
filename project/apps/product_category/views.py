@@ -105,9 +105,16 @@ class CategoryDeleteAPIView(APIView):
         return Response({"categories":serializer.data}, status=status.HTTP_200_OK)
     
 class CategoryStateAPIView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
-    def put(self, request, category_id):
+    def put(self, request):
+        # Obtener el ID de la categoría del cuerpo de la solicitud
+        category_id = request.data.get('category_id')
+        
+        # Verificar si se proporcionó un ID de categoría en la solicitud
+        if not category_id:
+            return Response({"message": "Se requiere el ID de la categoría en el cuerpo de la solicitud"}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Buscar la categoría por su ID
         category = Category.objects.filter(id=category_id).first()
         if not category:
@@ -117,20 +124,20 @@ class CategoryStateAPIView(APIView):
         if category.store != request.user.store:
             return Response({"message": "No tienes permiso para modificar esta categoría"}, status=status.HTTP_403_FORBIDDEN)
         
-        # Actualizar el estado de is_active de la categoría
-        is_active = request.data.get('is_active')
-        if is_active is not None:
-            category.is_active = is_active
-            category.save()
-            return Response({"message": f"El estado de la categoría se ha actualizado a {is_active}"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"message": "Se requiere el campo is_active para actualizar la categoría"}, status=status.HTTP_400_BAD_REQUEST)
+        # Cambiar el estado de is_active de la categoría
+        category.is_active = not category.is_active
+        category.save()
+        
+        new_state = "activo" if category.is_active else "inactivo"
 
-
-
-
-
-
-
-
-
+        # Obtener todas las categorías de la tienda del usuario autenticado
+        categories = Category.objects.filter(store=request.user.store)
+        
+        # Serializar las categorías
+        serializer = CategorieStoreSerializer(categories, many=True)
+        
+        # Devolver las categorías serializadas en la respuesta
+        return Response({
+            "message": f"El estado de la categoría se ha cambiado a {new_state}",
+            "categories": serializer.data
+        }, status=status.HTTP_200_OK)

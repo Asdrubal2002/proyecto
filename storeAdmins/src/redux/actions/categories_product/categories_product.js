@@ -8,7 +8,9 @@ import {
     CREATE_CATEGORY_SUCCESS,
     CREATE_CATEGORY_FAIL,
     DELETE_CATEGORY_SUCCESS,
-    DELETE_CATEGORY_FAIL
+    DELETE_CATEGORY_FAIL,
+    CHANGE_STATUS_SUCCESS,
+    CHANGE_STATUS_FAIL
 } from './types';
 import { setAlert } from '../alert/alert';
 
@@ -137,6 +139,55 @@ export const delete_category = (
         } catch (err) {
             dispatch({
                 type: DELETE_CATEGORY_FAIL
+            });
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        }
+
+    }
+}
+
+
+
+export const change_status_category = (
+    id
+) => async dispatch => {
+    dispatch({
+        type: SET_CATEGORY_LOADING,
+    });
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+        const category_id = id;
+        const body = JSON.stringify({
+            category_id
+        });
+        console.log(body)
+        try {
+            const res = await axios.put(`${apiUrl}/api/product_category/estado_categoria/`, body, config);   
+
+            if (res.status === 200) {
+                dispatch({
+                    type: CHANGE_STATUS_SUCCESS,
+                    payload: res.data
+                });
+               
+                dispatch(
+                    setAlert('Haz cambiado el estado de tu categoria correctamente.', exito));
+            }
+            get_categories()
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        } catch (err) {
+            dispatch({
+                type: CHANGE_STATUS_FAIL
             });
             dispatch({
                 type: REMOVE_CATEGORY_LOADING,

@@ -110,7 +110,6 @@ class ProductOptionListView(APIView):
             # Devolver una respuesta vacía con código de estado 200
             return Response({'options': []}, status=status.HTTP_200_OK)
         
-        
 class OptionListView(APIView):
     def get(self, request, *args, **kwargs):
         # Obtener el usuario autenticado
