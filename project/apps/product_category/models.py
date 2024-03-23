@@ -1,5 +1,6 @@
 from django.db import models
 from apps.store.models import Store
+from django.utils import timezone
 
 # Create your models here.
 
@@ -15,6 +16,7 @@ class Category(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='categories_store')
     slug =  models.SlugField(max_length=255)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
 
 
 

@@ -57,7 +57,6 @@ export const get_products = (storeSlug) => async dispatch => {
     }
 }
 
-
 export const get_options = (storeSlug) => async dispatch => {
     dispatch({
         type:SET_PRODUCT_SUCCESS_LOADING
@@ -94,11 +93,6 @@ export const get_options = (storeSlug) => async dispatch => {
         });
     }
 }
-
-
-
-
-
 
 export const get_products_list_page = (storeSlug, page) => async dispatch => {
     dispatch({

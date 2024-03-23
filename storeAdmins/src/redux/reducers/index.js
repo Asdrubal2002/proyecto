@@ -7,7 +7,7 @@ import Cities from "./cities/cities";
 import Store from "./stores/store";
 import Profile from "./profile/profile";
 import Product_category from "./categories_product/Product_categories";
-
+import Products from "./products/products";
 
 
 export default combineReducers ({
@@ -17,5 +17,6 @@ export default combineReducers ({
     Store_Categories,
     Cities,
     Store,
-    Product_category
+    Product_category,
+    Products
 })

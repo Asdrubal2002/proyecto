@@ -147,10 +147,26 @@ class CreateOptionAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserProductsAPIView(APIView):
+    def get(self, request):
+        try:
+            # Obtener la tienda del usuario autenticado
+            store = request.user.store
 
+            # Obtener todas las categorías de la tienda del usuario
+            categories = store.categories_store.all()
 
+            # Obtener todos los productos asociados a las categorías de la tienda del usuario
+            products = Product.objects.filter(category__in=categories)
 
+            paginator = LargeSetPagination()
+            results = paginator.paginate_queryset(products, request)
+            serialized_products = ProductSerializer(results, many=True)
 
+            # Devolver la lista de productos serializados
+            return paginator.get_paginated_response({'products': serialized_products.data})
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
