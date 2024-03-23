@@ -10,7 +10,8 @@ import {
   UsersIcon,
   XMarkIcon,
   BuildingStorefrontIcon,
-  PencilSquareIcon
+  PencilSquareIcon,
+  CircleStackIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -31,7 +32,7 @@ export default function ItemsSidebar() {
     { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: false },
     { name: 'Categorias', href: '/categories', icon: PencilSquareIcon, current: false },
 
-    { name: 'Productos', href: '/products', icon: CalendarIcon, current: false },
+    { name: 'Productos', href: '/products', icon: CircleStackIcon, current: false },
     { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
   ]
 

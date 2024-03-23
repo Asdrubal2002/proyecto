@@ -1,7 +1,11 @@
 import {
     GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAIL,
     SET_PRODUCTS_LOADING,
-    REMOVE_PRODUCTS_LOADING
+    REMOVE_PRODUCTS_LOADING,
+    GET_PRODUCT_SUCCESS,
+    GET_PRODUCT_FAIL,
+    REMOVE_PRODUCT_FAIL_LOADING,
+    SET_PRODUCT_SUCCESS_LOADING
 } from "../../actions/products/types";
 
 const initialState = {
@@ -45,6 +49,31 @@ export default function Products(state = initialState, action) {
                 next: null,
                 previous: null
             }
+
+        case SET_PRODUCT_SUCCESS_LOADING:
+            return {
+                ...state,
+                loading_product: true
+            }
+        case REMOVE_PRODUCT_FAIL_LOADING:
+            return {
+                ...state,
+                loading_product: false
+            }
+
+        case GET_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                product: payload.product
+            }
+
+        case GET_PRODUCT_FAIL:
+            return {
+                ...state,
+                product: null,
+            }
+
+
         default:
             return state
     }

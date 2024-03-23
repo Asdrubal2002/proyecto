@@ -4,8 +4,8 @@ from .models import Product, ProductImage, Option, ProductOption
 # Register your models here.
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'category', 'slugProduct', 'quantity', 'sold')
-    list_display_links = ('id', 'name', 'category', 'slugProduct', 'quantity', 'sold')
+    list_display = ('id', 'name', 'category', 'slugProduct', 'sold')
+    list_display_links = ('id', 'name', 'category', 'slugProduct', 'sold')
     search_fields = ('name', 'category', 'slugProduct')
     list_per_page = 25
 

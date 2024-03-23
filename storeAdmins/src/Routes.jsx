@@ -12,6 +12,8 @@ import Products from './containers/product/Products'
 
 import Categories from './containers/categories/Categories'
 
+import EditProduct from './containers/product/EditProduct'
+
 function AnimatedRoutes() {
   return (
 
@@ -30,6 +32,9 @@ function AnimatedRoutes() {
               <Route exact path='/products' element={<Products />} />
 
               <Route exact path='/categories' element={<Categories />} />
+
+              <Route exact path='/product/:slug' element={<EditProduct />} />
+
 
 
       </Routes>

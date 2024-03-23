@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from .serializer import ProductSerializer, ProductOptionSerializer, OptionSerializer, CreateOptionSerializer
-from .models import Product, ViewCount, ProductOption, Option
+from .models import Product, ProductOption, Option
 from apps.store.models import Store
 from apps.product_category.models import Category
 from django.http import JsonResponse
@@ -73,26 +73,15 @@ class SearchProductInView(APIView):
 
 class ProductDetailView(APIView):
     permission_classes = (permissions.AllowAny,)
+
     def get(self, request, slugProduct, format=None):
         if Product.objects.filter(slugProduct=slugProduct).exists():
             product = Product.objects.get(slugProduct=slugProduct)
             serializer = ProductSerializer(product)
-
-            address = request.META.get('HTTP_X_FORWARDED_FOR')
-            if address:
-                ip = address.split(',')[-1].strip()
-            else:
-                ip = request.META.get('REMOTE_ADDR')
-
-            if not ViewCount.objects.filter(product=product, ip_address=ip):
-                view = ViewCount(product=product,ip_address=ip)
-                view.save()
-                product.views += 1
-                product.save()
-
-            return Response({'product':serializer.data})
+            return Response({'product': serializer.data})
         else:
-            return Response({'error':'Post doesnt exist'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Post doesnt exist'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class ProductOptionListView(APIView):
     def get(self, request, product_slug):

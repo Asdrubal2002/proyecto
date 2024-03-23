@@ -37,8 +37,6 @@ class Product(models.Model):
         MinValueValidator(0),
         MaxValueValidator(1000000)  # Define el límite superior según tus necesidades
     ],default=0, blank=True)
-    views = models.IntegerField(default=0, blank=True)
-    quantity = models.IntegerField(default=0)
     sold = models.IntegerField(default=0)
     date_created = models.DateTimeField(default=datetime.now)
     is_active = models.BooleanField(default=True)
@@ -59,14 +57,7 @@ class ProductImage(models.Model):
         return f"Imagen de {self.product.name}"
 
 
-class ViewCount(models.Model):
-    product = models.ForeignKey(
-        Product, related_name="post_view_count", on_delete=models.CASCADE
-    )
-    ip_address = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"{self.ip_address}"
 
 
 class Option(models.Model):

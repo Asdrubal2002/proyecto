@@ -1,13 +1,16 @@
 import axios from 'axios';
 
-import { 
-    CREATE_STORE_SUCCESS, 
-    CREATE_STORE_FAIL, 
-    SET_LOADED_STORE, 
-    REMOVE_LOADED_STORE,
+import {
+    CREATE_STORE_SUCCESS,
+    CREATE_STORE_FAIL,
+
     GET_STORE_SUCCESS,
-    GET_STORE_FAIL
- } from './types';
+    GET_STORE_FAIL,
+
+    SET_LOADED_STORE,
+    REMOVE_LOADED_STORE,
+
+} from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -69,7 +72,7 @@ export const createStore = (
                 });
                 dispatch(
                     setAlert('Tienda creada correctamente.', exito));
-            }else if (res.status === 400) {
+            } else if (res.status === 400) {
                 dispatch({
                     type: GET_STORE_FAIL
                 });
@@ -94,6 +97,9 @@ export const createStore = (
 
 
 export const get_user_store = () => async dispatch => {
+    dispatch({
+        type: SET_LOADED_STORE
+    });
     if (localStorage.getItem('access')) {
         const config = {
             headers: {
@@ -115,10 +121,16 @@ export const get_user_store = () => async dispatch => {
                     type: GET_STORE_FAIL
                 });
             }
-        } catch(err) {
+            dispatch({
+                type: REMOVE_LOADED_STORE
+            });
+        } catch (err) {
             dispatch({
                 type: GET_STORE_FAIL
             });
         }
+        dispatch({
+            type: REMOVE_LOADED_STORE
+        });
     }
 }

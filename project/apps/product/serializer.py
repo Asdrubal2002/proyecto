@@ -30,8 +30,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'slugProduct',
             'price',
             'tax',
-            'views',
-            'quantity',
             'sold',
             'date_created',
             'is_active',

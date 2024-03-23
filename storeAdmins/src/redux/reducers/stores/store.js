@@ -1,10 +1,12 @@
 import {
     CREATE_STORE_SUCCESS,
     CREATE_STORE_FAIL,
-    SET_LOADED_STORE,
-    REMOVE_LOADED_STORE,
+    
     GET_STORE_SUCCESS,
-    GET_STORE_FAIL
+    GET_STORE_FAIL,
+
+    SET_LOADED_STORE,
+    REMOVE_LOADED_STORE 
 } from "../../actions/store/types";
 
 const initialState = {
