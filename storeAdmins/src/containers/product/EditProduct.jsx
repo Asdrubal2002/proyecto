@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
 import { useParams } from 'react-router-dom';
@@ -6,14 +6,19 @@ import { useParams } from 'react-router-dom';
 import { get_product } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
 import { PaperClipIcon } from '@heroicons/react/24/outline';
+import axios from "axios"
 
 
 function EditProduct({
     get_product,
     loading_product,
-    product
+    product,
+    categories
 }) {
 
+    const [loading, setLoading] = useState(false)
+
+ 
     const params = useParams()
     const slug = params.slug
 
@@ -21,6 +26,78 @@ function EditProduct({
         window.scrollTo(0, 0)
         get_product(slug)
     }, []);
+
+    const [updateName, setUpdateName] = useState(false)
+    const [updateCategory, setUpdateCategory] = useState(false)
+
+
+    const [formData, setFormData]=useState({
+        name:'', 
+    })
+
+    const {
+        name
+    } = formData
+
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value})
+    }
+
+    const onSubmit = e => {
+        e.preventDefault()
+
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const formData = new FormData()
+        formData.append('name', name)
+        formData.append('slug', slug)
+
+
+        const fetchData = async()=>{
+            setLoading(true)
+            try{
+                const res = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/edit-product/`,
+                formData,
+                config)
+
+                if(res.status === 200){
+
+
+
+
+
+                    setLoading(false)
+                    setUpdateName(false)
+                    get_product(slug)
+
+                   
+                    
+
+                    
+                }else{
+                    setLoading(false)
+                    setUpdateName(false)
+
+                }
+            }catch(err){
+                setLoading(false)
+                setUpdateName(false)
+                alert('Error al enviar', err)
+            }
+        }
+        fetchData()
+
+
+        console.log('save', formData)
+    }
+
+
 
     return (
         <Layout>
@@ -30,7 +107,7 @@ function EditProduct({
                         <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
                             <div className="ml-4 mt-4">
                                 <h3 className="text-3xl font-medium leading-6 text-gray-300">{product && product.name}</h3>
-                                {/* <p className="mt-1 max-w-2xl text-sm text-gray-500">Información de tu producto</p> */}
+                                {/* <p className="mt-1 max-w-2xl text-sm text-gray-200">Información de tu producto</p> */}
 
                             </div>
                             <div className="ml-4 mt-4 flex-shrink-0">
@@ -62,18 +139,107 @@ function EditProduct({
 
                     <>
                         <div>
-                            <h3 className="text-lg font-medium leading-6 text-gray-300">Información de tu producto 1:56:24</h3>
+                            <h3 className="text-lg font-medium leading-6 text-gray-300">Información de tu producto 2:28:30</h3>
                         </div>
                         <div className="mt-5 border-t border-gray-200">
                             <dl className="divide-y divide-gray-200">
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">Full name</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                        <span className="flex-grow">Margot Foster</span>
+                                    <dt className="text-sm font-medium text-gray-200">Nobre del producto</dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        {updateName ? (
+                                            <>
+                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                    <input
+                                                        value={name}
+                                                        onChange={e => onChange(e)}
+                                                        name='name'
+                                                        type='text'
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        required
+                                                    />
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            Guardar
+                                                        </button>
+                                                        <div
+                                                            onClick={() => setUpdateName(false)}
+                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                        >
+                                                            Cancelar
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="flex-grow">{product && product.name}</span>
+                                                <button
+                                                    onClick={() => setUpdateName(true)}
+                                                    className="px-4 py-2 rounded-md bg-white border border-azul_corp text-azul_corp font-medium hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                >
+                                                    Actualizar
+                                                </button>
+                                            </>
+                                        )}
+                                    </dd>
+
+                                </div>
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200">Categoria de tu producto</dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        {updateCategory ? (
+                                            <>
+                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                    <input
+                                                        value={name}
+                                                        onChange={e => onChange(e)}
+                                                        name='name'
+                                                        type='text'
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        required
+                                                    />
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            Guardar
+                                                        </button>
+                                                        <div
+                                                            onClick={() => setUpdateCategory(false)}
+                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                        >
+                                                            Cancelar
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="flex-grow">{product && product.name}</span>
+                                                <button
+                                                    onClick={() => setUpdateCategory(true)}
+                                                    className="px-4 py-2 rounded-md bg-white border border-azul_corp text-azul_corp font-medium hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                >
+                                                    Actualizar
+                                                </button>
+                                            </>
+                                        )}
+                                    </dd>
+                                </div>
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200"><em>Descripción</em></dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        <span className="flex-grow">{product && product.description}</span>
                                         <span className="ml-4 flex-shrink-0">
                                             <button
                                                 type="button"
-                                                className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                             >
                                                 Update
                                             </button>
@@ -81,68 +247,23 @@ function EditProduct({
                                     </dd>
                                 </div>
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">Application for</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                        <span className="flex-grow">Backend Developer</span>
+                                    <dt className="text-sm font-medium text-gray-200">Precio</dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        <span className="flex-grow">{product && product.price}</span>
                                         <span className="ml-4 flex-shrink-0">
                                             <button
                                                 type="button"
-                                                className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                             >
                                                 Update
                                             </button>
                                         </span>
                                     </dd>
                                 </div>
-                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">Email address</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                        <span className="flex-grow">margotfoster@example.com</span>
-                                        <span className="ml-4 flex-shrink-0">
-                                            <button
-                                                type="button"
-                                                className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                            >
-                                                Update
-                                            </button>
-                                        </span>
-                                    </dd>
-                                </div>
-                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">Salary expectation</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                        <span className="flex-grow">$120,000</span>
-                                        <span className="ml-4 flex-shrink-0">
-                                            <button
-                                                type="button"
-                                                className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                            >
-                                                Update
-                                            </button>
-                                        </span>
-                                    </dd>
-                                </div>
-                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">About</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                        <span className="flex-grow">
-                                            Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur
-                                            qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia proident. Irure
-                                            nostrud pariatur mollit ad adipisicing reprehenderit deserunt qui eu.
-                                        </span>
-                                        <span className="ml-4 flex-shrink-0">
-                                            <button
-                                                type="button"
-                                                className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                            >
-                                                Update
-                                            </button>
-                                        </span>
-                                    </dd>
-                                </div>
-                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-500">Attachments</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+
+                                {/* <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200">Attachments</dt>
+                                    <dd className="mt-1 text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         <ul role="list" className="divide-y divide-gray-200 rounded-md border border-gray-200">
                                             <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
                                                 <div className="flex w-0 flex-1 items-center">
@@ -152,7 +273,7 @@ function EditProduct({
                                                 <div className="ml-4 flex flex-shrink-0 space-x-4">
                                                     <button
                                                         type="button"
-                                                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                     >
                                                         Update
                                                     </button>
@@ -161,7 +282,7 @@ function EditProduct({
                                                     </span>
                                                     <button
                                                         type="button"
-                                                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                     >
                                                         Remove
                                                     </button>
@@ -175,7 +296,7 @@ function EditProduct({
                                                 <div className="ml-4 flex flex-shrink-0 space-x-4">
                                                     <button
                                                         type="button"
-                                                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                     >
                                                         Update
                                                     </button>
@@ -184,7 +305,7 @@ function EditProduct({
                                                     </span>
                                                     <button
                                                         type="button"
-                                                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                     >
                                                         Remove
                                                     </button>
@@ -192,7 +313,7 @@ function EditProduct({
                                             </li>
                                         </ul>
                                     </dd>
-                                </div>
+                                </div> */}
                             </dl>
                         </div>
                     </>
@@ -208,7 +329,8 @@ function EditProduct({
 
 const mapStateToProps = state => ({
     loading_product: state.Products.loading_product,
-    product: state.Products.product
+    product: state.Products.product,
+    categories: state.Product_category.categories
 })
 
 export default connect(mapStateToProps, {

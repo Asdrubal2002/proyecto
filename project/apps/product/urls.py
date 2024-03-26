@@ -8,6 +8,7 @@ from .views import (
     OptionListView,
     CreateOptionAPIView,
     UserProductsAPIView,
+    EditProductView
 )
 
 urlpatterns = [
@@ -23,4 +24,9 @@ urlpatterns = [
     path("options/", OptionListView.as_view()),
     path("create-option/", CreateOptionAPIView.as_view()),
     path("user-products/", UserProductsAPIView.as_view(), name="user_products"),
+
+    path("edit-product/", EditProductView.as_view()),
+
+
+
 ]

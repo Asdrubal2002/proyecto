@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from apps.store.pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
 from django.db.models import Prefetch
-
+from .permissions import CanEditProduct
 
 
 # Create your views here.
@@ -137,6 +137,8 @@ class CreateOptionAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProductsAPIView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request):
         try:
             # Obtener la tienda del usuario autenticado
@@ -156,6 +158,31 @@ class UserProductsAPIView(APIView):
             return paginator.get_paginated_response({'products': serialized_products.data})
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class EditProductView(APIView):
+    permission_classes = (CanEditProduct, )
+
+    def put(self, request, format=None):
+        user = self.request.user
+
+        data = self.request.data
+
+        slugProduct=data['slug']
+
+        product=Product.objects.get(slugProduct=slugProduct)
+
+        print(product)
+
+        if(data['name']):
+            if not (data['name'] == 'undefined'):
+                product.name = data['name']
+                product.save()
+        
+        return Response({"success":"post edited"})
+
+
+
+
 
 
 
