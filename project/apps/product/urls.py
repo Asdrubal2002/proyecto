@@ -8,7 +8,10 @@ from .views import (
     OptionListView,
     CreateOptionAPIView,
     UserProductsAPIView,
-    EditProductView
+    EditProductView,
+    StatusProductView,
+    DeleteProductView,
+    DeletePhotoProductView
 )
 
 urlpatterns = [
@@ -26,6 +29,13 @@ urlpatterns = [
     path("user-products/", UserProductsAPIView.as_view(), name="user_products"),
 
     path("edit-product/", EditProductView.as_view()),
+    path("edit-product-status/", StatusProductView.as_view()),
+
+    path('delete/<slug>', DeleteProductView.as_view()),
+    path('delete-photo/<id>', DeletePhotoProductView.as_view()),
+
+
+
 
 
 

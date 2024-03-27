@@ -2,23 +2,34 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from .serializer import ProductSerializer, ProductOptionSerializer, OptionSerializer, CreateOptionSerializer
-from .models import Product, ProductOption, Option
+from .serializer import (
+    ProductSerializer,
+    ProductOptionSerializer,
+    OptionSerializer,
+    CreateOptionSerializer,
+)
+from .models import Product, ProductOption, Option, ProductImage
 from apps.store.models import Store
 from apps.product_category.models import Category
 from django.http import JsonResponse
 
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from apps.store.pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
+from apps.store.pagination import (
+    SmallSetPagination,
+    MediumSetPagination,
+    LargeSetPagination,
+)
 from django.db.models import Prefetch
 from .permissions import CanEditProduct
 
 
 # Create your views here.
 
+
 class ListProductsByCategoryView(APIView):
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request, storeSlug, categorySlug, format=None):
         # Obtener la tienda o devolver un 404 si no se encuentra
         store = get_object_or_404(Store, slug=storeSlug)
@@ -34,7 +45,7 @@ class ListProductsByCategoryView(APIView):
         products_serialized = ProductSerializer(results, many=True)
 
         # Devolver la lista de productos serializados
-        return paginator.get_paginated_response({'products': products_serialized.data})
+        return paginator.get_paginated_response({"products": products_serialized.data})
 
 class ProductsByStore(APIView):
     def get(self, request, storeSlug, format=None):
@@ -44,7 +55,9 @@ class ProductsByStore(APIView):
         categories = Category.objects.filter(store=store)
 
         # Obtener todos los productos que pertenecen a esas categorías
-        products = Product.objects.filter(category__in=categories, is_active=True).order_by('date_created')
+        products = Product.objects.filter(
+            category__in=categories, is_active=True
+        ).order_by("date_created")
         # Serializar los productos
 
         paginator = LargeSetPagination()
@@ -52,24 +65,31 @@ class ProductsByStore(APIView):
         products_serialized = ProductSerializer(results, many=True)
 
         # Devolver la lista de productos serializados
-        return paginator.get_paginated_response({'products': products_serialized.data})
+        return paginator.get_paginated_response({"products": products_serialized.data})
 
 class SearchProductInView(APIView):
-     def get(self, request, format=None):
-            slugCategory = request.query_params.get('c')
-            storeSlug = request.query_params.get('s')
-            content = request.query_params.get('b')
+    def get(self, request, format=None):
+        slugCategory = request.query_params.get("c")
+        storeSlug = request.query_params.get("s")
+        content = request.query_params.get("b")
 
-            store = get_object_or_404(Store, slug=storeSlug)
-            category = get_object_or_404(Category, store=store, slug=slugCategory)
-            products = Product.objects.filter(category=category, name__icontains=content) | Product.objects.filter(category=category, description__icontains=content)
+        store = get_object_or_404(Store, slug=storeSlug)
+        category = get_object_or_404(Category, store=store, slug=slugCategory)
+        products = Product.objects.filter(
+            category=category, name__icontains=content
+        ) | Product.objects.filter(category=category, description__icontains=content)
 
-            if products.exists():
-                # Aquí deberías serializar los productos encontrados
-                products_serialized = [product.name for product in products]  # Ejemplo simple de serialización
-                return Response({'products': products_serialized})
-            else:
-                return Response({'error': 'No se encontraron productos que coincidan con la búsqueda'}, status=status.HTTP_404_NOT_FOUND)
+        if products.exists():
+            # Aquí deberías serializar los productos encontrados
+            products_serialized = [
+                product.name for product in products
+            ]  # Ejemplo simple de serialización
+            return Response({"products": products_serialized})
+        else:
+            return Response(
+                {"error": "No se encontraron productos que coincidan con la búsqueda"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
 class ProductDetailView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -78,10 +98,11 @@ class ProductDetailView(APIView):
         if Product.objects.filter(slugProduct=slugProduct).exists():
             product = Product.objects.get(slugProduct=slugProduct)
             serializer = ProductSerializer(product)
-            return Response({'product': serializer.data})
+            return Response({"product": serializer.data})
         else:
-            return Response({'error': 'Post doesnt exist'}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response(
+                {"error": "Post doesnt exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 class ProductOptionListView(APIView):
     def get(self, request, product_slug):
@@ -94,11 +115,11 @@ class ProductOptionListView(APIView):
         if product_options.exists():
             # Serializar las opciones del producto si existen
             serializer = ProductOptionSerializer(product_options, many=True)
-            return Response({'options': serializer.data}, status=status.HTTP_200_OK)
+            return Response({"options": serializer.data}, status=status.HTTP_200_OK)
         else:
             # Devolver una respuesta vacía con código de estado 200
-            return Response({'options': []}, status=status.HTTP_200_OK)
-        
+            return Response({"options": []}, status=status.HTTP_200_OK)
+
 class OptionListView(APIView):
     def get(self, request, *args, **kwargs):
         # Obtener el usuario autenticado
@@ -108,22 +129,25 @@ class OptionListView(APIView):
         options = Option.objects.filter(store__administrator=user)
 
         if not options:
-            return Response({"message": "No hay opciones asociadas al usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "No hay opciones asociadas al usuario autenticado."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         # Serializar las opciones
         serializer = OptionSerializer(options, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 class CreateOptionAPIView(APIView):
     def post(self, request, *args, **kwargs):
         # Obtener los datos de la solicitud
         data = request.data
 
         # Agregar el usuario autenticado como administrador de la tienda
-        data['store'] = request.user.store.id
+        data["store"] = request.user.store.id
 
-        print(data['store'])
+        print(data["store"])
 
         # Crear un serializador con los datos de la solicitud
         serializer = CreateOptionSerializer(data=data)
@@ -155,35 +179,74 @@ class UserProductsAPIView(APIView):
             serialized_products = ProductSerializer(results, many=True)
 
             # Devolver la lista de productos serializados
-            return paginator.get_paginated_response({'products': serialized_products.data})
+            return paginator.get_paginated_response(
+                {"products": serialized_products.data}
+            )
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class EditProductView(APIView):
-    permission_classes = (CanEditProduct, )
+    permission_classes = (CanEditProduct,)
 
     def put(self, request, format=None):
         user = self.request.user
 
         data = self.request.data
 
-        slugProduct=data['slug']
+        slugProduct = data["slug"]
 
-        product=Product.objects.get(slugProduct=slugProduct)
+        product = Product.objects.get(slugProduct=slugProduct)
 
-        print(product)
-
-        if(data['name']):
-            if not (data['name'] == 'undefined'):
-                product.name = data['name']
+        if data["name"]:
+            if not (data["name"] == "undefined"):
+                product.name = data["name"]
                 product.save()
-        
-        return Response({"success":"post edited"})
+        if data["description"]:
+            if not (data["description"] == "undefined"):
+                product.description = data["description"]
+                product.save()
+        if data["category"] and data["category"] != "undefined":
+            category_instance = Category.objects.get(id=data["category"])
+            product.category = category_instance
+            product.save()
+        if data["price"]:
+            if not (data["price"] == "undefined"):
+                product.price = data["price"]
+                product.save()
 
+        return Response({"success": "post edited"})
 
+class StatusProductView(APIView):
+    permission_classes = (CanEditProduct,)
 
+    def put(self, request, format=None):
+        data = self.request.data
+        slugProduct = data["slug"]
+        product = Product.objects.get(slugProduct=slugProduct)
+        # Cambiar el estado de is_active de la categoría
+        product.is_active = not product.is_active
+        product.save()
+        return Response({"success": "is_active"})
+    
+class DeleteProductView(APIView):
+    permission_classes = (CanEditProduct,)
+    def delete(self, request, slug, format=None):
+        product = Product.objects.get(slugProduct=slug)
+        product.delete()
+        return Response({'success': 'Post delete'})
 
+class DeletePhotoProductView(APIView):
+        permission_classes = (CanEditProduct,)
 
+        def delete(self, request, id, format=None):
+            print(id)
+
+            imagen = ProductImage.objects.get(id=id)
+            imagen.delete()
+
+            return Response({'success': 'Post delete'})
 
 
 

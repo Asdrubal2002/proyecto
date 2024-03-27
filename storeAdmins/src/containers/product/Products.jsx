@@ -28,38 +28,60 @@ function Products({
 
   return (
     <Layout>
-      {userStore ? <>
-        {loading_products ?
-        <Rings width={30} height={30} color="#fff" radius="6" />
-        :
+      {userStore ? (
         <>
-          <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
-            <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
-              <div className="ml-4 mt-2">
-                <h3 className="text-lg font-medium leading-6 text-gray-200">¿Tienes otro producto nuevo?</h3>
-              </div>
-              <div className="ml-4 mt-2 flex-shrink-0">
-                <button
-                  type="button"
-                  className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                 Crear producto
-                </button>
-              </div>
-            </div>
-          </div>
-          <ProductList products={products} get_products_list_page={get_products_list_page} count={count} />
+          {loading_products ? (
+            <Rings width={30} height={30} color="#fff" radius="6" />
+          ) : (
+            <>
+              {products && products.length > 0 ? (
+                <>
+                  <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
+                    <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
+                      <div className="ml-4 mt-2">
+                        <h3 className="text-lg font-medium leading-6 text-gray-200">¿Tienes otro producto nuevo?</h3>
+                      </div>
+                      <div className="ml-4 mt-2 flex-shrink-0">
+                        <button
+                          type="button"
+                          className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                          Crear producto
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <ProductList products={products} get_products_list_page={get_products_list_page} count={count} />
+                </>
+              ) : (
+                <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
+                  <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
+                    <div className="ml-4 mt-2">
+                      <h3 className="text-lg font-medium leading-6 text-gray-200">Nos alegra que estes aqui, crea tu primer producto</h3>
+                    </div>
+                    <div className="ml-4 mt-2 flex-shrink-0">
+                      <button
+                        type="button"
+                        className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
+                        Crear producto
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </>
-      }
-
-
-      
-      </> : <div className='m-4'>
-            <Create />
-          </div>}
-
-      
+      ) : (
+        <div className='m-4'>
+          <Create />
+        </div>
+      )}
     </Layout>
+
+
+
 
   )
 }

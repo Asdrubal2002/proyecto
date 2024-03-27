@@ -57,9 +57,6 @@ class ProductImage(models.Model):
         return f"Imagen de {self.product.name}"
 
 
-
-
-
 class Option(models.Model):
     class Meta:
         verbose_name = "opción"
