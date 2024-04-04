@@ -39,7 +39,7 @@ class Product(models.Model):
     ],default=0, blank=True)
     sold = models.IntegerField(default=0)
     date_created = models.DateTimeField(default=datetime.now)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     likes = models.IntegerField(default=0)
 
     def __str__(self):

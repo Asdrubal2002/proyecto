@@ -7,6 +7,7 @@ from .serializer import (
     ProductOptionSerializer,
     OptionSerializer,
     CreateOptionSerializer,
+    ProductSerializerPhotos
 )
 from .models import Product, ProductOption, Option, ProductImage
 from apps.store.models import Store
@@ -23,6 +24,8 @@ from apps.store.pagination import (
 from django.db.models import Prefetch
 from .permissions import CanEditProduct
 
+from rest_framework.parsers import MultiPartParser, FormParser
+from datetime import datetime
 
 # Create your views here.
 
@@ -247,6 +250,59 @@ class DeletePhotoProductView(APIView):
             imagen.delete()
 
             return Response({'success': 'Post delete'})
+
+class EditProductPhotosView(APIView):
+    permission_classes = (CanEditProduct,)
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+
+        slug_product = data["slug"]
+        product = Product.objects.get(slugProduct=slug_product)
+
+        photo = data.get("photo")  # Obtener la foto del request
+        product_image = ProductImage.objects.create(product=product, photo=photo)
+
+        # Puedes serializar el objeto de imagen del producto si lo necesitas
+        serializer = ProductSerializerPhotos(product_image)
+
+        return Response({"success": "Image uploaded", "id": product.id, "photo_url": product_image.photo.url})
+
+class CreateProductView(APIView):
+    permission_classes = (CanEditProduct,)
+
+    def post(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+
+        # Obtener los datos de la solicitud
+        name = data.get('name', '')
+        category_id = data.get('category', None)
+        description = data.get('description', '')
+        price = data.get('price', 0)
+
+        # Crear el objeto Product
+        product = Product.objects.create(
+            name=name,
+            category_id=category_id,
+            description=description,
+            price=price,
+            date_created=datetime.now()
+        )
+
+        # Retornar una respuesta exitosa
+        return Response({"success": "Producto creado exitosamente"})
+
+
+
+class ProductOptionsView(APIView):
+    permission_classes = (CanEditProduct,)
+
+    def get(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
 
 
 

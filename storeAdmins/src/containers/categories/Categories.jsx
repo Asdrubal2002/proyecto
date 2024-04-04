@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import Create from '../store/Create';
 
 
+
 function Categories({
   get_categories,
   categories,
@@ -34,6 +35,7 @@ function Categories({
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    get_user_store()
     get_categories()
   }, []);
 
@@ -259,7 +261,6 @@ function Categories({
         )
       }
     </Layout>
-
   )
 }
 

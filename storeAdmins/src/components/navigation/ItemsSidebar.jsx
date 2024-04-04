@@ -29,10 +29,10 @@ export default function ItemsSidebar() {
 
   const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: location.pathname==='/store_admin_home' ? true:false },
-    { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Categorias', href: '/categories', icon: PencilSquareIcon, current: false },
+    { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: location.pathname==='/store' ? true:false  },
+    { name: 'Categorias', href: '/categories', icon: PencilSquareIcon, current: location.pathname==='/categories' ? true:false  },
 
-    { name: 'Productos', href: '/products', icon: CircleStackIcon, current: false },
+    { name: 'Productos', href: '/products', icon: CircleStackIcon, current: location.pathname==='/products' ? true:false },
     { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
   ]
 

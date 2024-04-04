@@ -5,9 +5,9 @@ import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import { get_product } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
-import { CheckIcon, PaperClipIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition, Disclosure } from '@headlessui/react'
 
 
 function EditProduct({
@@ -24,7 +24,6 @@ function EditProduct({
     const slug = params.slug
 
     useEffect(() => {
-        window.scrollTo(0, 0)
         get_product(slug)
     }, []);
 
@@ -36,6 +35,14 @@ function EditProduct({
     const [updateCategory, setUpdateCategory] = useState(false)
     const [updateDescription, setUpdateDescription] = useState(false)
     const [updatePrice, setUpdatePrce] = useState(false)
+
+    const [updatePhoto, setUpdatePhoto] = useState(false)
+    const [previewImage, setPreviewImage] = useState()
+    const [photo, setPhoto] = useState(null)
+
+    const [updateOptions, setUpdateOptions] = useState(false)
+
+
 
     const [selectedCategory, setSelectedCategory] = useState('');
     // Función para manejar el cambio de categoría seleccionada
@@ -70,6 +77,7 @@ function EditProduct({
         setUpdateDescription(false)
         setUpdateCategory(false)
         setUpdatePrce(false)
+        setUpdatePhoto(false)
     }
 
 
@@ -80,7 +88,6 @@ function EditProduct({
         const config = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
                 'Authorization': `JWT ${localStorage.getItem('access')}`
             }
         };
@@ -233,54 +240,122 @@ function EditProduct({
 
     };
 
+    const fileSelectedHandler = (e) => {
+        const file = e.target.files[0]
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = (e) => {
+            setPreviewImage(reader.result);
+        };
+        setPhoto(file)
+    }
+
+    const onSubmitPhotos = e => {
+        e.preventDefault()
+
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const formData = new FormData()
+        formData.append('slug', slug)
+        formData.append('photo', photo, photo.name)
+
+        console.log(formData)
+
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/edit-product-photo/`,
+                    formData,
+                    config)
+
+                if (res.status === 200) {
+                    setLoading(false)
+                    resetStates()
+                    setPreviewImage(null);
+                    setPhoto(null);
+                    get_product(slug)
+                } else {
+                    setLoading(false)
+                    resetStates()
+                }
+            } catch (err) {
+                setLoading(false)
+                resetStates()
+                alert('Error al enviar', err)
+            }
+        }
+        fetchData()
+
+
+
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+    
+        // Eliminar puntos y comas del valor del precio
+        const cleanedValue = value.replace(/[^\d]/g, '');
+    
+        setFormData({
+          ...formData,
+          [name]: cleanedValue
+        });
+      };
+    
+
+
+
 
     return (
         <Layout>
             {loading_product ? <Rings width={30} height={30} color="#fff" radius="6" />
                 :
                 <>
-                    <div className=" px-4 py-5 sm:px-6">
-                        <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
-                            <div className="ml-4 mt-4">
+                    <div className="px-4 py-5 sm:px-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-between">
+                            <div className="mt-4 sm:w-full md:w-auto">
                                 <h3 className="text-3xl font-medium leading-6 text-gray-300">
-                                    {product && product.name}  - {product && product.category.name}
+                                    {product && product.name} - {product && product.category.name}
                                 </h3>
                                 <p className="mt-1 max-w-2xl text-sm text-gray-200">
                                     {product && product.is_active ? <>Activad@</> : <>Desactivad@</>}
+                                    3:29:49
                                 </p>
                             </div>
 
-                            <div className="ml-4 mt-4 flex-shrink-0">
+                            <div className="mt-4 sm:ml-4 flex-shrink-0 flex flex-wrap">
                                 <button
                                     onClick={e => setOpenDelete(true)}
-                                    className="relative mx-1 inline-flex items-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
                                 >
                                     Elimiar Producto
                                 </button>
                                 <a
                                     href={`${import.meta.env.VITE_REACT_APP_API_URL}/${product && product.slugProduct}/detail`}
                                     target="_blank"
-                                    className="relative mx-1 inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                 >
                                     Ver producto
                                 </a>
                                 <button
                                     onClick={e => setOpen(true)}
-                                    className="relative mx-1 inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                 >
-                                    {
-                                        product && product.is_active ?
-                                            <>Desactivar Producto</> : <>Publicarlo en mi tienda</>
-                                    }
+                                    {product && product.is_active ? <>Desactivar Producto</> : <>Publicarlo en mi tienda</>}
                                 </button>
                             </div>
                         </div>
                     </div>
 
+
                     <>
-                        {/* <div>
-                            <h3 className="text-lg font-medium leading-6 text-gray-300">Información de tu producto 2:28:30</h3>
-                        </div> */}
+
                         <div className="mt-5 border-t border-gray-200">
                             <dl className="divide-y divide-gray-200">
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
@@ -296,6 +371,7 @@ function EditProduct({
                                                         type='text'
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
+                                                        placeholder='Nuevo nombre'
                                                     />
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
@@ -304,12 +380,12 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-                                                        <div
+                                                        <button
                                                             onClick={() => setUpdateName(false)}
-                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </div>
+                                                        </button>
                                                     </div>
                                                 </form>
 
@@ -365,12 +441,12 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-                                                        <div
+                                                        <button
                                                             onClick={() => setUpdateCategory(false)}
-                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </div>
+                                                        </button>
                                                     </div>
                                                 </form>
 
@@ -402,6 +478,7 @@ function EditProduct({
                                                         type='text'
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
+                                                        placeholder='Nueva descripción'
                                                     />
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
@@ -410,12 +487,12 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-                                                        <div
+                                                        <button
                                                             onClick={() => setUpdateDescription(false)}
-                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </div>
+                                                        </button>
                                                     </div>
                                                 </form>
 
@@ -441,11 +518,18 @@ function EditProduct({
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
                                                     <input
                                                         value={price}
-                                                        onChange={e => onChange(e)}
+                                                        onChange={e => {
+                                                            const { value } = e.target;
+                                                            const cleanedValue = value.replace(/[^\d]/g, ''); // Eliminar todos los caracteres que no sean números
+                                                            onChange({ target: { name: 'price', value: cleanedValue } }); // Llamar a la función onChange con el valor limpio
+                                                        }}
                                                         name='price'
                                                         type='text'
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
+                                                        placeholder='Nuevo precio'
+                                                       
+
                                                     />
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
@@ -454,12 +538,12 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-                                                        <div
+                                                        <button
                                                             onClick={() => setUpdatePrce(false)}
-                                                            className="cursor-pointer text-azul_corp font-medium hover:text-indigo-500"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </div>
+                                                        </button>
                                                     </div>
                                                 </form>
 
@@ -478,94 +562,128 @@ function EditProduct({
                                     </dd>
                                 </div>
 
-                                {/* <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">Attachments</dt>
-                                    <dd className="mt-1 text-sm text-gray-300 sm:col-span-2 sm:mt-0">
-                                        <ul role="list" className="divide-y divide-gray-200 rounded-md border border-gray-200">
-                                            <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                                                <div className="flex w-0 flex-1 items-center">
-                                                    <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                                                    <span className="ml-2 w-0 flex-1 truncate">resume_back_end_developer.pdf</span>
-                                                </div>
-                                                <div className="ml-4 flex flex-shrink-0 space-x-4">
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <span className="text-gray-300" aria-hidden="true">
-                                                        |
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                                                <div className="flex w-0 flex-1 items-center">
-                                                    <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                                                    <span className="ml-2 w-0 flex-1 truncate">coverletter_back_end_developer.pdf</span>
-                                                </div>
-                                                <div className="ml-4 flex flex-shrink-0 space-x-4">
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <span className="text-gray-300" aria-hidden="true">
-                                                        |
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-white font-medium text-azul_corp hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        </ul>
+
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200">Opciones al producto</dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        {updateOptions ? (
+                                            <>
+                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                    <input
+                                                        name='option'
+                                                        type='text'
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        required
+                                                        placeholder='Nueva opción'
+                                                    />
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setUpdateOptions(false)}
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                    </div>
+                                                </form>
+
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="flex-grow">agregar aca todas las opciones de este producto</span>
+                                                <button
+                                                    onClick={() => setUpdateOptions(true)}
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"                                                >
+                                                    <PlusIcon width={20} height={20} color="#fff" radius="6" />
+
+                                                </button>
+                                            </>
+                                        )}
                                     </dd>
-                                </div> */}
+                                </div>
+
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
+                                        {updatePhoto ? (
+                                            <>
+                                                {previewImage && (
+                                                    <img src={previewImage} className="object-cover w-80 h-72 p-4" alt="Preview" />
+                                                )}
+                                                <form onSubmit={onSubmitPhotos} className="flex w-full items-center">
+                                                    <input
+                                                        type="file"
+                                                        name="photo"
+                                                        onChange={fileSelectedHandler}
+                                                        className="w-full py-3 px-2 border border-gray-300 rounded-lg"
+                                                        required
+                                                    />
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setUpdatePhoto(false);
+                                                                setPreviewImage(null);
+                                                                setPhoto(null);
+                                                            }}
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    onClick={() => setUpdatePhoto(true)}
+                                                    className="flex-grow  flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                >
+                                                    <PhotoIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             </dl>
                         </div>
-                    </>
-
-                    {
-                        product.images.length > 0 ? <>
+                        <div className="bg-stone-900 text-white p-4 rounded-md">
+                            <h2 className="text-lg font-semibold mb-2">Galería de tu producto</h2>
                             <div className="grid grid-cols-3 gap-4">
-                                {product.images.map((image, index) => (
-                                    <div key={index} className="relative">
-                                        <img
-                                            className="w-full h-auto object-cover rounded-md shadow-md"
-                                            src={import.meta.env.VITE_REACT_APP_API_URL + image.photo}
-                                            alt={image.alt}
-                                        />
-                                        <button
-                                            className="absolute top-2 right-2 bg-gray-800 text-gray-800 rounded-full p-2 shadow-md hover:bg-gray-200 focus:outline-none transition duration-300 ease-in-out"
-                                            onClick={() => handleImageSelect(image.id)}
-                                        >
-                                            <TrashIcon width={20} height={20} color="#fff" radius="6" />
-                                        </button>
+                                {product && product.images.length > 0 ? (
+                                    product.images.map((image, index) => (
+                                        <div key={index} className="relative">
+                                            <img
+                                                className="w-full h-auto object-cover rounded-md shadow-md"
+                                                src={import.meta.env.VITE_REACT_APP_API_URL + image.photo}
+                                                alt={image.alt}
+                                            />
+                                            <button
+                                                className="absolute top-2 right-2 bg-gray-800 text-gray-800 rounded-full p-2 shadow-md hover:bg-gray-200 focus:outline-none transition duration-300 ease-in-out"
+                                                onClick={() => handleImageSelect(image.id)}
+                                            >
+                                                <TrashIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-gray-200 rounded-md p-4">
+                                        <p className="text-center text-gray-300 mb-2">El producto no tiene imágenes</p>
                                     </div>
-                                ))}
+                                )}
                             </div>
-                        </> : <>
-                            <div className="bg-gray-800 text-gray-200 rounded-md p-4">
-                                <p className="text-center text-gray-300 mb-2">El producto no tiene imagenes</p>
-                                <p className="text-center text-gray-300 mb-4">Agrega para mostrarlo al publico</p>
-                            </div>
-                        </>
-                    }
+                        </div>
 
-
-
-
-
+                    </>
                 </>}
 
 
