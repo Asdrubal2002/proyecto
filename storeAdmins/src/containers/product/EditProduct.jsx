@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
 import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
-import { get_product } from '../../redux/actions/products/products';
+import { get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
 import { CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
@@ -14,7 +14,9 @@ function EditProduct({
     get_product,
     loading_product,
     product,
-    categories
+    categories,
+    get_products_options,
+    options
 }) {
 
 
@@ -25,6 +27,7 @@ function EditProduct({
 
     useEffect(() => {
         get_product(slug)
+        get_products_options(slug)
     }, []);
 
 
@@ -52,20 +55,23 @@ function EditProduct({
 
     const navigate = useNavigate()
 
-
-
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         category: '',
-        price: ''
+        price: '',
+        optionPr: '',
+        quantity: ''
+
     })
 
     const {
         name,
         description,
         category,
-        price
+        price,
+        optionPr,
+        quantity
     } = formData
 
     const onChange = (e) => {
@@ -78,9 +84,8 @@ function EditProduct({
         setUpdateCategory(false)
         setUpdatePrce(false)
         setUpdatePhoto(false)
+        setUpdateOptions(false)
     }
-
-
 
     const onSubmit = e => {
         e.preventDefault()
@@ -98,8 +103,6 @@ function EditProduct({
         formData.append('description', description)
         formData.append('category', selectedCategory)
         formData.append('price', price)
-
-
 
         const fetchData = async () => {
             setLoading(true)
@@ -124,7 +127,6 @@ function EditProduct({
         }
         fetchData()
     }
-
 
     const onSubmitStatus = e => {
         e.preventDefault()
@@ -298,19 +300,81 @@ function EditProduct({
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-    
+
         // Eliminar puntos y comas del valor del precio
         const cleanedValue = value.replace(/[^\d]/g, '');
-    
+
         setFormData({
-          ...formData,
-          [name]: cleanedValue
+            ...formData,
+            [name]: cleanedValue
         });
-      };
-    
+    };
+
+    const onSubmitOption = e => {
+        e.preventDefault()
+
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const formData = new FormData()
+        formData.append('value', optionPr)
+        formData.append('quantity', quantity)
+        formData.append('product', product.id)
 
 
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-option/`,
+                    formData,
+                    config)
 
+                if (res.status === 201) {
+                    setLoading(false)
+                    resetStates()
+                    get_products_options(slug)
+
+                } else {
+                    setLoading(false)
+                    resetStates()
+                }
+            } catch (err) {
+                setLoading(false)
+                resetStates()
+            }
+        }
+        fetchData()
+    }
+
+    const handleDeleteOption = (optionId) => {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+                const res = await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/delete-option/${optionId}`,
+                    config)
+
+                if (res.status === 204) {
+                    setLoading(false)
+                    get_products_options(slug)
+                } else {
+                    setLoading(false)
+                }
+            } catch (err) {
+                setLoading(false)
+            }
+        }
+        fetchData()
+    };
 
     return (
         <Layout>
@@ -528,7 +592,7 @@ function EditProduct({
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nuevo precio'
-                                                       
+
 
                                                     />
                                                     <div className="flex items-center space-x-2 ml-4">
@@ -564,17 +628,28 @@ function EditProduct({
 
 
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">Opciones al producto</dt>
+                                    <dt className="text-sm font-medium text-gray-200">Opciones del producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updateOptions ? (
                                             <>
-                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                <form onSubmit={e => onSubmitOption(e)} className="flex w-full">
                                                     <input
-                                                        name='option'
+                                                        value={optionPr}
+                                                        onChange={e => onChange(e)}
+                                                        name='optionPr'
                                                         type='text'
-                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        className="mt-1 mx-2 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nueva opción'
+                                                    />
+                                                    <input
+                                                        value={quantity}
+                                                        onChange={e => onChange(e)}
+                                                        name='quantity'
+                                                        type='number'
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        required
+                                                        placeholder='Unidades para esta opción.'
                                                     />
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
@@ -595,7 +670,26 @@ function EditProduct({
                                             </>
                                         ) : (
                                             <>
-                                                <span className="flex-grow">agregar aca todas las opciones de este producto</span>
+                                                <span className="flex-grow">
+                                                    {options.length === 0 ? (
+                                                        <p className="text-gray-300">No hay opciones disponibles</p>
+                                                    ) : (
+                                                        options.map((option, index) => (
+                                                            <div key={index} className="inline-block bg-gray-800 text-white rounded-lg px-4 py-2 m-1 hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-400">
+                                                                <span className="flex items-center">
+                                                                    <span className="mr-2">{option.option.value} : </span>
+                                                                    <span>{option.quantity} Unidades</span>
+                                                                    <button className="ml-2 focus:outline-none">
+                                                                        <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option.id)} />
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+
+                                                        ))
+                                                    )}
+                                                </span>
+
+
                                                 <button
                                                     onClick={() => setUpdateOptions(true)}
                                                     className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"                                                >
@@ -839,7 +933,6 @@ function EditProduct({
                 </Dialog>
             </Transition.Root>
 
-
         </Layout>
 
     )
@@ -848,9 +941,11 @@ function EditProduct({
 const mapStateToProps = state => ({
     loading_product: state.Products.loading_product,
     product: state.Products.product,
-    categories: state.Product_category.categories
+    categories: state.Product_category.categories,
+    options: state.Products.options
 })
 
 export default connect(mapStateToProps, {
-    get_product
+    get_product,
+    get_products_options
 })(EditProduct)

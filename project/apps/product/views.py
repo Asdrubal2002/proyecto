@@ -143,23 +143,40 @@ class OptionListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateOptionAPIView(APIView):
+    permission_classes = (CanEditProduct,)
+
     def post(self, request, *args, **kwargs):
         # Obtener los datos de la solicitud
-        data = request.data
+        data = request.data.copy() 
 
         # Agregar el usuario autenticado como administrador de la tienda
         data["store"] = request.user.store.id
-
-        print(data["store"])
 
         # Crear un serializador con los datos de la solicitud
         serializer = CreateOptionSerializer(data=data)
 
         if serializer.is_valid():
             # Guardar la opción en la base de datos
-            serializer.save()
+            option = serializer.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Obtener el producto y la opción relacionados
+            product_id = data.get('product', None)
+            option_id = option.id
+
+            # Verificar si se proporcionó un ID de producto válido
+            if product_id is None:
+                return Response({"error": "ID de producto no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Obtener el valor de quantity
+            quantity = data.get('quantity', 0)
+
+            # Crear una instancia de ProductOption y guardarla en la base de datos
+            product_option = ProductOption.objects.create(product_id=product_id, option_id=option_id, quantity=quantity)
+            
+            # Obtener la representación serializada de la opción creada
+            serialized_option = OptionSerializer(option).data
+
+            return Response(serialized_option, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -295,15 +312,34 @@ class CreateProductView(APIView):
         # Retornar una respuesta exitosa
         return Response({"success": "Producto creado exitosamente"})
 
-
-
 class ProductOptionsView(APIView):
     permission_classes = (CanEditProduct,)
 
-    def get(self, request, format=None):
-        user = self.request.user
-        data = self.request.data
+    def get(self, request, slug, format=None):
+        # Buscar el producto por su slug
+        try:
+            product = Product.objects.get(slugProduct=slug)
+        except Product.DoesNotExist:
+            return Response({"error": "Producto no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Obtener todas las opciones relacionadas con el producto
+        product_options = ProductOption.objects.filter(product=product)
+
+        # Serializar las opciones del producto
+        serializer = ProductOptionSerializer(product_options, many=True)
+
+        return Response({"options": serializer.data}, status=status.HTTP_200_OK)
+        
+class DeleteProductOptionView(APIView):
+    def delete(self, request, option_id, format=None):
+        try:
+            option = ProductOption.objects.get(id=option_id)
+            option.delete()
+            return Response({"message": "Option deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except ProductOption.DoesNotExist:
+            return Response({"error": "Option not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

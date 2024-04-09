@@ -14,7 +14,8 @@ from .views import (
     DeletePhotoProductView,
     EditProductPhotosView,
     CreateProductView,
-    ProductOptionsView
+    ProductOptionsView,
+    DeleteProductOptionView
 )
 
 urlpatterns = [
@@ -43,6 +44,9 @@ urlpatterns = [
 
 
     path('options/<slug>', ProductOptionsView.as_view()),
+
+    path('delete-option/<option_id>', DeleteProductOptionView.as_view()),
+
 
 
 

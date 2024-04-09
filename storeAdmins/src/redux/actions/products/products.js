@@ -6,7 +6,9 @@ import {
     REMOVE_PRODUCT_FAIL_LOADING,
     SET_PRODUCT_SUCCESS_LOADING,
     GET_PRODUCT_OPTIONS_SUCCESS,
-    GET_PRODUCT_OPTIONS_FAIL
+    GET_PRODUCT_OPTIONS_FAIL,
+    GET_PRODUCTS_OPTIONS_SUCCESS,
+    GET_PRODUCTS_OPTIONS_FAIL
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -127,7 +129,7 @@ export const get_product = (slugProduct) => async dispatch => {
     }
 }
 
-export const get_products_options = () => async dispatch => {
+export const get_products_options = (slugProduct) => async dispatch => {
     dispatch({
         type: SET_PRODUCTS_LOADING
     });
@@ -140,16 +142,16 @@ export const get_products_options = () => async dispatch => {
     };
 
     try {
-        const res = await axios.get(`${apiUrl}/api/product/user-products/`, config);
+        const res = await axios.get(`${apiUrl}/api/product/options/${slugProduct}`, config);
 
         if (res.status === 200) {
             dispatch({
-                type: GET_PRODUCTS_SUCCESS,
+                type: GET_PRODUCTS_OPTIONS_SUCCESS,
                 payload: res.data
             });
         } else {
             dispatch({
-                type: GET_PRODUCTS_FAIL
+                type: GET_PRODUCTS_OPTIONS_FAIL
             });
         }
         dispatch({
@@ -157,10 +159,11 @@ export const get_products_options = () => async dispatch => {
         });
     } catch (err) {
         dispatch({
-            type: GET_PRODUCTS_FAIL
+            type: GET_PRODUCTS_OPTIONS_FAIL
         });
         dispatch({
             type: REMOVE_PRODUCTS_LOADING
         });
     }
 }
+

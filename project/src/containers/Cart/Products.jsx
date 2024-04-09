@@ -151,8 +151,8 @@ function Products({
                   {shipping.id === shipping_id && <CheckIcon className="h-3 w-3 m-0.5" />}
                 </div>
                 <label htmlFor={`shipping_option_${index}`} className='text-xs text-gray-600'>
-  <span className="font-semibold">{shipping.name}</span> - ${shipping.price} - ({shipping.time_to_delivery} dias)  - {shipping.additional_notes}
-</label> 
+                  <span className="font-semibold">{shipping.name}</span> - ${shipping.price} - ({shipping.time_to_delivery} dias)  - {shipping.additional_notes}
+                </label>
               </div>
             ))}
           </div>
