@@ -8,7 +8,7 @@ import Store from "./stores/store";
 import Profile from "./profile/profile";
 import Product_category from "./categories_product/Product_categories";
 import Products from "./products/products";
-
+import Shippings_store from "./shippings/shippings";
 
 export default combineReducers ({
     Alert,
@@ -18,5 +18,6 @@ export default combineReducers ({
     Cities,
     Store,
     Product_category,
-    Products
+    Products,
+    Shippings_store
 })

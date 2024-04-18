@@ -26,7 +26,10 @@ class WishListView(APIView):
         user = request.user
 
         # Obtener todos los productos en la lista de deseos del usuario actual
-        wish_list_products = WishList.objects.filter(user=user)
+        wish_list_products = WishList.objects.filter(user=user, 
+                                                     product__is_active=True, # Filtrar solo productos activos
+                                                     product__category__store__is_active=True,  # Filtrar solo productos de tiendas activas
+                                                     )
 
         # Serializar los productos de la lista de deseos
         serializer = WishListSerializer(wish_list_products, many=True)
@@ -95,7 +98,7 @@ class WishListStoresView(APIView):
         user = request.user
 
         # Obtener todos los productos en la lista de deseos del usuario actual
-        wish_list_stores = WishListStore.objects.filter(user=user)
+        wish_list_stores = WishListStore.objects.filter(user=user, store__is_active=True)
 
         # Serializar los productos de la lista de deseos
         serializer = WishListStoreSerializer(wish_list_stores, many=True)

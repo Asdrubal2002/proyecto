@@ -8,11 +8,12 @@ import {
     DELETE_CATEGORY_SUCCESS,
     DELETE_CATEGORY_FAIL,
     CHANGE_STATUS_SUCCESS,
-    CHANGE_STATUS_FAIL
+    CHANGE_STATUS_FAIL,
+    UPDATE_CATEGORY_SUCCESS,
+    UPDATE_CATEGORY_FAIL
 
 } from "../../actions/categories_product/types";
 
-GET_CATEGORIES_SUCCESS
 
 const initialState = {
     categories: null,
@@ -72,6 +73,18 @@ export default function Product_category(state = initialState, action) {
             return {
                 ...state
             }
+
+
+        case UPDATE_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                categories: payload.categories
+            }
+        case UPDATE_CATEGORY_FAIL:
+            return {
+                ...state
+            }
+
 
 
         default:

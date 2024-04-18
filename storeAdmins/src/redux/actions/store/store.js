@@ -100,7 +100,6 @@ export const get_user_store = () => async dispatch => {
     dispatch({
         type: SET_LOADED_STORE
     });
-    console.log("hola")
     if (localStorage.getItem('access')) {
         const config = {
             headers: {

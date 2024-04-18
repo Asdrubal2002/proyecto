@@ -36,8 +36,6 @@ export const check_authenticated = () => async (dispatch) => {
             token: localStorage.getItem("access"),
         });
 
-        console.log("legan el token", body)
-
         try {
             const res = await axios.post(
                 `${apiUrl}/auth/jwt/verify/`,

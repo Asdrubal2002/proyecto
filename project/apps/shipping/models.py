@@ -16,6 +16,8 @@ class Shipping(models.Model):
         MaxValueValidator(1000000)  # Define el límite superior según tus necesidades
     ])    
     additional_notes = models.CharField(max_length=200, blank=True, null=True)
+    is_active = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.name

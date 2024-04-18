@@ -14,6 +14,8 @@ import Categories from './containers/categories/Categories'
 
 import EditProduct from './containers/product/EditProduct'
 
+import Shippings from './containers/shipping/Shippings'
+
 function AnimatedRoutes() {
   return (
 
@@ -34,6 +36,9 @@ function AnimatedRoutes() {
               <Route exact path='/categories' element={<Categories />} />
 
               <Route exact path='/product/:slug' element={<EditProduct />} />
+
+              <Route exact path='/shipping' element={<Shippings />} />
+
 
 
 

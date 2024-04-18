@@ -4,12 +4,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from django.db.models import Q
+from django.core.files.base import ContentFile
 
 
 from apps.store.models import Store
 from apps.store.serializers import StoreSerializer, CreateStoreSerializer
 from apps.store_category.models import Category
 from django.shortcuts import get_object_or_404
+from django.core.files.storage import default_storage
 
 from .pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
 from rest_framework.permissions import IsAuthenticated, BasePermission
@@ -17,8 +19,8 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
-
+from rest_framework.parsers import MultiPartParser, FormParser
+from .permissions import CanEditStore
 # Create your views here.
 
 
@@ -34,7 +36,6 @@ class StoreDetailview(APIView):
 
         # Devolver la respuesta serializada
         return Response({"store": store_serialized.data}, status=status.HTTP_200_OK)
-
 
 class ListStoresView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -80,7 +81,6 @@ class ListStoresView(APIView):
                 {"error": "No stores to list"}, status=status.HTTP_404_NOT_FOUND
             )
 
-
 class ListSearchView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -89,15 +89,13 @@ class ListSearchView(APIView):
             slug = request.query_params.get("c")
             search = request.query_params.get("s")
 
-            print(slug, search)
-
             if len(search) == 0:
                 search_results = Store.objects.order_by("likes").all()
             else:
-                search_results = Store.objects.filter(
+                search_results = Store.objects.order_by("-likes").filter(
                     Q(description__icontains=search)
                     | Q(name__icontains=search)
-                    | Q(location__icontains=search)
+                    | Q(location__icontains=search),  is_active=True
                 )
 
             if len(slug) == 0:
@@ -115,7 +113,7 @@ class ListSearchView(APIView):
 
             category = Category.objects.get(slug=slug)
 
-            search_results = search_results.order_by("-likes").filter(category=category)
+            search_results = search_results.order_by("-likes").filter(category=category, is_active=True)
 
             paginator = LargeSetPagination()
             results = paginator.paginate_queryset(search_results, request)
@@ -125,7 +123,6 @@ class ListSearchView(APIView):
             return Response(
                 {"error": "No stores found"}, status=status.HTTP_404_NOT_FOUND
             )
-
 
 class ListRelatedView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -168,7 +165,6 @@ class ListRelatedView(APIView):
             return Response(
                 {"error": "No related stores found"}, status=status.HTTP_200_OK
             )
-
 
 class ListStoreByCategoryView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -219,12 +215,10 @@ class ListStoreByCategoryView(APIView):
                 {"error": "No stores found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-
 class IsSellerOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         # Implementa la lógica para verificar si el usuario es un vendedor o no
         return request.user.is_authenticated and request.user.is_seller
-
 
 class CreateStoreAPIView(APIView):
     permission_classes = [IsAuthenticated, IsSellerOrReadOnly]
@@ -262,7 +256,6 @@ class CreateStoreAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserStoreAPIView(APIView):
     def get(self, request, *args, **kwargs):
         # Obtener el usuario autenticado
@@ -281,3 +274,57 @@ class UserStoreAPIView(APIView):
                 "El usuario no tiene una tienda asociada",
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+class EditStoreLogoView(APIView):
+    permission_classes = (CanEditStore,)
+
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+
+        # Verifica si se ha enviado la imagen del logo
+        if 'logo' in data:
+            logo_file = data['logo']
+
+            # Obtiene el objeto Store del usuario autenticado
+            store = user.store
+
+            # Elimina el logo existente, si lo hay
+            if store.logo:
+                default_storage.delete(store.logo.path)
+
+            # Guarda la nueva imagen del logo en la ruta personalizada definida en el modelo
+            store.logo.save(logo_file.name, logo_file, save=True)
+
+            return Response({"success": "Logo uploaded"})
+        else:
+            return Response({"error": "Logo image is required"})
+
+
+class EditStoreBannerView(APIView):
+    permission_classes = (CanEditStore,)
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+
+        # Verifica si se ha enviado la imagen del banner
+        if 'banner' in data:
+            banner_file = data['banner']
+
+            # Obtiene el objeto Store del usuario autenticado
+            store = user.store
+
+            # Elimina el banner existente, si lo hay
+            if store.banner:
+                default_storage.delete(store.banner.path)
+
+            # Guarda la nueva imagen del banner en la ruta personalizada definida en el modelo
+            store.banner.save(banner_file.name, banner_file, save=True)
+
+            return Response({"success": "Banner uploaded"})
+        else:
+            return Response({"error": "Banner image is required"})

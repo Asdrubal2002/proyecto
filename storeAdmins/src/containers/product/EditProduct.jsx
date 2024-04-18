@@ -388,11 +388,9 @@ function EditProduct({
                                     {product && product.name} - {product && product.category.name}
                                 </h3>
                                 <p className="mt-1 max-w-2xl text-sm text-gray-200">
-                                    {product && product.is_active ? <>Activad@</> : <>Desactivad@</>}
-                                    3:29:49
+                                    {product && product.is_active ? <>Activado</> : <>Desactivado</>}
                                 </p>
                             </div>
-
                             <div className="mt-4 sm:ml-4 flex-shrink-0 flex flex-wrap">
                                 <button
                                     onClick={e => setOpenDelete(true)}
@@ -416,10 +414,7 @@ function EditProduct({
                             </div>
                         </div>
                     </div>
-
-
                     <>
-
                         <div className="mt-5 border-t border-gray-200">
                             <dl className="divide-y divide-gray-200">
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
@@ -471,6 +466,9 @@ function EditProduct({
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Categoria de tu producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+
+
+
                                         {updateCategory ? (
                                             <>
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
@@ -671,10 +669,10 @@ function EditProduct({
                                         ) : (
                                             <>
                                                 <span className="flex-grow">
-                                                    {options.length === 0 ? (
+                                                    {options && options.length === 0 ? (
                                                         <p className="text-gray-300">No hay opciones disponibles</p>
                                                     ) : (
-                                                        options.map((option, index) => (
+                                                        options && options.map((option, index) => (
                                                             <div key={index} className="inline-block bg-gray-800 text-white rounded-lg px-4 py-2 m-1 hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-400">
                                                                 <span className="flex items-center">
                                                                     <span className="mr-2">{option.option.value} : </span>

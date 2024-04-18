@@ -10,6 +10,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('auth/', include('djoser.social.urls')),
+
+    path('api/user/', include('apps.user.urls')),
     
     path('api/profile/', include('apps.user_profile.urls')),
 

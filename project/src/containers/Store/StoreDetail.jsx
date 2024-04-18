@@ -31,6 +31,7 @@ import { add_to_wish_list_store } from "../../redux/actions/wish_list_stores";
 import { get_store_comments, add_comment_store, delete_comment_store, edit_comment_store } from "../../redux/actions/comments_store";
 import CategoriesStoreMobile from "./CategoriesStoreMobile";
 import CommentStore from "../../components/store/CommentStore";
+import { Tab } from '@headlessui/react'
 
 
 function classNames(...classes) {
@@ -67,6 +68,7 @@ const StoreDetail = ({
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('Compartir');
+    const [activeTab, setActiveTab] = useState(0);
 
 
     const handleHeartClick = () => {
@@ -181,7 +183,7 @@ const StoreDetail = ({
                                             {store && store.description}
                                         </DescriptionStore>
                                         {/* Store data */}
-                                        <ContenedorInfoUbication>
+                                        {/* <ContenedorInfoUbication>
                                             <ContenedorInfoUbication1>
                                                 <GlobeAmericasIcon className="h-4 w-4 mr-2 inline-block" />
                                                 {store && store.city.estado_o_departamento.pais.nombre} - {store && store.city.nombre}
@@ -208,7 +210,51 @@ const StoreDetail = ({
                                                     Envios a domicilio
                                                 </ContenedorInfoUbication1>
                                             </> : <></>}
-                                        </ContenedorInfoUbication>
+                                        </ContenedorInfoUbication> */}
+
+                                        <div className="pt-2">
+                                            <Tab.Group>
+                                                <Tab.List className="flex p-2">
+                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer"> Información de la tienda</Tab>
+                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer">Ubicaciones</Tab>
+                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer">Horario de Atención</Tab>
+                                                </Tab.List>
+                                                <Tab.Panels className="p-2">
+                                                    <Tab.Panel className="text-gray-700">
+                                                        <div className="inline-flex text-gray-400 text-sm">
+                                                            <div>
+                                                                <p> <GlobeAmericasIcon className="h-4 w-4 mr-2 inline-block" />{store && store.city.estado_o_departamento.pais.nombre} - {store && store.city.nombre}</p>
+                                                            </div>
+                                                            <div className="ml-4">
+                                                                <p><CurrencyDollarIcon className="h-4 w-4 mr-2 inline-block" />{store && store.city.estado_o_departamento.pais.currency.name} ({store && store.city.estado_o_departamento.pais.currency.typecurrency})</p>
+                                                            </div>
+                                                            <div className="ml-4 ">
+                                                                <p> {store && store.delivery ? <><PaperAirplaneIcon className="h-4 w-4 mr-2 inline-block" />Envios a domicilio</> : <></>}</p>
+                                                            </div>
+                                                        </div>
+                                                    </Tab.Panel>
+                                                    <Tab.Panel className="text-gray-700">
+                                                        <div className="inline-flex text-gray-400 text-sm">
+                                                            <div className="mr-4 ">
+                                                                <p> <MapIcon className="h-4 w-4 mr-2 inline-block" /> {store && store.location}</p>
+                                                            </div>
+
+                                                        </div>
+                                                    </Tab.Panel>
+                                                    <Tab.Panel className="text-gray-700">
+                                                        <div className="inline-flex text-gray-400 text-sm">
+                                                            <div className="mr-4 ">
+                                                                <p>  <ClockIcon className="h-4 w-4 mr-2 inline-block" />{store && store.schedule}</p>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </Tab.Panel>
+                                                </Tab.Panels>
+                                            </Tab.Group>
+                                        </div>
+
+
                                     </ConetenedorProfile2>
                                 </div>
                             </ConetenedorProfile1>
@@ -357,7 +403,7 @@ const StoreDetail = ({
                                                 ) : (
                                                     Array.isArray(comments) && comments.map((comment, index) => (
                                                         <div key={index}>
-                                                            <CommentStore comment={comment} profile={profile} isAuthenticated={isAuthenticated} delete_comment_store={delete_comment_store} edit_comment_store={edit_comment_store}/>
+                                                            <CommentStore comment={comment} profile={profile} isAuthenticated={isAuthenticated} delete_comment_store={delete_comment_store} edit_comment_store={edit_comment_store} />
 
                                                         </div>
                                                     ))

@@ -11,7 +11,8 @@ import {
   XMarkIcon,
   BuildingStorefrontIcon,
   PencilSquareIcon,
-  CircleStackIcon
+  CircleStackIcon,
+  PaperAirplaneIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -29,10 +30,12 @@ export default function ItemsSidebar() {
 
   const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: location.pathname==='/store_admin_home' ? true:false },
-    { name: 'TIenda', href: '/store', icon: BuildingStorefrontIcon, current: location.pathname==='/store' ? true:false  },
+    { name: 'Tienda', href: '/store', icon: BuildingStorefrontIcon, current: location.pathname==='/store' ? true:false  },
     { name: 'Categorias', href: '/categories', icon: PencilSquareIcon, current: location.pathname==='/categories' ? true:false  },
 
     { name: 'Productos', href: '/products', icon: CircleStackIcon, current: location.pathname==='/products' ? true:false },
+    { name: 'Envios', href: '/shipping', icon: PaperAirplaneIcon, current: location.pathname==='/shipping' ? true:false },
+
     { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
   ]
 

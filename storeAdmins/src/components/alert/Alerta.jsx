@@ -10,9 +10,6 @@ function Alerta({ alert }) {
     }
     
     const { alertType, msg } = alert;
-
-    console.log("LLega el alert")
-  
     return (
       <div className={`rounded-md p-4 mx-5 mt-3 shadow-xl fixed`} style={{ backgroundColor: alertType }}>
         

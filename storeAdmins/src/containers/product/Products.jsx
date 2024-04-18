@@ -12,6 +12,12 @@ import Create from '../store/Create'
 import axios from "axios"
 import { get_user_store } from '../../redux/actions/store/store'
 
+import FormCategories from '../categories/FormCategories'
+import { PlusIcon } from '@heroicons/react/24/outline'
+
+
+
+
 function Products({
   get_products,
   get_products_list_page,
@@ -31,6 +37,11 @@ function Products({
   }, []);
 
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({});
+
+  const [description, setDescription] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
+  const [formCanBeSubmitted, setFormCanBeSubmitted] = useState(true);
 
 
   const [open, setOpen] = useState(false)
@@ -45,12 +56,21 @@ function Products({
 
     const formData = new FormData(event.target);
 
-    console.log(
-      formData.get('name'),
-      formData.get('category'),
-      formData.get('description'),
-      formData.get('price')
-    );
+    const data = Object.fromEntries(formData);
+
+    // Validar campos requeridos
+    const errors = {};
+    if (!data.name) errors.name = 'El nombre es obligatorio';
+    if (!data.description) errors.description = 'La descripción es obligatoria';
+    if (!data.category) errors.category = 'La categoría es obligatoria';
+    if (!data.price) errors.price = 'El precio es obligatorio';
+    else if (!/^\d+$/.test(data.price)) errors.price = 'El precio debe ser un número entero sin puntos ni comas';
+
+
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
 
     const config = {
       headers: {
@@ -85,19 +105,26 @@ function Products({
     setOpen(false)
   }
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+    setErrors({ ...errors, [name]: '' });
     // Eliminar puntos y comas del valor del precio
     const cleanedValue = value.replace(/[^\d]/g, '');
-
-    setFormData({
-      ...formData,
-      [name]: cleanedValue
-    });
+    // Asignar el valor limpio al estado
+    setFormData({ ...formData, [name]: cleanedValue });
   };
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    setDescription(value);
 
+    if (value.length > 50) {
+      setDescriptionError('La descripción no debe exceder los 50 caracteres');
+      setFormCanBeSubmitted(false); // Deshabilitar el formulario
+    } else {
+      setDescriptionError('');
+      setFormCanBeSubmitted(true); // Habilitar el formulario
+    }
+  };
 
   return (
     <>
@@ -181,20 +208,35 @@ function Products({
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                  <h2 className="text-lg font-medium leading-6 text-gray-800">crear tu producto</h2>
+
+                  <div className='py-4'>
+                    <Disclosure>
+                      <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-stone-800 rounded-lg text-sm p-4">
+                        <span>Necesito crear una nueva categoría</span>
+                        <PlusIcon className="ml-1" width={10} height={10} color="#fff" radius="6" />
+                      </Disclosure.Button>
+
+                      <Disclosure.Panel className="text-gray-500">
+                        <FormCategories />
+                      </Disclosure.Panel>
+                    </Disclosure>
+                  </div>
 
                   <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <h2 className="text-lg font-medium leading-6 text-gray-800">crea tu producto</h2>
                     <input
                       name='name'
                       type='text'
                       placeholder='Nuevo nombre'
                       className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                      required
+
                     />
+                    {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+
                     <select
                       name='category'
                       className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                      required
+
                     >
                       <option value="">Seleccione una categoría...</option>
                       {categories && categories.map(category => (
@@ -211,21 +253,35 @@ function Products({
                         </React.Fragment>
                       ))}
                     </select>
+                    {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
+
+
                     <textarea
                       name='description'
                       placeholder='Nueva descripción'
                       className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                      required
+                      onChange={handleDescriptionChange}
+
                     />
+                    {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
+                    {descriptionError && <span className="text-red-500 text-sm">{descriptionError}</span>}
+
                     <input
                       name='price'
-                      type='number'
-                      placeholder='Nuevo precio'
-                      className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                      type='text'
+                      placeholder='Precio sin puntos ni comas.'
                       onChange={handleChange}
-                      required
+                      className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                     />
-                    <button type="submit" className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Enviar</button>
+                    {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      disabled={!formCanBeSubmitted}
+                    >Crear producto</button>
+
+
                   </form>
                 </Dialog.Panel>
               </Transition.Child>

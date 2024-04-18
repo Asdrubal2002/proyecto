@@ -1,16 +1,18 @@
 import axios from 'axios';
 
 import {
-    GET_CATEGORIES_SUCCESS, 
-    GET_CATEGORIES_FAIL, 
+    GET_CATEGORIES_SUCCESS,
+    GET_CATEGORIES_FAIL,
     SET_CATEGORY_LOADING,
-    REMOVE_CATEGORY_LOADING, 
+    REMOVE_CATEGORY_LOADING,
     CREATE_CATEGORY_SUCCESS,
     CREATE_CATEGORY_FAIL,
     DELETE_CATEGORY_SUCCESS,
     DELETE_CATEGORY_FAIL,
     CHANGE_STATUS_SUCCESS,
-    CHANGE_STATUS_FAIL
+    CHANGE_STATUS_FAIL,
+    UPDATE_CATEGORY_SUCCESS,
+    UPDATE_CATEGORY_FAIL
 } from './types';
 import { setAlert } from '../alert/alert';
 
@@ -85,7 +87,7 @@ export const create_category = (
                 });
                 dispatch(
                     setAlert('Categoria creada correctamente.', exito));
-            }else if (res.status === 400) {
+            } else if (res.status === 400) {
                 dispatch({
                     type: CREATE_CATEGORY_FAIL
                 });
@@ -105,7 +107,6 @@ export const create_category = (
 
     }
 }
-
 
 export const delete_category = (
     id
@@ -148,8 +149,6 @@ export const delete_category = (
     }
 }
 
-
-
 export const change_status_category = (
     id
 ) => async dispatch => {
@@ -170,14 +169,14 @@ export const change_status_category = (
         });
         console.log(body)
         try {
-            const res = await axios.put(`${apiUrl}/api/product_category/estado_categoria/`, body, config);   
+            const res = await axios.put(`${apiUrl}/api/product_category/estado_categoria/`, body, config);
 
             if (res.status === 200) {
                 dispatch({
                     type: CHANGE_STATUS_SUCCESS,
                     payload: res.data
                 });
-               
+
                 dispatch(
                     setAlert('Haz cambiado el estado de tu categoria correctamente.', exito));
             }
@@ -196,5 +195,57 @@ export const change_status_category = (
 
     }
 }
+
+export const update_category = (
+    id, name, slug, parent
+) => async dispatch => {
+    dispatch({
+        type: SET_CATEGORY_LOADING,
+    });
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const body = JSON.stringify({
+            id, name, slug, parent
+        });
+        try {
+            const res = await axios.put(`${apiUrl}/api/product_category/update_categories_products/`, body, config);
+
+            if (res.status === 200) {
+                dispatch({
+                    type: UPDATE_CATEGORY_SUCCESS,
+                    payload: res.data
+                });
+                dispatch(
+                    setAlert('Categoria actualizada correctamente.', exito));
+            } else if (res.status === 400) {
+                dispatch({
+                    type: UPDATE_CATEGORY_FAIL
+                });
+                dispatch(setAlert("Error en el servidor.", error));
+            }
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        } catch (err) {
+            dispatch({
+                type: UPDATE_CATEGORY_FAIL
+            });
+            dispatch({
+                type: REMOVE_CATEGORY_LOADING,
+            });
+        }
+
+    }
+}
+
+
+
 
 

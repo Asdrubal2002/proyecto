@@ -3,23 +3,35 @@ import Layout from '../../hocs/Layout';
 import LocationForm from './LocationForm';
 import ProfileForm from './ProfileForm';
 import { connect } from 'react-redux';
-import { PencilIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PhotoIcon, XMarkIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Helmet } from 'react-helmet';
 import { get_user_location } from '../../redux/actions/profile';
 import { Navigate } from 'react-router-dom';
 import { Rings } from 'react-loader-spinner';
 import Sidebar from '../Home/Sidebar/Sidebar';
 import Searcher from '../../components/searcher/Searcher';
+import { LetrasPerfil } from './styles/Dashboard';
+import axios from "axios"
+
+
 
 function Dashboard({
     isAuthenticated,
     profile,
     get_user_location,
     location,
+    user
 }) {
     const [showFormLocation, setShowFormLocation] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [updatePhoto, setUpdatePhoto] = useState(false)
+    const [previewImage, setPreviewImage] = useState()
+    const [photo, setPhoto] = useState(null)
+
+    const [loadingS, setLoading] = useState(false)
+
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -28,6 +40,54 @@ function Dashboard({
     }, [isAuthenticated]); // Dependencia añadida al useEffect
 
     if (!isAuthenticated) return <Navigate to="/" />;
+
+
+    const filePhotoSelectedHandler = (e) => {
+        const file = e.target.files[0]
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = (e) => {
+            setPreviewImage(reader.result);
+        };
+        setPhoto(file)
+    }
+
+    const onSubmitPhotos = e => {
+        e.preventDefault()
+
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const formData = new FormData()
+        formData.append('photo', photo, photo.name)
+
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+              const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/user/edit-profile-photo/`,
+                formData,
+                config)
+      
+              if (res.status === 200) {
+                setLoading(false)
+                setPreviewImage(null);
+                setPhoto(null);
+              } else {
+                setLoading(false)
+              }
+            } catch (err) {
+              setLoading(false)
+              alert('Error al enviar', err)
+            }
+      
+          }
+          fetchData()
+    }
 
     return (
         <Layout>
@@ -116,7 +176,71 @@ function Dashboard({
                                             </>
                                         )}
                                     </div>
-                                   
+
+
+
+
+                                    <div className="flex flex-wrap items-center">
+                                        <div className='m-5 relative inline-flex items-center justify-center w-20 h-20 overflow-hidden bg-azul_corp rounded-full' alt="profile Photo">
+                                            {previewImage ? <img className="h-20 w-20 cover" src={previewImage} /> : <>
+                                                {user && user.photo != null ? (
+                                                    <img className="h-20 w-20 cover" src={user && user.photo} />
+                                                ) : (
+                                                    <LetrasPerfil>{user && user.get_first_letters}</LetrasPerfil>
+                                                )}
+                                            </>}
+
+                                        </div>
+
+                                        <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
+                                            <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
+                                                {updatePhoto ? (
+                                                    <>
+                                                        <form onSubmit={onSubmitPhotos} className="flex w-full items-center">
+                                                            <input
+                                                                type="file"
+                                                                name="photo"
+                                                                onChange={filePhotoSelectedHandler}
+                                                                className="w-full py-3 px-2 border border-gray-300 rounded-lg"
+                                                                required
+                                                            />
+                                                            <div className="flex items-center space-x-2 ml-4">
+                                                                <button
+                                                                    type="submit"
+                                                                    className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                                >
+                                                                    <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setUpdatePhoto(false);
+                                                                        setPreviewImage(null);
+                                                                        setPhoto(null);
+                                                                    }}
+                                                                    className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                                >
+                                                                    <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            onClick={() => setUpdatePhoto(true)}
+                                                            className="flex items-center justify-center px-4 py-2 rounded-md bg-neutral-900 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        >
+                                                            <UserCircleIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
+                                                            Actualizar mi foto de perfil
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
                                 </div>
                             </div>
                         )}
@@ -132,7 +256,7 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
     profile: state.Profile.profile,
     location: state.Profile.profile_location,
-
+    user: state.Auth.user
 });
 
 export default connect(mapStateToProps, {

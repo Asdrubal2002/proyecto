@@ -11,7 +11,8 @@ export const get_categories = () => async dispatch => {
 
     const config = {
         headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
         }
     };
     try {
