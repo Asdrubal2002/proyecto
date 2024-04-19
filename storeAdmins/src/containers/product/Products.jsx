@@ -15,9 +15,6 @@ import { get_user_store } from '../../redux/actions/store/store'
 import FormCategories from '../categories/FormCategories'
 import { PlusIcon } from '@heroicons/react/24/outline'
 
-
-
-
 function Products({
   get_products,
   get_products_list_page,
@@ -110,8 +107,7 @@ function Products({
     setErrors({ ...errors, [name]: '' });
     // Eliminar puntos y comas del valor del precio
     const cleanedValue = value.replace(/[^\d]/g, '');
-    // Asignar el valor limpio al estado
-    setFormData({ ...formData, [name]: cleanedValue });
+   
   };
   const handleDescriptionChange = (e) => {
     const value = e.target.value;

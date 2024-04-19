@@ -272,7 +272,7 @@ class UserStoreAPIView(APIView):
         except Store.DoesNotExist:
             return Response(
                 "El usuario no tiene una tienda asociada",
-                status=status.HTTP_404_NOT_FOUND,
+                status=status.HTTP_204_NO_CONTENT,
             )
 
 class EditStoreLogoView(APIView):
@@ -301,7 +301,6 @@ class EditStoreLogoView(APIView):
             return Response({"success": "Logo uploaded"})
         else:
             return Response({"error": "Logo image is required"})
-
 
 class EditStoreBannerView(APIView):
     permission_classes = (CanEditStore,)

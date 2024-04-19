@@ -32,6 +32,8 @@ class StoreSerializer(serializers.ModelSerializer):
             'likes',
             'complaints',
             'city',
+            'get_formatted_created_on',
+            'qr_code'
         ]
 
 class CreateStoreSerializer(serializers.ModelSerializer):

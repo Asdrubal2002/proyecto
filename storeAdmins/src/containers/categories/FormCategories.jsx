@@ -21,10 +21,13 @@ function FormCategories({
 
 }) {
 
-    const [formData, setFormData] = useState({
+    const initialFormData = {
         name: '',
         parent: null
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
+
 
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false)
@@ -101,10 +104,17 @@ function FormCategories({
         setMessageEdit(true)
     };
 
+    // Función para limpiar el formulario
+    const clearFormData = () => {
+        setFormData(initialFormData);
+        setMessageEdit(false)
+    };
 
 
     return (
         <>
+        <>
+        </>
             <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre:</label>
@@ -147,7 +157,19 @@ function FormCategories({
                         Gurdar Categoria
                     </button>
                     <p className='text-center text-red-600 py-2 p-4'>
-                        {messageEdit ?  <PencilSquareIcon className="mr-2" width={20} height={20} color="#DA0000" radius="6" /> : <></>}
+                        {messageEdit ?
+                            <div className='flex'>
+                                <button
+                                    type="button"
+                                    onClick={clearFormData}
+                                    className="inline-flex justify-center "
+                                >
+                                    Cancelar edición de la categoria
+                                    <PencilSquareIcon className="ml-2" width={20} height={20} color="#DA0000" radius="6" />
+
+                                </button>
+                            </div>
+                            : <></>}
                     </p>
                 </div>
 
@@ -156,6 +178,7 @@ function FormCategories({
                 loading ? (
                     <Rings width={20} height={20} color="#fff" radius="6" />
                 ) : (
+                    
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -180,7 +203,7 @@ function FormCategories({
                             <tbody>
                                 {categories && categories.map((category, index) => (
                                     <tr key={category.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="w-4 p-4">{index + 1}</td> {/* Aquí se muestra la numeración */}
+                                        <td className="w-4 p-4">{index + 1}</td>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {category.name}
                                         </td>
@@ -197,14 +220,17 @@ function FormCategories({
                                         </td>
                                     </tr>
                                 ))}
-                                {!categories && (
+                                {(!categories || categories.length === 0) && (
                                     <tr>
-                                        <td colSpan="5">No hay categorias en tu tienda</td>
+                                        <td colSpan="5">No hay categorías en tu tienda</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
+
                     </div>
+                    
+                    
                 )
             }
 
@@ -252,10 +278,10 @@ function FormCategories({
                                     <div className="mt-5 sm:mt-6">
                                         <button
                                             type="button"
-                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:text-sm"
                                             onClick={() => handleDelete(categoryIdToDelete)}
                                         >
-                                            Borrar
+                                            Eliminar categoria
                                         </button>
                                     </div>
                                 </Dialog.Panel>

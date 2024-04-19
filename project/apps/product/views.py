@@ -25,7 +25,7 @@ from django.db.models import Prefetch
 from .permissions import CanEditProduct
 
 from rest_framework.parsers import MultiPartParser, FormParser
-from datetime import datetime
+from django.utils import timezone
 
 # Create your views here.
 
@@ -306,7 +306,7 @@ class CreateProductView(APIView):
             category_id=category_id,
             description=description,
             price=price,
-            date_created=datetime.now()
+            date_created=timezone.now()  # Utilizar timezone.now() en lugar de datetime.now()
         )
 
         # Retornar una respuesta exitosa

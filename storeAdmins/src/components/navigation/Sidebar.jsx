@@ -138,14 +138,19 @@ export default function Sidebar({ children, logout, profile, user }) {
 
 
                   <Menu as="div" className="relative inline-block text-left justify-center items-center">
-                    <Menu.Button className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-azul_corp rounded-full">
-                      {user && user.photo != null ? (
-                        <img className="h-10 w-10 cover" src={user.photo} alt="User profile" />
-                      ) : (
-                        <div className="h-10 w-10 flex items-center justify-center">
-                          <LetrasPerfil>{user && user.get_first_letters}</LetrasPerfil>
-                        </div>
-                      )}
+                    <Menu.Button
+                      onClick={() => setOpen(true)}
+                      className="group block w-full flex-shrink-0 relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-azul_corp rounded-full focus:outline-none cursor-pointer"
+                    >
+                      <div className="flex items-center">
+                        {user && user.photo != null ? (
+                          <img className="h-10 w-10 cover" src={user.photo} alt="User profile" />
+                        ) : (
+                          <div className="h-10 w-10 flex items-center justify-center">
+                            <LetrasPerfil>{user && user.get_first_letters}</LetrasPerfil>
+                          </div>
+                        )}
+                      </div>
                     </Menu.Button>
                   </Menu>
 

@@ -62,12 +62,12 @@ class CategoryListViewAdmin(APIView):
         store = user.store
 
         # Obtener las categorías asociadas a la tienda del usuario autenticado
-        categories = Category.objects.filter(store=store).order_by("-created_at")
+        categories = Category.objects.filter(store=store)
 
         if not categories:
             return Response(
                 {"message": "No hay categorías asociadas a esta tienda."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=status.HTTP_204_NO_CONTENT,
             )
 
         # Serializar las categorías

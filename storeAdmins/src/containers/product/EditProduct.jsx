@@ -8,12 +8,15 @@ import { Rings } from 'react-loader-spinner';
 import { CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
+import { get_categories } from '../../redux/actions/categories_product/categories_product';
+import FormCategories from '../categories/FormCategories';
 
 
 function EditProduct({
     get_product,
     loading_product,
     product,
+    get_categories,
     categories,
     get_products_options,
     options
@@ -27,6 +30,7 @@ function EditProduct({
 
     useEffect(() => {
         get_product(slug)
+        get_categories()
         get_products_options(slug)
     }, []);
 
@@ -471,8 +475,9 @@ function EditProduct({
 
                                         {updateCategory ? (
                                             <>
+                                            {/* <FormCategories/> */}
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
-                                                    <select
+                                                <select
                                                         value={selectedCategory}
                                                         onChange={handleCategoryChange}
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
@@ -945,5 +950,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
     get_product,
-    get_products_options
+    get_products_options,
+    get_categories
 })(EditProduct)
