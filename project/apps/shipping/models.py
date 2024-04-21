@@ -11,10 +11,7 @@ class Shipping(models.Model):
     name = models.CharField(max_length=255)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='shipping_store')
     time_to_delivery = models.CharField(max_length=255)
-    price = models.PositiveIntegerField(validators=[
-        MinValueValidator(0),
-        MaxValueValidator(1000000)  # Define el límite superior según tus necesidades
-    ])    
+    price = models.PositiveIntegerField(blank=True, null=True)
     additional_notes = models.CharField(max_length=200, blank=True, null=True)
     is_active = models.BooleanField(default=False)
 

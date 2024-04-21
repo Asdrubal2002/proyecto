@@ -10,7 +10,7 @@ import { useEffect, useState, Fragment } from "react";
 //import { get_products } from "../../redux/actions/products";
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 
-import { ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import LoadingStore from "../../components/store/LoadingStore";
 import { ConetenedorBanner, ConetenedorBanner1, ConetenedorInfo, ConetenedorInfo1, ConetenedorInfo2, ConetenedorProfile, ConetenedorProfile1, ConetenedorProfile2, ConetenedorProfile3, EspacioContenedor, Principal } from "../../components/store/styles/LoadingStore";
 import { BotonesMeGustaNOMegusta, ContenedorInfoUbication, ContenedorInfoUbication1, DescriptionStore, EspacioPhotos, Photo, StoreProfile, SeparadorVertical } from "./styles/StoreDetail";
@@ -149,7 +149,13 @@ const StoreDetail = ({
                         {/* banner img */}
                         <ConetenedorBanner>
                             <ConetenedorBanner1>
-                                <Photo src={store && store.banner} />
+                                {store && store.banner ?
+                                    <Photo src={store && store.banner} />
+                                    :
+                                    <div className="flex items-center justify-center w-full h-full">
+                                        <PhotoIcon width={40} height={40} color="#929292" />
+                                    </div>
+                                }
                                 <EspacioPhotos ria-hidden="true" />
                             </ConetenedorBanner1>
                             <EspacioContenedor />
@@ -163,7 +169,20 @@ const StoreDetail = ({
                                         <ConetenedorProfile3>
                                             {/* profile picture */}
                                             <div className="flex">
-                                                <StoreProfile src={store && store.logo} alt="Store Photo" />
+                                                {
+                                                    store && store.logo ? <StoreProfile src={store && store.logo} alt="Store Photo" />
+                                                        :
+                                                        <div className="h-24
+                                                        w-24 
+                                                        rounded-full 
+                                                        bg-gray-800
+                                                        sm:h-32 
+                                                        sm:w-32 
+                                                        flex items-center justify-center">
+                                                            <BuildingStorefrontIcon width={40} height={40} color="#929292" />
+
+                                                        </div>
+                                                }
                                             </div>
                                             <ConetenedorInfo>
                                                 <ConetenedorInfo1>

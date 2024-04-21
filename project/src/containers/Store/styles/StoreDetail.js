@@ -23,12 +23,8 @@ export const StoreProfile = tw.img`
     h-24
     w-24 
     rounded-full 
-    ring-2 
-    dark:ring-dark-second 
-    ring-gray-700 
     sm:h-32 
-    sm:w-32 
-    hover:bg-gray-100
+    sm:w-32  
 `;
 
 export const BotonesMeGustaNOMegusta = tw.button` 

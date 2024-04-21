@@ -41,7 +41,7 @@ function EditProduct({
     const [updateName, setUpdateName] = useState(false)
     const [updateCategory, setUpdateCategory] = useState(false)
     const [updateDescription, setUpdateDescription] = useState(false)
-    const [updatePrice, setUpdatePrce] = useState(false)
+    const [updatePrice, setUpdatePrice] = useState(false)
 
     const [updatePhoto, setUpdatePhoto] = useState(false)
     const [previewImage, setPreviewImage] = useState()
@@ -69,6 +69,7 @@ function EditProduct({
 
     })
 
+
     const {
         name,
         description,
@@ -86,7 +87,7 @@ function EditProduct({
         setUpdateName(false)
         setUpdateDescription(false)
         setUpdateCategory(false)
-        setUpdatePrce(false)
+        setUpdatePrice(false)
         setUpdatePhoto(false)
         setUpdateOptions(false)
     }
@@ -208,8 +209,6 @@ function EditProduct({
 
     const handleImageSelect = (id) => {
         // Aquí puedes utilizar el id de la imagen seleccionada como desees
-        console.log('Imagen seleccionada:', id);
-
         const config = {
             headers: {
                 'Accept': 'application/json',
@@ -270,8 +269,6 @@ function EditProduct({
         const formData = new FormData()
         formData.append('slug', slug)
         formData.append('photo', photo, photo.name)
-
-        console.log(formData)
 
         const fetchData = async () => {
             setLoading(true)
@@ -398,20 +395,20 @@ function EditProduct({
                             <div className="mt-4 sm:ml-4 flex-shrink-0 flex flex-wrap">
                                 <button
                                     onClick={e => setOpenDelete(true)}
-                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-rose-700"
                                 >
                                     Elimiar Producto
                                 </button>
                                 <a
                                     href={`${import.meta.env.VITE_REACT_APP_API_URL}/${product && product.slugProduct}/detail`}
                                     target="_blank"
-                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700"
                                 >
                                     Ver producto
                                 </a>
                                 <button
                                     onClick={e => setOpen(true)}
-                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                    className="relative m-1 inline-flex items-center rounded-md border border-transparent bg-azul_corp_ho px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp"
                                 >
                                     {product && product.is_active ? <>Desactivar Producto</> : <>Publicarlo en mi tienda</>}
                                 </button>
@@ -432,25 +429,33 @@ function EditProduct({
                                                         onChange={e => onChange(e)}
                                                         name='name'
                                                         type='text'
+                                                        maxLength={50} // Máximo de 50 caracteres permitidos
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nuevo nombre'
                                                     />
+                                                    {/* Mensaje de error si el campo de nombre está vacío */}
+                                                    {name === '' && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">El nombre es obligatorio</span>
+                                                    )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            disabled={name === ''} // Deshabilitar el botón si el nombre está vacío
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                         <button
                                                             onClick={() => setUpdateName(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                     </div>
                                                 </form>
+
+
 
                                             </>
                                         ) : (
@@ -458,7 +463,7 @@ function EditProduct({
                                                 <span className="flex-grow">{product && product.name}</span>
                                                 <button
                                                     onClick={() => setUpdateName(true)}
-                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "
                                                 >
                                                     <PencilIcon width={20} height={20} color="#fff" radius="6" />
 
@@ -470,52 +475,51 @@ function EditProduct({
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Categoria de tu producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
-
-
-
                                         {updateCategory ? (
                                             <>
-                                            {/* <FormCategories/> */}
+                                                {/* <FormCategories/> */}
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
-                                                <select
+                                                    <select
+                                                        name='category'
                                                         value={selectedCategory}
                                                         onChange={handleCategoryChange}
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                     >
                                                         <option value="">Seleccione una categoría...</option>
-                                                        {categories.map(category => (
-                                                            <React.Fragment key={category.id}>
-                                                                {category.parent ? (
-                                                                    // Categoría hijo
-                                                                    <option value={category.id}>{category.name}</option>
-                                                                ) : (
-                                                                    // Categoría padre
-                                                                    <optgroup label={category.name}>
-                                                                        {categories.filter(childCategory => childCategory.parent === category.id).map(childCategory => (
-                                                                            <option key={childCategory.id} value={childCategory.id}>{childCategory.name}</option>
-                                                                        ))}
-                                                                    </optgroup>
+                                                        {categories && categories.map(category => (
+                                                            <optgroup key={category.id} label={category.name}>
+                                                                {category.sub_categories.length > 0 && (
+                                                                    // Agregar las subcategorías dentro del optgroup
+                                                                    category.sub_categories.map(subCategory => (
+                                                                        <option key={subCategory.id} value={subCategory.id}>
+                                                                            {subCategory.name}</option>
+                                                                    ))
                                                                 )}
-                                                            </React.Fragment>
+                                                            </optgroup>
                                                         ))}
                                                     </select>
-
+                                                    {/* Mensaje de error si no se ha seleccionado ninguna categoría */}
+                                                    {selectedCategory === '' && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">Seleccione una categoría</span>
+                                                    )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            disabled={selectedCategory === ''}
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                         <button
                                                             onClick={() => setUpdateCategory(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                     </div>
                                                 </form>
+
 
                                             </>
                                         ) : (
@@ -523,7 +527,7 @@ function EditProduct({
                                                 <span className="flex-grow">{product && product.category.name}</span>
                                                 <button
                                                     onClick={() => setUpdateCategory(true)}
-                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"                                                >
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
                                                     <PencilIcon width={20} height={20} color="#fff" radius="6" />
 
                                                 </button>
@@ -542,26 +546,32 @@ function EditProduct({
                                                         value={description}
                                                         onChange={e => onChange(e)}
                                                         name='description'
-                                                        type='text'
+                                                        maxLength={400} // Máximo de 400 caracteres permitidos
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nueva descripción'
                                                     />
+                                                    {/* Mensaje de error si el campo de descripción está vacío */}
+                                                    {description === '' && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
+                                                    )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            disabled={description === '' || description.length > 400} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                         <button
                                                             onClick={() => setUpdateDescription(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                     </div>
                                                 </form>
+
 
                                             </>
                                         ) : (
@@ -569,7 +579,7 @@ function EditProduct({
                                                 <span className="flex-grow">{product && product.description}</span>
                                                 <button
                                                     onClick={() => setUpdateDescription(true)}
-                                                    className="ml-2 px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                    className="ml-2 px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "
                                                 >
                                                     <PencilIcon width={20} height={20} color="#fff" radius="6" />
                                                 </button>
@@ -592,35 +602,37 @@ function EditProduct({
                                                         }}
                                                         name='price'
                                                         type='text'
+                                                        maxLength={10} // Máximo de 10 caracteres para un valor monetario (por ejemplo, 999,999.99)
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                                        required
                                                         placeholder='Nuevo precio'
-
-
                                                     />
+                                                    {/* Mensaje de error si el campo de precio está vacío */}
+                                                    {price === '' && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">El precio es obligatorio</span>
+                                                    )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            disabled={price === '' || !(/^\d+(\.\d{1,2})?$/.test(price)) || price.length > 10} // Deshabilitar el botón si el precio está vacío, no es un valor monetario válido o excede el límite
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                         <button
-                                                            onClick={() => setUpdatePrce(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            onClick={() => setUpdatePrice(false)}
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                     </div>
                                                 </form>
-
                                             </>
                                         ) : (
                                             <>
                                                 <span className="flex-grow">{product && product.price}</span>
                                                 <button
-                                                    onClick={() => setUpdatePrce(true)}
-                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"                                                >
+                                                    onClick={() => setUpdatePrice(true)}
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
                                                     <PencilIcon width={20} height={20} color="#fff" radius="6" />
 
                                                 </button>
@@ -641,34 +653,48 @@ function EditProduct({
                                                         onChange={e => onChange(e)}
                                                         name='optionPr'
                                                         type='text'
+                                                        maxLength={10} // Límite de 10 caracteres para optionPr
                                                         className="mt-1 mx-2 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nueva opción'
                                                     />
+                                                    {/* Mensaje de error si optionPr excede el límite de caracteres */}
+                                                    {optionPr.length > 10 && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">La opción no puede exceder los 10 caracteres</span>
+                                                    )}
+
                                                     <input
                                                         value={quantity}
                                                         onChange={e => onChange(e)}
                                                         name='quantity'
                                                         type='number'
+                                                        max={10000} // Límite de 10000 para quantity
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Unidades para esta opción.'
                                                     />
+                                                    {/* Mensaje de error si quantity es mayor a 10000 */}
+                                                    {quantity > 10000 && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">Las unidades no pueden ser mayores a 10000</span>
+                                                    )}
+
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            disabled={optionPr.length === 0 || optionPr.length > 10 || quantity === '' || quantity > 10000}
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none  "
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                         <button
                                                             onClick={() => setUpdateOptions(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none  "
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
                                                     </div>
                                                 </form>
+
 
                                             </>
                                         ) : (
@@ -695,7 +721,7 @@ function EditProduct({
 
                                                 <button
                                                     onClick={() => setUpdateOptions(true)}
-                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"                                                >
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
                                                     <PlusIcon width={20} height={20} color="#fff" radius="6" />
 
                                                 </button>
@@ -722,7 +748,7 @@ function EditProduct({
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none  "
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
@@ -732,7 +758,7 @@ function EditProduct({
                                                                 setPreviewImage(null);
                                                                 setPhoto(null);
                                                             }}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none  "
                                                         >
                                                             <XMarkIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
@@ -743,7 +769,7 @@ function EditProduct({
                                             <>
                                                 <button
                                                     onClick={() => setUpdatePhoto(true)}
-                                                    className="flex-grow  flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                    className="flex-grow  flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-700 focus:outline-none  "
                                                 >
                                                     <PhotoIcon width={20} height={20} color="#fff" radius="6" />
                                                 </button>
@@ -850,7 +876,7 @@ function EditProduct({
                                                     <form onSubmit={e => onSubmitStatus(e)} className="mt-5 sm:mt-6">
                                                         <button
                                                             type="submit"
-                                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none sm:text-sm"
 
                                                         >
                                                             <span>Si, Desactivar</span>
@@ -862,7 +888,7 @@ function EditProduct({
                                                     <form onSubmit={e => onSubmitStatus(e)} className="mt-5 sm:mt-6">
                                                         <button
                                                             type="submit"
-                                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none sm:text-sm"
 
                                                         >
                                                             <span>Si, Activar</span>
@@ -923,7 +949,7 @@ function EditProduct({
                                     <form onSubmit={e => onSubmitDelete(e)} className="mt-5 sm:mt-6">
                                         <button
                                             type="submit"
-                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:text-sm"
+                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none  focus:ring-rose-500 focus:ring-offset-2 sm:text-sm"
 
                                         >
                                             <span>Eliminar completamente</span>

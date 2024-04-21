@@ -4,7 +4,7 @@ import Layout from '../../hocs/Layout'
 import { create_category, delete_category, get_categories, change_status_category, update_category } from '../../redux/actions/categories_product/categories_product';
 import { Rings } from 'react-loader-spinner';
 import { Dialog, Menu, Transition } from '@headlessui/react'
-import { CheckIcon, PencilSquareIcon, TrashIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, PencilSquareIcon, TrashIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import Create from '../store/Create';
 
@@ -34,6 +34,7 @@ function FormCategories({
     const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
     const [editingCategoryId, setEditingCategoryId] = useState(null);
     const [messageEdit, setMessageEdit] = useState(false);
+    const [expandedCategories, setExpandedCategories] = useState([]);
 
     useEffect(() => {
         get_categories()
@@ -54,7 +55,7 @@ function FormCategories({
         }
     };
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         // Verificar si el campo de nombre está vacío
         if (!formData.name.trim()) {
@@ -68,23 +69,26 @@ function FormCategories({
         // Verificar si se está creando una nueva categoría o editando una existente
         if (editingCategoryId) {
             // Llamar a la función para editar la categoría
-            update_category(editingCategoryId, formData.name, slug, formData.parent);
+            await update_category(editingCategoryId, formData.name, slug, formData.parent);
+            get_categories()
         } else {
             // Llamar a la función para crear una nueva categoría
-            create_category(formData.name, slug, formData.parent)
+            await create_category(formData.name, slug, formData.parent)
+            get_categories()
         }
-
+        
         // Aquí puedes agregar lógica adicional después de enviar el formulario si es necesario
     };
 
     const handleDelete = async (categoryId) => {
         await delete_category(categoryId)
         setOpen(false);
+        get_categories()
     }
 
     const handleToggleActive = async (categoryId) => {
-        console.log(categoryId)
         await change_status_category(categoryId)
+        get_categories()
     }
 
     const handleOpenModal = (categoryId) => {
@@ -95,9 +99,10 @@ function FormCategories({
     // Función para establecer los valores predefinidos
     const handleEditModal = (category) => {
         // Establecer los valores predefinidos en el estado formData
+
         setFormData({
             name: category.name, // Nombre predefinido
-            parent: category.parent ? category.parent.id : '', // Categoría padre predefinida, si existe
+            parent: category.parent_id // Categoría padre predefinida, si existe
         });
 
         setEditingCategoryId(category.id);
@@ -110,11 +115,16 @@ function FormCategories({
         setMessageEdit(false)
     };
 
+    const toggleCategory = (categoryId) => {
+        if (expandedCategories.includes(categoryId)) {
+            setExpandedCategories(expandedCategories.filter(id => id !== categoryId));
+        } else {
+            setExpandedCategories([...expandedCategories, categoryId]);
+        }
+    };
 
     return (
         <>
-        <>
-        </>
             <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre:</label>
@@ -123,7 +133,7 @@ function FormCategories({
                         name="name"
                         id="name"
                         placeholder='¿Que nombre le vas a poner a tu categoria?'
-                        className="mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
+                        className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
                         value={formData.name}
                         onChange={handleChange}
 
@@ -137,7 +147,7 @@ function FormCategories({
                     <select
                         name="parent"
                         id="parent"
-                        className="mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
+                        className="text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
                         value={formData.parent || ''}
                         onChange={handleChange}
                     >
@@ -152,25 +162,11 @@ function FormCategories({
                 <div className='flex'>
                     <button
                         type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-azul_corp hover:bg-iazul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-azul_corp hover:bg-azul_corp_ho"
                     >
-                        Gurdar Categoria
+                        Guardar Categoria
                     </button>
-                    <p className='text-center text-red-600 py-2 p-4'>
-                        {messageEdit ?
-                            <div className='flex'>
-                                <button
-                                    type="button"
-                                    onClick={clearFormData}
-                                    className="inline-flex justify-center "
-                                >
-                                    Cancelar edición de la categoria
-                                    <PencilSquareIcon className="ml-2" width={20} height={20} color="#DA0000" radius="6" />
-
-                                </button>
-                            </div>
-                            : <></>}
-                    </p>
+                   
                 </div>
 
             </form>
@@ -178,59 +174,98 @@ function FormCategories({
                 loading ? (
                     <Rings width={20} height={20} color="#fff" radius="6" />
                 ) : (
-                    
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        #
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Nombre
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Activa
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Categoría
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {categories && categories.map((category, index) => (
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    #
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Nombre
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Estado
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Categoría
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {categories && categories.map((category, index) => (
+                                <React.Fragment key={category.id}>
                                     <tr key={category.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="w-4 p-4">{index + 1}</td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {category.name}
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-8 w-8">
+                                                    {/* Icono o imagen */}
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900 dark:text-white">{category.name}</div>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 whitespace-nowrap">
                                             {category.is_active ? "Activa" : "Inactiva"}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {category.parent?.name || 'Principal'}
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <p>Principal</p>
                                         </td>
-                                        <td className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <button onClick={() => handleOpenModal(category.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
-                                            <button onClick={() => handleEditModal(category)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
-                                            <button onClick={() => handleToggleActive(category.id)} className="text-green-600 dark:text-green-500 hover:underline">{category.is_active ? 'Desactivar' : 'Activar'}</button>
+                                        <td className="py-4 whitespace-nowrap">
+                                            <button onClick={() => handleOpenModal(category.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline font-medium">Eliminar</button>
+                                            <button onClick={() => handleEditModal(category)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline font-medium">Editar</button>
+                                            <button onClick={() => handleToggleActive(category.id)} className="text-green-600 dark:text-green-500 hover:underline font-medium">{category.is_active ? 'Desactivar' : 'Activar'}</button>
+                                           
+                                            {category.sub_categories && category.sub_categories.length > 0 && (
+                                                <button onClick={() => toggleCategory(category.id)} className="ml-2 text-gray-600 dark:text-gray-400 hover:underline">
+                                                    {expandedCategories.includes(category.id) ? <ArrowUpIcon className="" width={18} height={18} color="#fff" radius="6" /> :  <ArrowDownIcon className="" width={18} height={18} color="#fff" radius="6" />}
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
-                                ))}
-                                {(!categories || categories.length === 0) && (
-                                    <tr>
-                                        <td colSpan="5">No hay categorías en tu tienda</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                    {category.sub_categories && expandedCategories.includes(category.id) && category.sub_categories.map(subCategory => (
+                                        <tr key={subCategory.id} className="bg-white border-b dark:bg-gray-700 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <td className="w-4 p-4"></td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center">
+                                                    <div className="flex-shrink-0 h-8 w-8">
+                                                        {/* Icono o imagen */}
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <div className="text-sm font-medium text-gray-900 dark:text-white">{subCategory.name}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                {subCategory.is_active ? "Activa" : "Inactiva"}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            {category.name} {/* Aquí se muestra el nombre de la categoría padre */}
 
-                    </div>
-                    
-                    
+                                            </td>
+                                            <td className="py-4 whitespace-nowrap">
+                                                <button onClick={() => handleOpenModal(subCategory.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
+                                                <button onClick={() => handleEditModal(subCategory)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
+                                                <button onClick={() => handleToggleActive(subCategory.id)} className="text-green-600 dark:text-green-500 hover:underline">{subCategory.is_active ? 'Desactivar' : 'Activar'}</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                            {!categories && (
+                                <tr>
+                                    <td colSpan="5">No hay categorías en tu tienda</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                
                 )
             }
 
@@ -261,8 +296,8 @@ function FormCategories({
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                                     <div>
-                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                                            <TrashIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
+                                            <TrashIcon className="h-6 w-6 text-rose-600" aria-hidden="true" />
                                         </div>
                                         <div className="mt-3 text-center sm:mt-5">
                                             <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
@@ -278,10 +313,10 @@ function FormCategories({
                                     <div className="mt-5 sm:mt-6">
                                         <button
                                             type="button"
-                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:text-sm"
+                                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 sm:text-sm"
                                             onClick={() => handleDelete(categoryIdToDelete)}
                                         >
-                                            Eliminar categoria
+                                            Borrar
                                         </button>
                                     </div>
                                 </Dialog.Panel>

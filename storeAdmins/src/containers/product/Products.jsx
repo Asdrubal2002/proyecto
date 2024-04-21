@@ -13,7 +13,7 @@ import axios from "axios"
 import { get_user_store } from '../../redux/actions/store/store'
 
 import FormCategories from '../categories/FormCategories'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/outline'
 
 function Products({
   get_products,
@@ -107,14 +107,14 @@ function Products({
     setErrors({ ...errors, [name]: '' });
     // Eliminar puntos y comas del valor del precio
     const cleanedValue = value.replace(/[^\d]/g, '');
-   
+
   };
   const handleDescriptionChange = (e) => {
     const value = e.target.value;
     setDescription(value);
 
-    if (value.length > 50) {
-      setDescriptionError('La descripción no debe exceder los 50 caracteres');
+    if (value.length > 600) {
+      setDescriptionError('La descripción no debe exceder los 600 caracteres');
       setFormCanBeSubmitted(false); // Deshabilitar el formulario
     } else {
       setDescriptionError('');
@@ -141,7 +141,7 @@ function Products({
                         <div className="ml-4 mt-2 flex-shrink-0">
                           <button
                             onClick={e => setOpen(true)}
-                            className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none "
                           >
                             Crear producto
                           </button>
@@ -228,25 +228,24 @@ function Products({
 
                     />
                     {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
-
                     <select
                       name='category'
-                      className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                      
                     >
                       <option value="">Seleccione una categoría...</option>
                       {categories && categories.map(category => (
-                        <React.Fragment key={category.id}>
-                          {category.parent ? (
-                            <option value={category.id}>{category.name}</option>
-                          ) : (
-                            <optgroup label={category.name}>
-                              {categories.filter(childCategory => childCategory.parent === category.id).map(childCategory => (
-                                <option key={childCategory.id} value={childCategory.id}>{childCategory.name}</option>
-                              ))}
-                            </optgroup>
+                        <optgroup key={category.id} label={category.name}>
+                          {category.sub_categories.length > 0 && (
+                            // Agregar las subcategorías dentro del optgroup
+                            category.sub_categories.map(subCategory => (
+                              <option key={subCategory.id} value={subCategory.id}>
+                                {subCategory.name}</option>
+                            ))
                           )}
-                        </React.Fragment>
+                        </optgroup>
                       ))}
                     </select>
                     {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}

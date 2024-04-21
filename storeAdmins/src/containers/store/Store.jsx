@@ -4,7 +4,7 @@ import Layout from '../../hocs/Layout'
 
 import { get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
-import { CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, LockClosedIcon, PaperClipIcon, PhotoIcon, QrCodeIcon, ServerIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BuildingStorefrontIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, LockClosedIcon, PaperClipIcon, PhotoIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Create from './Create';
 import { Rings } from 'react-loader-spinner';
 import axios from "axios"
@@ -183,15 +183,39 @@ function Store({
                   <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden">
                       {/* Banner */}
-                      <div className="overflow-hidden">
-                        {previewImageBanner ? <img src={previewImageBanner} className="w-full h-32 object-cover" alt="Preview" /> : <img src={bannerImagePath} alt="Banner" className="w-full h-32 object-cover" />}
+                      <div className="overflow-hidden w-full h-32">
+                        {previewImageBanner ?
+                          <img src={previewImageBanner} className="w-full h-32 object-cover" alt="Preview" />
+                          :
+                          <>
+                            {
+                              bannerImagePath ? <img src={bannerImagePath} alt="Banner" className="w-full h-32 object-cover" /> 
+                              :
+                                <div className="flex items-center justify-center w-full h-full bg-gray-600">
+                                  <PhotoIcon width={40} height={40} color="#929292" />
+                                </div>
+                            }
+                          </>
+                        }
                       </div>
 
                       {/* Contenido del perfil */}
                       <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           {/* Logo */}
-                          {previewImage ? <img src={previewImage} alt="Logo" className="w-16 h-16 rounded-full" /> : <img src={profileImagePath} alt="Logo" className="w-16 h-16 rounded-full" />}
+                          {previewImage ?
+                            <img src={previewImage} alt="Logo" className="w-16 h-16 rounded-full" />
+                            :
+                            <>
+                              {
+                                profileImagePath ? <img src={profileImagePath} alt="Logo" className="w-16 h-16 rounded-full" />
+                                  :
+                                  <div className="w-16 h-16 rounded-full bg-gray-600 flex items-center justify-center">
+                                     <BuildingStorefrontIcon width={30} height={30} color="#929292" />
+                                  </div>
+                              }
+                            </>
+                          }
                           {/* Nombre de la tienda y descripción */}
                           <div>
                             <h3 className="text-lg font-semibold">{userStore.name} {userStore.verified ? <CheckBadgeIcon className="h-5 w-5 inline-block text-blue-500" /> : <></>}</h3>
@@ -384,7 +408,7 @@ function Store({
                               className="inline-block px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none mr-2"
                               onClick={() => downloadImage(qrcodeImagePath, userStore.name)}
                             >
-                             Descargar código QR
+                              Descargar código QR
                             </button>
 
 

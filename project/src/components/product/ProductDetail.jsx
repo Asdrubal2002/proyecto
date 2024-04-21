@@ -266,7 +266,7 @@ function ProductDetail({
                                     <p className="sr-only"> out of 5 stars</p>
                                 </div> */}
                                 </div>
-                                {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded-md my-4">
+                                {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-4  flex items-center justify-center">
                                     <p className="text-base font-semibold">{errorMessage}</p>
                                 </div>}
                             
@@ -282,7 +282,7 @@ function ProductDetail({
                                                     onClick={addItemToCart}
                                                     type="submit"
                                                     disabled={!options || options.every(option => option.quantity === 0)}
-                                                    className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                                                    className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
                                                     Agregar al carrito
                                                 </button>
                                                 

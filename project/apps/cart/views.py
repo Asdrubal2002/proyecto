@@ -39,7 +39,6 @@ class view_user_carts(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-
 def crear_item_carrito(product_option_id, user):
     try:
         # Obtener la instancia de ProductOption
@@ -71,7 +70,6 @@ def crear_item_carrito(product_option_id, user):
     except ProductOption.DoesNotExist:
         return None, False
     
-
 class AddToCart(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -97,8 +95,6 @@ class AddToCart(APIView):
             else:
                 return Response({'message': 'La cantidad del ítem en el carrito fue actualizada correctamente'}, status=status.HTTP_200_OK)
 
-
-
 class ProductsCartView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -117,7 +113,6 @@ class ProductsCartView(APIView):
             return Response(
                 {"error": "Carrito no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
-
 
 class IncrementItemQuantity(APIView):
     permission_classes = [IsAuthenticated]
@@ -163,7 +158,6 @@ class IncrementItemQuantity(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-
 class DecrementItemQuantity(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -207,7 +201,6 @@ class DecrementItemQuantity(APIView):
                 {"error": "Ítem de carrito no encontrado"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
 
 class RemoveItemFromCart(APIView):
     permission_classes = [IsAuthenticated]
@@ -255,7 +248,6 @@ class RemoveItemFromCart(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-
 class RemoveCartBySlug(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -297,7 +289,6 @@ class RemoveCartBySlug(APIView):
             return Response(
                 {"error": "Carrito no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
-
 
 class SynchCartView(APIView):
     def put(self, request, format=None):

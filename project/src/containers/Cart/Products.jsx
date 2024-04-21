@@ -256,7 +256,7 @@ function Products({
                   <div className="mt-6 flex justify-between">
                     <button
                       onClick={toggleContenido}
-                      className="flex-1 ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-azul_corp"
+                      className="flex-1 ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                     >
                       Iniciar compra
                     </button>
@@ -344,14 +344,14 @@ function Products({
                     <div className="mt-6 flex justify-between">
                       <button
                         onClick={toggleContenido}
-                        className="flex-1 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-azul_corp"
+                        className="flex-1 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                       >
                         Volver
                       </button>
                       {profile.firs_name == null ? (<>
 
                         <Link to={'/dashboard'}
-                          className="flex items-center justify-center ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-azul_corp"
+                          className="flex items-center justify-center ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                         >
                           <UserCircleIcon className="h-6 w-6" />
                         </Link>
@@ -359,7 +359,7 @@ function Products({
                       </>) : (
                         <>{loading_invoice ? (<>
                           <button
-                            className="flex items-center justify-center ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-azul_corp"
+                            className="flex items-center justify-center ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                           >
                             <Rings width={30} height={30} color="#fff" radius="6" />
                           </button>
@@ -368,7 +368,7 @@ function Products({
                           <>
                             <button
                               onClick={() => procesarCompra(profile && profile.id, cart && cart.store.id, shipping_id, location && location.id, cart && cart.id)}
-                              className="flex-1 ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-azul_corp"
+                              className="flex-1 ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                             >
                               Comprar
                             </button>

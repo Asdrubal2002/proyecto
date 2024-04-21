@@ -52,6 +52,7 @@ class ListCategoriesStoreView(APIView):
 
 
 class CategoryListViewAdmin(APIView):
+    permission_classes = (CanEditCategory,)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
@@ -62,7 +63,33 @@ class CategoryListViewAdmin(APIView):
         store = user.store
 
         # Obtener las categorías asociadas a la tienda del usuario autenticado
-        categories = Category.objects.filter(store=store)
+        categories = Category.objects.filter(store=store).order_by('created_at')
+
+        result = []
+        for category in categories:
+            if not category.parent:
+                item = {}
+                item["id"] = category.id
+                item["name"] = category.name
+                item["slug"] = category.slug
+                item["is_active"] = category.is_active
+                item["parent_id"] = category.parent_id
+
+                item["sub_categories"] = []
+                for cat in categories:
+                    sub_item = {}
+                    if cat.parent and cat.parent.id == category.id:
+                        sub_item["id"] = cat.id
+                        sub_item["name"] = cat.name
+                        sub_item["slug"] = cat.slug
+                        sub_item["is_active"] = cat.is_active
+                        sub_item["parent_id"] = category.id  # Almacenar el ID de la categoría padre
+
+
+                        sub_item["sub_categories"] = []
+
+                        item["sub_categories"].append(sub_item)
+                result.append(item)
 
         if not categories:
             return Response(
@@ -73,7 +100,7 @@ class CategoryListViewAdmin(APIView):
         # Serializar las categorías
         serializer = CategorieStoreSerializer(categories, many=True)
 
-        return Response({"categories": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"categories": result}, status=status.HTTP_200_OK)
 
 
 class CreateCategoryAPIView(APIView):

@@ -1,4 +1,4 @@
-import { CheckBadgeIcon } from '@heroicons/react/24/solid'
+import { CheckBadgeIcon, BuildingStorefrontIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
@@ -36,7 +36,13 @@ function StoreCardHorizontal({ data, index, add_to_wish_list_store }) {
             <p className="mt-5 text-sm leading-6 text-gray-300">{data.description.length > 150 ? data.description.slice(0, 300) : data.description}</p>
           </div>
           <div className="relative mt-8 flex items-center gap-x-4">
-            <img src={data.logo} alt="" className="h-10 w-10 rounded-full bg-gray-50" />
+            {
+              data.logo ? <img src={data.logo} alt="" className="h-10 w-10 rounded-full" />
+                : 
+                <div className='h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center'>
+                  <BuildingStorefrontIcon width={20} height={20} color="#929292" />
+                </div>
+            }
             <div className="text-sm leading-6">
               <p className="font-semibold text-gray-400">
                 {data.name}

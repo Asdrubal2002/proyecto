@@ -2,7 +2,11 @@ import {
     GET_SHIPPINGS_SUCCESS,
     GET_SHIPPINGS_FAIL,
     SET_SHIPPINGS_LOADING,
-    REMOVE_SHIPPINGS_LOADING
+    REMOVE_SHIPPINGS_LOADING,
+    ADD_SHIPPINGS_SUCCESS,
+    ADD_SHIPPINGS_FAIL,
+    DELETE_SHIPPING_SUCCESS,
+    DELETE_SHIPPING_FAIL
 } from "../../actions/shipping/types";
 
 const initialState = {
@@ -34,6 +38,26 @@ export default function Shippings_store(state = initialState, action) {
             return {
                 ...state,
                 shippings: null
+            }
+
+        case ADD_SHIPPINGS_SUCCESS:
+            return {
+                ...state,
+                shippings: payload.shippings
+            }
+        case ADD_SHIPPINGS_FAIL:
+            return {
+                ...state
+            }
+
+        case DELETE_SHIPPING_SUCCESS:
+            return {
+                ...state,
+                shippings: payload.shippings
+            }
+        case DELETE_SHIPPING_FAIL:
+            return {
+                ...state
             }
 
         default:

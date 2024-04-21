@@ -26,6 +26,7 @@ from .permissions import CanEditProduct
 
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils import timezone
+from django.db.models import Q
 
 # Create your views here.
 
@@ -54,21 +55,36 @@ class ProductsByStore(APIView):
     def get(self, request, storeSlug, format=None):
         store = get_object_or_404(Store, slug=storeSlug)
 
-        # Obtener todas las categorías de esa tienda
-        categories = Category.objects.filter(store=store)
+        # Obtener todas las categorías activas de esa tienda
+        active_categories = Category.objects.filter(store=store, is_active=True)
 
-        # Obtener todos los productos que pertenecen a esas categorías
+        # Obtener todos los productos que pertenecen a categorías activas
+        # de la tienda y que están activos
         products = Product.objects.filter(
-            category__in=categories, is_active=True
+            category__in=active_categories,
+            is_active=True,
         ).order_by("date_created")
-        # Serializar los productos
+
+        # Filtrar los productos para excluir aquellos que pertenecen a
+        # categorías padres que estén desactivadas
+        filtered_products = []
+        for product in products:
+            category = product.category
+            # Verificar si la categoría padre está activa
+            while category.parent:
+                if not category.parent.is_active:
+                    break  # Salir del bucle si la categoría padre está desactivada
+                category = category.parent
+            else:
+                filtered_products.append(product)  # Agregar el producto si todas las categorías padre están activas
 
         paginator = LargeSetPagination()
-        results = paginator.paginate_queryset(products, request)
+        results = paginator.paginate_queryset(filtered_products, request)
         products_serialized = ProductSerializer(results, many=True)
 
         # Devolver la lista de productos serializados
         return paginator.get_paginated_response({"products": products_serialized.data})
+
 
 class SearchProductInView(APIView):
     def get(self, request, format=None):
@@ -192,7 +208,7 @@ class UserProductsAPIView(APIView):
             categories = store.categories_store.all()
 
             # Obtener todos los productos asociados a las categorías de la tienda del usuario
-            products = Product.objects.filter(category__in=categories)
+            products = Product.objects.filter(category__in=categories).order_by('-date_created')
 
             paginator = LargeSetPagination()
             results = paginator.paginate_queryset(products, request)
