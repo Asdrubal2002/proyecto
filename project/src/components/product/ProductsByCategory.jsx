@@ -12,6 +12,7 @@ import CategoriesStore from '../../containers/Store/CategoriesStore';
 import CategoriesStoreMobile from '../../containers/Store/CategoriesStoreMobile';
 import LoadingCategoriesStores from '../store/LoadingCategoriesStores';
 import Searcher from '../searcher/Searcher';
+import ProductListByCategory from './ProductsListByCategory';
 
 
 
@@ -138,10 +139,11 @@ const ProductsByCategory = ({
                   ) : (
                     <>
                       {products && products.length > 0 ? (
-                        <ProductList
+                        <ProductListByCategory
                           products={products}
                           get_products_list_page={get_products_by_category_page}
                           storeSlug={storeSlug}
+                          categorySlug={categorySlug}
                           count={count}
                         />
                       ) : (

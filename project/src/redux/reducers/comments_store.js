@@ -22,7 +22,7 @@ export default function Comments_Store(state = initialState, action) {
         case GET_COMMENT_STORE_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case GET_COMMENT_STORE_FAIL:
@@ -34,8 +34,7 @@ export default function Comments_Store(state = initialState, action) {
         case ADD_COMMENT_STORE_SUCCESS:
             return {
                 ...state,
-                comment: payload.comment,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case ADD_COMMENT_STORE_FAIL:
@@ -47,7 +46,7 @@ export default function Comments_Store(state = initialState, action) {
         case DELETE_COMMENT_STORE_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case DELETE_COMMENT_STORE_FAIL:
@@ -59,7 +58,7 @@ export default function Comments_Store(state = initialState, action) {
         case EDIT_COMMENT_STORE_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case EDIT_COMMENT_STORE_FAIL:

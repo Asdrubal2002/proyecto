@@ -4,6 +4,8 @@ from .views import (
     UserStoreShippingListView,
     UserAddStoreShippingListView,
     ShippingDeleteAPIView,
+    ShippingStateAPIView,
+    EditShippingView,
 )
 
 urlpatterns = [
@@ -27,5 +29,11 @@ urlpatterns = [
         ShippingDeleteAPIView.as_view(),
         name="eliminar_shipping",
     ),
+    path(
+        "estado_shipping/",
+        ShippingStateAPIView.as_view(),
+        name="cambiar_estado_envio",
+    ),
+    path("update_shippings/", EditShippingView.as_view()),
     # Otras URL...
 ]

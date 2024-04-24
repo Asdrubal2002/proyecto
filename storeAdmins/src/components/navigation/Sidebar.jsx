@@ -9,7 +9,9 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
-  CheckIcon
+  CheckIcon,
+  BarsArrowUpIcon,
+  ArrowLeftStartOnRectangleIcon
 } from '@heroicons/react/24/outline'
 import ItemsSidebar from './ItemsSidebar'
 import { useNavigate } from 'react-router-dom'
@@ -158,8 +160,8 @@ export default function Sidebar({ children, logout, profile, user }) {
 
 
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{profile && profile.firs_name} {profile && profile.last_name}</p>
-                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
+                    <p className="text-sm text-gray-700 group-hover:text-gray-900">{profile && profile.firs_name} {profile && profile.last_name}</p>
+                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700 flex justify-center"> <ArrowLeftStartOnRectangleIcon width={20} height={20} color="#ffdef" radius="6" /></p>
                   </div>
                 </div>
               </button>

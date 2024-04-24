@@ -61,7 +61,8 @@ const StoreDetail = ({
     isAuthenticated,
     profile,
     delete_comment_store,
-    edit_comment_store
+    edit_comment_store,
+    comments_count
 
 }) => {
 
@@ -363,14 +364,16 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
+                                            <p>
+                                            Categorias disponibles
+                                            </p>
+                                            
                                             <div className="grid grid-cols-1 gap-y-10">
                                                 {/* Contenido de la primera fila */}
-
-                                                <div className="container mx-auto px-4 py-8">
+                                                <div className="container mx-auto px-2 py-2">
                                                     <CategoriesStore categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
                                                 </div>
                                                 {/* <div>
-                                                   
                                                 </div> */}
                                                 {isAuthenticated ?
                                                     <div>
@@ -384,7 +387,6 @@ const StoreDetail = ({
                                                                 </Link>
 
                                                             </div>
-
                                                         ) : (
                                                             <div className="flex items-start pb-5">
                                                                 <div className="flex flex-col w-full">
@@ -410,9 +412,12 @@ const StoreDetail = ({
                                                         )}
                                                     </div>
                                                     : <></>}
-
                                             </div>
                                             {/* Segunda fila */}
+                                            <div className="flex pb-4 items-center">
+                                                <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-gray-400" />
+                                                <span className="ml-1">{comments_count} Comentarios sobre {store && store.name}</span>
+                                            </div>
                                             <div>
                                                 {comments && Array.isArray(comments) && comments.length === 0 ? (
                                                     <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
@@ -465,9 +470,11 @@ const mapStateToProps = state => ({
     count: state.Products.count,
     next: state.Products.next,
     previous: state.Products.previous,
-    comments: state.Comments_Store.comments,
+    comments: state.Comments_Store.comments ? state.Comments_Store.comments.comments : [],
     isAuthenticated: state.Auth.isAuthenticated,
-    profile: state.Profile.profile
+    profile: state.Profile.profile,
+    comments_count: state.Comments_Store.comments ? state.Comments_Store.comments.comments_count : 0,
+
 })
 
 export default connect(mapStateToProps, {

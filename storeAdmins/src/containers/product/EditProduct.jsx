@@ -5,7 +5,7 @@ import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import { get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
-import { CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
 import { get_categories } from '../../redux/actions/categories_product/categories_product';
@@ -48,6 +48,9 @@ function EditProduct({
     const [photo, setPhoto] = useState(null)
 
     const [updateOptions, setUpdateOptions] = useState(false)
+
+    const [openAddCategory, setOpenAddCategory] = useState(false)
+
 
 
 
@@ -388,8 +391,13 @@ function EditProduct({
                                 <h3 className="text-3xl font-medium leading-6 text-gray-300">
                                     {product && product.name} - {product && product.category.name}
                                 </h3>
-                                <p className="mt-1 max-w-2xl text-sm text-gray-200">
-                                    {product && product.is_active ? <>Activado</> : <>Desactivado</>}
+                                <p className="mt-1 flex items-center text-sm text-gray-500">
+                                    {product&&product.is_active ? (
+                                        <CheckCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400" aria-hidden="true" />
+                                    ) : (
+                                        <XCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-red-400" aria-hidden="true" />
+                                    )}
+                                    {product&&product.is_active ? 'Activo' : 'Inactivo'}
                                 </p>
                             </div>
                             <div className="mt-4 sm:ml-4 flex-shrink-0 flex flex-wrap">
@@ -477,7 +485,8 @@ function EditProduct({
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updateCategory ? (
                                             <>
-                                                {/* <FormCategories/> */}
+
+
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
                                                     <select
                                                         name='category'
@@ -489,7 +498,7 @@ function EditProduct({
                                                         <option value="">Seleccione una categoría...</option>
                                                         {categories && categories.map(category => (
                                                             <optgroup key={category.id} label={category.name}>
-                                                                {category.sub_categories.length > 0 && (
+                                                                {category.sub_categories && category.sub_categories.length > 0 && (
                                                                     // Agregar las subcategorías dentro del optgroup
                                                                     category.sub_categories.map(subCategory => (
                                                                         <option key={subCategory.id} value={subCategory.id}>
@@ -511,6 +520,17 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
+
+                                                        <button
+
+                                                            onClick={() => setOpenAddCategory(true)}
+                                                            className="px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700  focus:outline-none"
+                                                        >
+                                                            <BarsArrowUpIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+
+
+
                                                         <button
                                                             onClick={() => setUpdateCategory(false)}
                                                             className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
@@ -519,6 +539,8 @@ function EditProduct({
                                                         </button>
                                                     </div>
                                                 </form>
+
+
 
 
                                             </>
@@ -955,6 +977,46 @@ function EditProduct({
                                             <span>Eliminar completamente</span>
                                         </button>
                                     </form>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+
+
+
+            <Transition.Root show={openAddCategory
+            } as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpenAddCategory}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                    {/* <h2 className="text-lg font-medium leading-6 text-gray-800">crear tu producto</h2> */}
+
+                                    <FormCategories />
+
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>

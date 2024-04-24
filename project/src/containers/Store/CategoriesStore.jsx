@@ -19,12 +19,12 @@ function CategoriesStore({ categories, loading_categories, storeSlug }) {
 
     return (
         <div className="hidden lg:block">
-            <ul role="list" className="space-y-4 text-sm font-medium text-gray-200">
+            <ul role="list" className="space-y-2 text-sm font-medium text-gray-200">
                 {loading_categories ? (
                     <LoadingCategoriesStores />
                 ) : categories && categories.length > 0 ? (
                     categories.map(category => (
-                        <div key={category.id} className="mt-4 space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-200">
+                        <div key={category.id} className="mt-2 space-y-2 border-b border-gray-200 pb-4 text-sm font-medium text-gray-200 ">
                             <h3
                                 className="flex w-full items-center justify-between py-3 text-md text-gray-200 hover:text-gray-400 cursor-pointer"
                                 onClick={() => toggleCategory(category.id)}
@@ -43,7 +43,7 @@ function CategoriesStore({ categories, loading_categories, storeSlug }) {
                                         <li key={subCategory.id} className="mb-2">
                                             <Link
                                                 to={`/products_by_category/${storeSlug}/${subCategory.slug}`}
-                                                className="block rounded-md py-2 px-9 bg-stone-900 text-center text-gray-200"
+                                                className="block rounded-md py-2 px-6 bg-stone-900 text-center text-gray-200 hover:bg-azul_corp"
                                             >
                                                 {subCategory.name}
                                             </Link>

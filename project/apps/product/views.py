@@ -47,7 +47,7 @@ class ListProductsByCategoryView(APIView):
         paginator = LargeSetPagination()
         results = paginator.paginate_queryset(products, request)
         products_serialized = ProductSerializer(results, many=True)
-
+        
         # Devolver la lista de productos serializados
         return paginator.get_paginated_response({"products": products_serialized.data})
 
@@ -84,7 +84,6 @@ class ProductsByStore(APIView):
 
         # Devolver la lista de productos serializados
         return paginator.get_paginated_response({"products": products_serialized.data})
-
 
 class SearchProductInView(APIView):
     def get(self, request, format=None):
@@ -357,6 +356,25 @@ class DeleteProductOptionView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class ListProductsByCategoryViewAdmin(APIView):
+    permission_classes = (CanEditProduct,)
+
+    def get(self, request, storeSlug, categorySlug, format=None):
+        # Obtener la tienda o devolver un 404 si no se encuentra
+        store = get_object_or_404(Store, slug=storeSlug)
+
+        # Obtener la categoría o devolver un 404 si no se encuentra
+        category = get_object_or_404(Category, store=store, slug=categorySlug)
+
+        # Filtrar los productos por categoría y por si están activos
+        products = Product.objects.filter(category=category)
+
+        paginator = LargeSetPagination()
+        results = paginator.paginate_queryset(products, request)
+        products_serialized = ProductSerializer(results, many=True)
+        
+        # Devolver la lista de productos serializados
+        return paginator.get_paginated_response({"products": products_serialized.data})
 
 
 

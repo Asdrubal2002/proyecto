@@ -7,7 +7,7 @@ import {
     REMOVE_PRODUCT_FAIL_LOADING,
     SET_PRODUCT_SUCCESS_LOADING,
     GET_PRODUCTS_OPTIONS_SUCCESS,
-    GET_PRODUCTS_OPTIONS_FAIL
+    GET_PRODUCTS_OPTIONS_FAIL,
 } from "../../actions/products/types";
 
 const initialState = {
@@ -18,7 +18,8 @@ const initialState = {
     loading_products: false,
     count: null,
     next: null,
-    previous: null
+    previous: null,
+
 };
 
 export default function Products(state = initialState, action) {
@@ -84,7 +85,6 @@ export default function Products(state = initialState, action) {
                 ...state,
                 options: null
             }
-
 
         default:
             return state

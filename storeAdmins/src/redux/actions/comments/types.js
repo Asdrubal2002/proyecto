@@ -1,0 +1,8 @@
+// cities
+export const GET_COMMENT_STORE_SUCCESS = 'GET_COMMENT_STORE_SUCCESS';
+export const GET_COMMENT_STORE_FAIL = 'GET_COMMENT_STORE_FAIL';
+
+
+
+
+

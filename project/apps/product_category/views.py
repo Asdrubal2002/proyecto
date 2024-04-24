@@ -50,7 +50,6 @@ class ListCategoriesStoreView(APIView):
             # Manejar el caso en que la tienda no exista
             return JsonResponse({"error": "Store not found"}, status=404)
 
-
 class CategoryListViewAdmin(APIView):
     permission_classes = (CanEditCategory,)
     permission_classes = (IsAuthenticated,)
@@ -102,7 +101,6 @@ class CategoryListViewAdmin(APIView):
 
         return Response({"categories": result}, status=status.HTTP_200_OK)
 
-
 class CreateCategoryAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -124,7 +122,6 @@ class CreateCategoryAPIView(APIView):
                 {"categories": serializer.data}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class CategoryDeleteAPIView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -154,7 +151,6 @@ class CategoryDeleteAPIView(APIView):
         serializer = CategorieStoreSerializer(remaining_categories, many=True)
 
         return Response({"categories": serializer.data}, status=status.HTTP_200_OK)
-
 
 class CategoryStateAPIView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -208,7 +204,6 @@ class CategoryStateAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
-
 
 class EditCategoryView(APIView):
     permission_classes = (CanEditCategory,)

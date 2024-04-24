@@ -16,6 +16,7 @@ from .views import (
     CreateProductView,
     ProductOptionsView,
     DeleteProductOptionView,
+    ListProductsByCategoryViewAdmin
 )
 
 urlpatterns = [
@@ -39,4 +40,6 @@ urlpatterns = [
     path("create-product/", CreateProductView.as_view()),
     path("options/<slug>", ProductOptionsView.as_view()),
     path("delete-option/<option_id>", DeleteProductOptionView.as_view()),
+    path("product-admin/<storeSlug>/<categorySlug>", ListProductsByCategoryViewAdmin.as_view()),
+
 ]

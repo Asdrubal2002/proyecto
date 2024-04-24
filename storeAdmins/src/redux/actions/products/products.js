@@ -8,7 +8,11 @@ import {
     GET_PRODUCT_OPTIONS_SUCCESS,
     GET_PRODUCT_OPTIONS_FAIL,
     GET_PRODUCTS_OPTIONS_SUCCESS,
-    GET_PRODUCTS_OPTIONS_FAIL
+    GET_PRODUCTS_OPTIONS_FAIL,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_SUCCESS,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL,
+    SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
+    REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -62,7 +66,6 @@ export const get_products_list_page = (page) => async dispatch => {
             'Authorization': `JWT ${localStorage.getItem('access')}`
         }
     };
-    console.log(page)
 
     try {
         const res = await axios.get(`${apiUrl}/api/product/user-products/?p=${page}`, config);
@@ -167,3 +170,76 @@ export const get_products_options = (slugProduct) => async dispatch => {
     }
 }
 
+export const get_products_by_category = (storeSlug, categorySlug) => async dispatch => {
+    dispatch({
+        type:SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/product-admin/${storeSlug}/${categorySlug}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        });
+    }
+}
+
+export const get_products_by_category_page = (storeSlug, categorySlug, page) => async dispatch => {
+    dispatch({
+        type:SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/product-admin/${storeSlug}/${categorySlug}?p=${page}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        });
+    }
+}

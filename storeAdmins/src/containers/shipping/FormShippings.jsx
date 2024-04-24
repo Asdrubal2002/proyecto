@@ -1,9 +1,10 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
-import { get_shippings, create_shippings, delete_shipping } from '../../redux/actions/shipping/shippings';
+import { get_shippings, create_shippings, delete_shipping, change_status_shipping, update_shipping } from '../../redux/actions/shipping/shippings';
 import { Rings } from 'react-loader-spinner';
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { TrashIcon } from '@heroicons/react/24/outline';
+
 
 
 function FormShippings({
@@ -11,7 +12,9 @@ function FormShippings({
   loading,
   shippings,
   create_shippings,
-  delete_shipping
+  delete_shipping,
+  change_status_shipping,
+  update_shipping
 }) {
 
   useEffect(() => {
@@ -32,6 +35,9 @@ function FormShippings({
   const [formErrors, setFormErrors] = useState({});
   const [open, setOpen] = useState(false)
   const [shippingIdToDelete, setShippingIdToDelete] = useState(null);
+  const [editingShippingId, setEditingShippingId] = useState(null);
+  const [messageEdit, setMessageEdit] = useState(false);
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -59,8 +65,6 @@ function FormShippings({
     } else if (formData.price && parseInt(priceWithoutCommas) > 1000000) {
       errors.price = 'El precio no puede ser mayor a 1000000';
     }
-
-
     setFormErrors(errors);
 
     // Si hay errores, detén el envío del formulario
@@ -69,8 +73,21 @@ function FormShippings({
       // Por ejemplo:
       // sendFormData(formData);
 
-      await create_shippings(formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
-      get_shippings()
+
+      if (editingShippingId) {
+        // Llamar a la función para editar la categoría
+        console.log("llega para edición", editingShippingId)
+        update_shipping(editingShippingId,formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
+        get_shippings()
+        
+      } else {
+        // Llamar a la función para crear un nuevo método
+        console.log("llega para creación", editingShippingId)
+
+        await create_shippings(formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
+        get_shippings()
+        setFormData(initialFormData);
+      }
     } else {
       // Si hay errores, no envíes los datos
       console.log('El formulario contiene errores. No se enviará.');
@@ -111,7 +128,36 @@ function FormShippings({
     await delete_shipping(shippingId)
     setOpen(false);
     get_shippings()
-}
+  }
+
+  const handleToggleActive = async (shippingId) => {
+    await change_status_shipping(shippingId)
+    get_shippings()
+  }
+
+  // Función para establecer los valores predefinidos
+  const handleEditModal = (shipping) => {
+    // Establecer los valores predefinidos en el estado formData
+
+    setFormData({
+      name: shipping.name,
+      time_to_delivery: shipping.time_to_delivery,
+      price: shipping.price,
+      additional_notes: shipping.additional_notes
+    });
+
+    setEditingShippingId(shipping.id);
+    setMessageEdit(true)
+  };
+
+  // Función para limpiar el formulario
+  const clearFormData = () => {
+    setFormData(initialFormData);
+    console.log("llega a clearFor", editingShippingId)
+    setMessageEdit(false)
+    setEditingShippingId(null)
+  };
+
 
   return (
     <div>
@@ -182,6 +228,12 @@ function FormShippings({
           >
             Guardar Método
           </button>
+          {
+            messageEdit ? <>
+              <button onClick={() => clearFormData()} className="m-2 text-red-600 dark:text-red-500 text-sm">Cancelar la edición.</button>
+
+            </> : <></>
+          }
         </div>
       </form>
 
@@ -210,6 +262,9 @@ function FormShippings({
                       Notas
                     </th>
                     <th scope="col" className="px-6 py-3">
+                      Estado
+                    </th>
+                    <th scope="col" className="px-6 py-3">
                       Acciones
                     </th>
                   </tr>
@@ -231,10 +286,12 @@ function FormShippings({
                         <td className="px-6 py-4 whitespace-normal text-gray-300">
                           <div className="max-w-xs overflow-hidden overflow-ellipsis ">{shipping.additional_notes}</div>
                         </td>
-
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {shipping.is_active ? "Activo" : "Inactivo"}
+                        </td>
                         <td className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <button onClick={() => handleOpenModal(shipping.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
-                          <button onClick={() => handleEdit(shipping.id)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
+                          <button onClick={() => handleEditModal(shipping)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
                           <button onClick={() => handleToggleActive(shipping.id)} className="text-green-600 dark:text-green-500 hover:underline">{shipping.is_active ? 'Desactivar' : 'Activar'}</button>
                         </td>
                       </tr>
@@ -283,7 +340,7 @@ function FormShippings({
                     </div>
                     <div className="mt-3 text-center sm:mt-5">
                       <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                        ¿Estas seguro?
+                        ¿Estas seguro de eliminar?
                       </Dialog.Title>
                       <div className="mt-2">
                         {/* <p className="text-sm text-gray-500">
@@ -298,7 +355,7 @@ function FormShippings({
                       className="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 sm:text-sm"
                       onClick={() => handleDelete(shippingIdToDelete)}
                     >
-                      Borrar
+                      Si, eliminar
                     </button>
                   </div>
                 </Dialog.Panel>
@@ -314,11 +371,12 @@ function FormShippings({
 const mapStateToProps = state => ({
   shippings: state.Shippings_store.shippings,
   loading: state.Shippings_store.loading_shippings
-
 })
 
 export default connect(mapStateToProps, {
   get_shippings,
   create_shippings,
-  delete_shipping
+  delete_shipping,
+  change_status_shipping,
+  update_shipping
 })(FormShippings)

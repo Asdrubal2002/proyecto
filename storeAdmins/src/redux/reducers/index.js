@@ -9,8 +9,12 @@ import Profile from "./profile/profile";
 import Product_category from "./categories_product/Product_categories";
 import Products from "./products/products";
 import Shippings_store from "./shippings/shippings";
+import Products_ByCategory from "./products/products_by_category";
+import Comments_Store from "./comments/comments_store";
 
-export default combineReducers ({
+
+
+export default combineReducers({
     Alert,
     Auth,
     Profile,
@@ -18,6 +22,9 @@ export default combineReducers ({
     Cities,
     Store,
     Product_category,
+    Products_ByCategory,
     Products,
-    Shippings_store
+    Shippings_store,
+    Comments_Store
+
 })
