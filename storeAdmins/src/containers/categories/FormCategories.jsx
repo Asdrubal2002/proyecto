@@ -73,6 +73,7 @@ function FormCategories({
             // Llamar a la función para crear una nueva categoría
             await create_category(formData.name, slug, formData.parent)
             get_categories()
+
         }
 
         // Aquí puedes agregar lógica adicional después de enviar el formulario si es necesario

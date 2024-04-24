@@ -79,7 +79,7 @@ export const create_category = (
         });
         try {
             const res = await axios.post(`${apiUrl}/api/product_category/create_categories_products/`, body, config);
-
+        
             if (res.status === 201) {
                 dispatch({
                     type: CREATE_CATEGORY_SUCCESS,
@@ -87,7 +87,7 @@ export const create_category = (
                 });
                 dispatch(
                     setAlert('Categoria creada correctamente.', exito));
-            } else if (res.status === 400) {
+            } else {
                 dispatch({
                     type: CREATE_CATEGORY_FAIL
                 });
@@ -97,6 +97,11 @@ export const create_category = (
                 type: REMOVE_CATEGORY_LOADING,
             });
         } catch (err) {
+            if (err.response && err.response.status === 400) {
+                dispatch(setAlert("Ya existe una categoría con este nombre en la tienda.", error));
+            } else {
+                dispatch(setAlert("Error en el servidor.", error));
+            }
             dispatch({
                 type: CREATE_CATEGORY_FAIL
             });
@@ -104,6 +109,7 @@ export const create_category = (
                 type: REMOVE_CATEGORY_LOADING,
             });
         }
+        
 
     }
 }

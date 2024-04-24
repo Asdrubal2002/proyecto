@@ -364,10 +364,10 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p>
-                                            Categorias disponibles
+                                            <p className="bg-stone-800 p-2 rounded-md text-sm font-medium">
+                                                Categorias disponibles
                                             </p>
-                                            
+
                                             <div className="grid grid-cols-1 gap-y-10">
                                                 {/* Contenido de la primera fila */}
                                                 <div className="container mx-auto px-2 py-2">

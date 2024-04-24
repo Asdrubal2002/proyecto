@@ -15,6 +15,8 @@ from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from .permissions import CanEditCategory
+from django.utils.text import slugify
+
 # Create your views here.
 
 
@@ -109,6 +111,29 @@ class CreateCategoryAPIView(APIView):
         if serializer.is_valid():
             # Agregar la tienda del usuario autenticado como propietario de la categoría
             serializer.validated_data["store"] = request.user.store
+
+            # Obtener el nombre de la categoría del serializer
+            name = serializer.validated_data["name"]
+            
+            # Obtener el padre de la categoría del serializer
+            parent = serializer.validated_data.get("parent", None)
+
+            # Si hay un padre, agregamos el slug del padre al slug de la categoría
+            if parent:
+                parent_slug = parent.slug
+                slug = f"{parent_slug}-{slugify(name)}"
+            else:
+                slug = slugify(name)
+
+            # Verificar si ya existe una categoría con el mismo slug en la tienda del usuario
+            if Category.objects.filter(store=request.user.store, slug=slug).exists():
+                return Response(
+                    {"error": "Ya existe una categoría con este nombre en la tienda."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer.validated_data["slug"] = slug
+
             # Crear la categoría
             category = serializer.save()
 
@@ -122,6 +147,7 @@ class CreateCategoryAPIView(APIView):
                 {"categories": serializer.data}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CategoryDeleteAPIView(APIView):
     permission_classes = (IsAuthenticated,)
