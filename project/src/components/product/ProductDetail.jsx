@@ -20,6 +20,7 @@ import { get_product_comments, add_comment_product, delete_comment_product, edit
 import { CommentsProduct } from './CommentsProduct';
 
 
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
@@ -423,7 +424,7 @@ const mapStateToProps = state => ({
     options: state.Products.options,
     related_products: state.Products_By_Category.products,
     loading_products: state.Products_By_Category.loading_products_by_category,
-    comments: state.Comments_Product.comments,
+    comments: state.Comments_Product.comments ? state.Comments_Product.comments.comments : [],
     profile: state.Profile.profile
 })
 

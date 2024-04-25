@@ -15,6 +15,7 @@ export const CommentsProduct = ({ comment, profile, isAuthenticated, delete_comm
         // Aquí puedes implementar la lógica para guardar el comentario editado
         edit_comment_prodcut(editedContent, comment.id)
         setIsEditing(false);
+        setEditedContent('')
     };
 
     const handleCancel = () => {

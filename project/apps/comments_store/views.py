@@ -151,8 +151,8 @@ class ComentUpdateAPIView(generics.UpdateAPIView):
         if serializer.is_valid():
             serializer.save()
 
-            # Obtiene todos los comentarios después de actualizar el comentario
-            comentarios = self.get_queryset()
+            # Obtiene todos los comentarios asociados a la tienda
+            comentarios = Coment_store.objects.filter(store_id=comentario.store_id).order_by("-created")
 
             # Serializa los comentarios
             comentarios_serializer = self.get_serializer(comentarios, many=True)
@@ -163,7 +163,6 @@ class ComentUpdateAPIView(generics.UpdateAPIView):
                 "comments": comentarios_serializer.data,
                 "comments_count": comments_count,
             }
-
 
             return Response(
                 response_data,

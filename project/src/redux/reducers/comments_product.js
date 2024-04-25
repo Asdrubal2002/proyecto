@@ -7,11 +7,15 @@ import {
     DELETE_COMMENT_PRODUCT_FAIL,
     EDIT_COMMENT_PRODUCT_SUCCESS,
     EDIT_COMMENT_PRODUCT_FAIL,
+    SET_PRODUCT_LOADING,
+    REMOVE_PRODUCT_LOADING
 } from "../actions/types";
 
 const initialState = {
     comments: null,
-    comment: null
+    comment: null,
+    loading_product: false,
+
 };
 
 export default function Comments_Product(state = initialState, action) {
@@ -22,7 +26,7 @@ export default function Comments_Product(state = initialState, action) {
         case GET_COMMENT_PRODUCT_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case GET_COMMENT_PRODUCT_FAIL:
@@ -35,7 +39,7 @@ export default function Comments_Product(state = initialState, action) {
             return {
                 ...state,
                 comment: payload.comment,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case ADD_COMMENT_PRODUCT_FAIL:
@@ -47,7 +51,7 @@ export default function Comments_Product(state = initialState, action) {
         case DELETE_COMMENT_PRODUCT_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case DELETE_COMMENT_PRODUCT_FAIL:
@@ -59,13 +63,24 @@ export default function Comments_Product(state = initialState, action) {
         case EDIT_COMMENT_PRODUCT_SUCCESS:
             return {
                 ...state,
-                comments: payload.comments
+                comments: action.payload,
             }
 
         case EDIT_COMMENT_PRODUCT_FAIL:
             return {
                 ...state,
                 error: action.payload,
+            }
+
+        case SET_PRODUCT_LOADING:
+            return {
+                ...state,
+                loading_product: true
+            }
+        case REMOVE_PRODUCT_LOADING:
+            return {
+                ...state,
+                loading_product: false
             }
 
 

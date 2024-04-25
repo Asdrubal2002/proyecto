@@ -364,7 +364,7 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className="bg-stone-800 p-2 rounded-md text-sm font-medium">
+                                            <p className="bg-stone-800 px-4 py-2 rounded-md text-sm font-medium ">
                                                 Categorias disponibles
                                             </p>
 
@@ -393,7 +393,7 @@ const StoreDetail = ({
                                                                     <textarea
                                                                         ref={textareaRef}
                                                                         id="commentTextArea"
-                                                                        className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent"
+                                                                        className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm"
                                                                         placeholder="Cuentanos tu experiencia...."
                                                                         maxLength={200} // Aquí estableces el límite de caracteres
                                                                     ></textarea>

@@ -63,10 +63,10 @@ function EditProduct({
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
-        name: '',
-        description: '',
+        name: product.name,
+        description: product.description,
         category: '',
-        price: '',
+        price: product.price,
         optionPr: '',
         quantity: ''
 

@@ -4,12 +4,16 @@ import ImageGallery from './ImageGallery';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { get_options } from '../../redux/actions/products';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
 import { add_item } from '../../redux/actions/cart';
 import { add_to_wish_list } from '../../redux/actions/wish_list';
-import { HeartIcon } from '@heroicons/react/24/solid';
-import { get_product_comments } from '../../redux/actions/comments_products';
+import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, HeartIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+
+import { Disclosure } from '@headlessui/react'
+import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
+import { CommentsProduct } from './CommentsProduct';
+
 
 
 function ProductModal({
@@ -21,14 +25,25 @@ function ProductModal({
     loadingToCar,
     add_item,
     add_to_wish_list,
-    get_product_comments
+    profile,
+    get_product_comments,
+    comments,
+    comments_count,
+    delete_comment_product,
+    edit_comment_prodcut,
+    add_comment_product,
+    loading_comments
+
 }) {
     const [selectedOption, setSelectedOption] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-
+    const textareaRef = useRef(null);
+    const [buttonText, setButtonText] = useState('¿Que te parecio el producto?');
 
     useEffect(() => {
+        
         get_options(data.slugProduct)
+        get_product_comments(data.slugProduct)
     }, [])
 
     const handleOptionClick = (optionValue) => {
@@ -37,7 +52,6 @@ function ProductModal({
         setErrorMessage(''); // Limpiar cualquier mensaje de error cuando se selecciona una opción
 
     };
-
 
     const renderOptions = () => {
         if (!options || options.every(option => option.quantity === 0)) {
@@ -89,6 +103,35 @@ function ProductModal({
         add_to_wish_list(data.slugProduct)
     };
 
+    const handleComments = async (e) => {
+        e.stopPropagation();
+        // Aquí pued2es llamar a la función deseada al hacer clic en el icono del corazón
+        console.log("asd", data.slugProduct)
+        //await 
+    };
+
+    const handleComment = () => {
+        const productId = data && data.id; // Aquí puedes obtener el ID del store de alguna manera
+        const commentText = textareaRef.current.value;
+
+        // Verificar si el comentario está vacío
+        if (!commentText.trim()) {
+            // Si el comentario está vacío, no hacer nada
+            return;
+        }
+
+        console.log(productId, commentText)
+
+        // Si el comentario no está vacío, llamar a la función add_comment_product
+        add_comment_product(productId, commentText);
+
+        // Limpiar el contenido del textarea
+        textareaRef.current.value = '';
+
+        // Cambiar el texto del botón después de enviar el comentario
+        setButtonText('Gracias por comentarnos');
+    };
+
     return (
         <div>
             <div className="max-w-2xl mx-auto py-10 px-4 sm:py-10 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -121,12 +164,12 @@ function ProductModal({
                                 : <>{renderOptions()}</>}
 
                         </div>
-                        {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-4  flex items-center justify-center">
+                        {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-2  flex items-center justify-center">
                             <p className="text-base font-semibold">{errorMessage}</p>
                         </div>}
                         {
                             isAuthenticated ? <div className="mt-6">
-                                <div className="mt-10 flex sm:flex-col1">
+                                <div className="mt-2 flex sm:flex-col1">
                                     {loadingToCar ? <>
                                         <button className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
                                             <Rings width={20} height={20} color="#fff" radius="6" />
@@ -136,7 +179,7 @@ function ProductModal({
                                             onClick={addItemToCart}
                                             type="submit"
                                             disabled={!options || options.every(option => option.quantity === 0)}
-                                            className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
+                                            className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-2 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
                                             Agregar al carrito
                                         </button>
 
@@ -155,25 +198,96 @@ function ProductModal({
                                 </div>
                             </div>
                                 : <>
-                                  <div className="mt-6">
-                                            <div className="mt-10 flex sm:flex-col1">
-                                                <Link
-                                                    to={'/login'}
-                                                    className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
-                                                >
-                                                    Iniciar sesión
-                                                </Link>
-                                                <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-100 hover:text-gray-500">
-                                                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                                                    <span className="sr-only">Add to favorites</span>
-                                                </Link>
-                                            </div>
+                                    <div className="mt-6">
+                                        <div className="mt-10 flex sm:flex-col1">
+                                            <Link
+                                                to={'/login'}
+                                                className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
+                                            >
+                                                Iniciar sesión
+                                            </Link>
+                                            <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-100 hover:text-gray-500">
+                                                <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                                                <span className="sr-only">Add to favorites</span>
+                                            </Link>
                                         </div>
+                                    </div>
                                 </>
                         }
-
                     </div>
                 </div>
+                <section aria-labelledby="details-heading" className="mt-4">
+                    <Disclosure>
+                        <Disclosure.Button className="pb-2" onClick={handleComments}>
+                            <p className="hover:bg-stone-800 p-2 rounded-md text-sm font-medium">
+                                {comments_count}  Comentarios del producto
+                            </p>
+                        </Disclosure.Button>
+                        <Disclosure.Panel className="text-gray-500">
+                            {isAuthenticated ? <div>
+                                {
+                                    profile.firs_name == null ? (
+                                        <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
+                                            <p className="text-center text-gray-200 mb-2 font-sm">No puedes comentar, no tienes perfil creado.</p>
+                                            <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
+                                                <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+                                                Ir al perfil del usuario
+                                                {/* <span className="text-xs bg-red-500 text-white font-semibold rounded-full px-2 text-center ml-2">{cart_count}</span> */}
+                                            </Link>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-start pb-5">
+                                            <div className="flex flex-col w-full">
+                                                <textarea
+                                                    ref={textareaRef}
+                                                    id="commentTextArea"
+                                                    className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-800 border-0 outline-none border-transparent text-sm"
+                                                    placeholder="Cuentanos tu experiencia...."
+                                                    maxLength={200} // Aquí estableces el límite de caracteres
+                                                ></textarea>
+
+                                                <button
+                                                    onClick={() => {
+                                                        handleComment();
+                                                    }}
+                                                    disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
+
+                                                    className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
+                                                >
+                                                    {buttonText}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    )
+                                }
+                            </div> : <></>}
+                            {
+                                loading_comments ? <>
+                                </> : <div className="max-h-96 overflow-y-auto scrollbar-style">
+                                    {comments && Array.isArray(comments) && comments.length === 0 ? (
+                                        <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
+                                            <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
+                                            <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
+                                        </div>
+                                    ) : (
+                                        Array.isArray(comments) && comments.map((comment, index) => (
+                                            <div key={index}>
+                                                <CommentsProduct
+                                                    comment={comment}
+                                                    profile={profile}
+                                                    isAuthenticated={isAuthenticated}
+                                                    delete_comment_product={delete_comment_product}
+                                                    edit_comment_prodcut={edit_comment_prodcut}
+                                                />
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            }
+                        </Disclosure.Panel>
+                    </Disclosure>
+                </section>
             </div>
         </div>
     )
@@ -183,6 +297,13 @@ const mapStateToProps = state => ({
     options: state.Products.options,
     loading: state.Products.loading_product,
     loadingToCar: state.Cart.loading_to_car,
+    profile: state.Profile.profile,
+    comments: state.Comments_Product.comments ? state.Comments_Product.comments.comments : [],
+    comments_count: state.Comments_Product.comments ? state.Comments_Product.comments.comments_count : 0,
+    loading_comments: state.Comments_Product.loading_product
+
+
+
 
 
 
@@ -192,6 +313,9 @@ export default connect(mapStateToProps, {
     get_options,
     add_item,
     add_to_wish_list,
-    get_product_comments
+    get_product_comments,
+    delete_comment_product,
+    edit_comment_prodcut,
+    add_comment_product
 })(ProductModal)
 

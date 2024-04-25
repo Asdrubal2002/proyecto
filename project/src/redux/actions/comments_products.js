@@ -9,7 +9,9 @@ import {
     EDIT_COMMENT_PRODUCT_SUCCESS,
     EDIT_COMMENT_PRODUCT_FAIL,
     SET_PRODUCTS_LOADING,
-    REMOVE_PRODUCTS_LOADING
+    REMOVE_PRODUCTS_LOADING,
+    SET_PRODUCT_LOADING,
+    REMOVE_PRODUCT_LOADING
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -17,7 +19,7 @@ const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const get_product_comments = (SlugProduct) => async dispatch => {
     dispatch({
-        type: SET_PRODUCTS_LOADING
+        type: SET_PRODUCT_LOADING
     });
 
     const config = {
@@ -39,14 +41,14 @@ export const get_product_comments = (SlugProduct) => async dispatch => {
             });
         }
         dispatch({
-            type: REMOVE_PRODUCTS_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     } catch (err) {
         dispatch({
             type: GET_COMMENT_PRODUCT_FAIL
         });
         dispatch({
-            type: REMOVE_PRODUCTS_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     }
 }

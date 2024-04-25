@@ -11,8 +11,8 @@ import {
     REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
     GET_PRODUCT_SUCCESS,
     GET_PRODUCT_FAIL,
-    SET_PRODUCT_SUCCESS_LOADING,
-    REMOVE_PRODUCT_FAIL_LOADING,
+    SET_PRODUCT_LOADING,
+    REMOVE_PRODUCT_LOADING,
     GET_OPTIONS_SUCCESS,
     GET_OPTIONS_FAIL
      } from './types';
@@ -59,7 +59,7 @@ export const get_products = (storeSlug) => async dispatch => {
 
 export const get_options = (storeSlug) => async dispatch => {
     dispatch({
-        type:SET_PRODUCT_SUCCESS_LOADING
+        type:SET_PRODUCT_LOADING
     });
 
     const config = {
@@ -82,14 +82,14 @@ export const get_options = (storeSlug) => async dispatch => {
             });
         }
         dispatch({
-            type: REMOVE_PRODUCT_FAIL_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     } catch (err) {
         dispatch({
             type: GET_OPTIONS_FAIL
         });
         dispatch({
-            type: REMOVE_PRODUCT_FAIL_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     }
 }
@@ -207,7 +207,7 @@ export const get_products_by_category_page = (storeSlug, categorySlug, page) => 
 
 export const get_product = (slugProduct) => async dispatch => {
     dispatch({
-        type:SET_PRODUCT_SUCCESS_LOADING
+        type:SET_PRODUCT_LOADING
     });
 
     const config = {
@@ -230,14 +230,14 @@ export const get_product = (slugProduct) => async dispatch => {
             });
         }
         dispatch({
-            type: REMOVE_PRODUCT_FAIL_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     } catch (err) {
         dispatch({
             type: GET_PRODUCT_FAIL
         });
         dispatch({
-            type: REMOVE_PRODUCT_FAIL_LOADING
+            type: REMOVE_PRODUCT_LOADING
         });
     }
 }

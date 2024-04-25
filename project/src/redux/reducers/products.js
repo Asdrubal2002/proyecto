@@ -1,8 +1,8 @@
 import {
     GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAIL, SET_PRODUCTS_LOADING, REMOVE_PRODUCTS_LOADING, GET_PRODUCT_SUCCESS,
     GET_PRODUCT_FAIL,
-    SET_PRODUCT_SUCCESS_LOADING,
-    REMOVE_PRODUCT_FAIL_LOADING,
+    SET_PRODUCT_LOADING,
+    REMOVE_PRODUCT_LOADING,
     GET_OPTIONS_SUCCESS,
     GET_OPTIONS_FAIL
 } from "../actions/types";
@@ -33,12 +33,12 @@ export default function Products(state = initialState, action) {
                 loading_products: false
             }
 
-        case SET_PRODUCT_SUCCESS_LOADING:
+        case SET_PRODUCT_LOADING:
             return {
                 ...state,
                 loading_product: true
             }
-        case REMOVE_PRODUCT_FAIL_LOADING:
+        case REMOVE_PRODUCT_LOADING:
             return {
                 ...state,
                 loading_product: false
