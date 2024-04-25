@@ -19,11 +19,13 @@ import LoadingStores from '../home/LoadingStores';
 import { get_product_comments, add_comment_product, delete_comment_product, edit_comment_prodcut } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
 
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 function ProductDetail({
+    
     get_product,
     get_options,
     product,
@@ -63,8 +65,6 @@ function ProductDetail({
 
     };
 
-
-    //8:35:29
     const addItemToCart = async () => {
         if (!options || options.length === 0) {
             // Si el producto no tiene opciones, llamar directamente a addItemToCart sin seleccionar una opción
@@ -78,7 +78,7 @@ function ProductDetail({
             return; // Salir de la función si no se ha seleccionado ninguna opción
         }
         // Lógica para agregar el producto al carrito con la opción seleccionada
-        add_item(selectedOption.id)
+        await add_item(selectedOption.id)
         //navigate(`/store/${product.category.store.slug}`);
         window.scrollTo(0, 1200);
 
@@ -246,25 +246,11 @@ function ProductDetail({
                                 </div>
                                 {/* Reviews */}
                                 <div className="mt-3">
-                                    <h3 className="sr-only">Reviews</h3>
+                                    <h3 className="sr-only">options</h3>
 
                                     {renderOptions()}
 
-                                    {/* <div className="flex items-center">
-                                    <div className="flex items-center">
-                                        {[0, 1, 2, 3, 4].map((rating) => (
-                                            <StarIcon
-                                                key={rating}
-                                                className={classNames(
-                                                    product.rating > rating ? 'text-indigo-500' : 'text-gray-300',
-                                                    'h-5 w-5 flex-shrink-0'
-                                                )}
-                                                aria-hidden="true"
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="sr-only"> out of 5 stars</p>
-                                </div> */}
+                                  
                                 </div>
                                 {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-4  flex items-center justify-center">
                                     <p className="text-base font-semibold">{errorMessage}</p>
