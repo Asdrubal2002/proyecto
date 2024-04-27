@@ -4,17 +4,26 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom'
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { HeartIcon } from '@heroicons/react/24/outline';
 import { add_to_wish_list } from '../../redux/actions/wish_list';
 import { useEffect, useState, Fragment } from 'react';
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
 import ProductModal from './ProductModal';
+import { CurrencyDollarIcon, HeartIcon  } from '@heroicons/react/24/solid';
+import DOMPurify from 'dompurify'
 
 
 
 function dataCard({ data, index, add_to_wish_list, isAuthenticated }) {
 
   const [open, setOpen] = useState(false)
+
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return `${text.slice(0, maxLength)}...`;
+    } else {
+      return text;
+    }
+  };
 
 
   const hasImages = data && data.images && data.images.length > 0;
@@ -48,12 +57,14 @@ function dataCard({ data, index, add_to_wish_list, isAuthenticated }) {
           <button onClick={e => setOpen(true)} className="w-full h-full p-4 hover:bg-opacity-100 focus:bg-opacity-100">
             <div className="flex flex-col items-start">
               <h3 className="text-lg font-medium text-gray-300">{data.name}</h3>
-              <p className="text-sm text-gray-400 ">{data.description.length > 150 ? `${data.description.slice(0, 30)}...` : data.description}</p>
+              {/* <p className="text-sm text-gray-400 ">{data.description.length > 150 ? `${data.description.slice(0, 30)}...` : data.description}</p> */}
+              <p className="text-sm text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && truncateText(data.description, 40)) }}></p>
+
               <div className="flex justify-between items-center w-full mt-1">
-                <span className="text-md font-semibold text-gray-200">${data.price}</span>
+                <span className="text-md font-semibold text-gray-200 flex"> <CurrencyDollarIcon className="w-6 h-6 text-green-500" />{data.price}</span>
                 <div className="flex items-center">
-                  <button className="text-gray-400 hover:text-red-500 focus:outline-none" onClick={(e) => { e.preventDefault(); add_to_wish_list(data.slugProduct); }}>
-                    <HeartIcon className="w-8 h-8" />
+                  <button className="text-red-600 hover:text-red-300 focus:outline-none" onClick={(e) => { e.preventDefault(); add_to_wish_list(data.slugProduct); }}>
+                    <HeartIcon className="w-8 h-8 " />
                   </button>
                   <span className="text-gray-400 ml-1">{data.likes}</span> {/* Muestra el número de likes al lado del botón */}
                 </div>

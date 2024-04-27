@@ -8,11 +8,12 @@ import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
 import { add_item } from '../../redux/actions/cart';
 import { add_to_wish_list } from '../../redux/actions/wish_list';
-import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, HeartIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, HeartIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon } from '@heroicons/react/24/solid';
 
 import { Disclosure } from '@headlessui/react'
 import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
+import DOMPurify from 'dompurify'
 
 
 
@@ -40,8 +41,11 @@ function ProductModal({
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('¿Que te parecio el producto?');
 
+    const [selectedOptionId, setSelectedOptionId] = useState(null);
+
+
     useEffect(() => {
-        
+
         get_options(data.slugProduct)
         get_product_comments(data.slugProduct)
     }, [])
@@ -63,18 +67,32 @@ function ProductModal({
         }
 
         return (
-            <div>
-                <h2 className="text-lg font-semibold mb-2">Escoge tu opción</h2>
-                {options.filter(option => option.quantity > 0).map((option, index) => (
-                    <button
-                        key={index}
-                        className="inline-block bg-gray-800 text-white rounded-lg px-4 py-2 m-1 hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-400"
-                        onClick={() => handleOptionClick(option)} // Manejador de clic para la opción
-                    >
-                        {option.option.value}
-                    </button>
-                ))}
-            </div>
+            <>
+
+                <h2 className="text-sm font-semibold mb-2">¿Que prefieres?</h2>
+                <div className='grid gap-3 grid-cols-1 sm:grid-cols-2'>
+
+                    {options.filter(option => option.quantity > 0).map((option, index) => (
+                        <div
+                            key={index}
+                            className={`inline-block ${option.id === selectedOptionId ? 'ring ring-azul_corp' : 'bg-stone-700'} p-2 rounded-md shadow-md transition-transform transform hover:scale-105 cursor-pointer`}
+                            onClick={() => {
+                                handleOptionClick(option);
+                                setSelectedOptionId(option.id); // Actualizamos selectedOptionId al hacer clic en una opción
+                            }}
+                        >
+                            <div className={`inline-block w-4 h-4 rounded-full border-box mr-3 ${option.id === selectedOptionId ? 'bg-azul_corp text-white' : 'border border-gray-300'}`}>
+                                {option.id === selectedOptionId && <CheckIcon className="h-3 w-3 m-0.5" />}
+                            </div>
+                            <label htmlFor={`option_${index}`} className="text-sm text-gray-200">
+                                <span className="font-semibold">{option.option.value}</span>
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </>
+
+
         );
     };
 
@@ -147,14 +165,15 @@ function ProductModal({
 
                         <h1 className="text-3xl font-semibold tracking-tight text-gray-200">{data && data.name}</h1>
 
-                        <div className="mt-3">
+                        <div className="mt-3 ">
                             <h2 className="sr-only">data information</h2>
-                            <p className="text-3xl text-gray-300">$ {data && data.price}</p>
+                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.price}</p>
                         </div>
 
                         <div className="mt-6">
                             <h3 className="sr-only">Description</h3>
-                            <div className="text-base text-gray-300 space-y-6" dangerouslySetInnerHTML={{ __html: data && data.description }} />
+                            <p className="text-base text-gray-300 " dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
+
                         </div>
 
                         <div className="mt-3">

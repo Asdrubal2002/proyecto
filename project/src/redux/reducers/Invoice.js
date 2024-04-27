@@ -8,7 +8,6 @@ import {
 } from "../actions/types";
 
 const initialState = {
-    invoices: null,
     loading: false,
     invoices: []
 };

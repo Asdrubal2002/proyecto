@@ -10,6 +10,9 @@ import axios from "axios"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
 import { get_categories } from '../../redux/actions/categories_product/categories_product';
 import FormCategories from '../categories/FormCategories';
+import DOMPurify from 'dompurify'
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 function EditProduct({
@@ -51,6 +54,7 @@ function EditProduct({
 
     const [openAddCategory, setOpenAddCategory] = useState(false)
 
+    const [descriptionContent, setDescriptionContent] = useState('')
 
 
 
@@ -63,10 +67,10 @@ function EditProduct({
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
-        name: product.name,
-        description: product.description,
+        name: '',
+        description: '',
         category: '',
-        price: product.price,
+        price: '',
         optionPr: '',
         quantity: ''
 
@@ -104,6 +108,7 @@ function EditProduct({
                 'Authorization': `JWT ${localStorage.getItem('access')}`
             }
         };
+
 
         const formData = new FormData()
         formData.append('name', name)
@@ -392,12 +397,12 @@ function EditProduct({
                                     {product && product.name} - {product && product.category.name}
                                 </h3>
                                 <p className="mt-1 flex items-center text-sm text-gray-500">
-                                    {product&&product.is_active ? (
+                                    {product && product.is_active ? (
                                         <CheckCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400" aria-hidden="true" />
                                     ) : (
                                         <XCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-red-400" aria-hidden="true" />
                                     )}
-                                    {product&&product.is_active ? 'Activo' : 'Inactivo'}
+                                    {product && product.is_active ? 'Activo' : 'Inactivo'}
                                 </p>
                             </div>
                             <div className="mt-4 sm:ml-4 flex-shrink-0 flex flex-wrap">
@@ -560,11 +565,47 @@ function EditProduct({
                                 </div>
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Descripción</dt>
-                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                    <dd className="mt-1 flex text-sm text-gray-800 sm:col-span-2 sm:mt-0">
                                         {updateDescription ? (
                                             <>
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
-                                                    <textarea
+                                                    <div className='mt-1 p-2 rounded-md w-full focus:outline-none text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900'>
+                                                    <CKEditor editor={ClassicEditor} 
+                                                    className=""
+                                                        data={description}
+                                                        onChange={(event, editor) => {
+                                                            const data = editor.getData();
+                                                            onChange({ target: { name: 'description', value: data } });
+                                                        }}
+                                                        config={{
+                                                            toolbar: {
+                                                                items: [
+                                                                    //'heading', '|',
+                                                                    //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
+                                                                    'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
+                                                                    //'fontSize', '|', // Tamaño del texto
+                                                                    //'alignment', '|', // Alineación del texto
+                                                                    //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
+                                                                    //'indent', 'outdent', '|', // Aumentar y disminuir sangría
+                                                                    //'undo', 'redo' // Deshacer y rehacer
+                                                                ]
+                                                            },
+                                                            // fontSize: {
+                                                            //     options: [
+                                                            //         'default',
+                                                            //         '9pt',
+                                                            //         '11pt',
+                                                            //         '14pt',
+                                                            //         '18pt',
+                                                            //         '24pt',
+                                                            //         '36pt'
+                                                            //     ]
+                                                            // }
+                                                        }}
+                                                    />
+                                                    </div>
+                                                    
+                                                    {/* <textarea 
                                                         value={description}
                                                         onChange={e => onChange(e)}
                                                         name='description'
@@ -572,15 +613,18 @@ function EditProduct({
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nueva descripción'
-                                                    />
+                                                    />  */}
                                                     {/* Mensaje de error si el campo de descripción está vacío */}
                                                     {description === '' && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
                                                     )}
+                                                      {description.length > 500 && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">La descripción excede 500 caracteres</span>
+                                                    )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            disabled={description === '' || description.length > 400} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
+                                                            disabled={description === '' || description.length > 500} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
                                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
@@ -598,7 +642,8 @@ function EditProduct({
                                             </>
                                         ) : (
                                             <>
-                                                <span className="flex-grow">{product && product.description}</span>
+
+                                                <span className="flex-grow text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description) }} />
                                                 <button
                                                     onClick={() => setUpdateDescription(true)}
                                                     className="ml-2 px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "

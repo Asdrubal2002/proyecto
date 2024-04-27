@@ -127,7 +127,6 @@ function Products({
         {hasShippingOptions ? (
           // Renderizar opciones de envío si hay
           <div className='mb-5 grid gap-6 grid-cols-1 sm:grid-cols-2'>
-
             {shipping.map((shipping, index) => (
               <div
                 key={index}

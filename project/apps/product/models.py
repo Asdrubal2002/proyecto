@@ -6,6 +6,7 @@ import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.store.models import Store
 
+from ckeditor.fields import RichTextField
 
 User = settings.AUTH_USER_MODEL
 import os
@@ -26,7 +27,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    description = models.TextField(max_length=700, blank=True)
+    description = RichTextField()
     # Elimina la línea de photo aquí, ya que se manejará en otro modelo
     slugProduct = models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
     price = models.PositiveIntegerField(validators=[

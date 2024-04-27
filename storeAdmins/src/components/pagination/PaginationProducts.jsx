@@ -12,7 +12,7 @@ const PaginationProducts = ({ currentPage, totalCount, pageSize, onPageChange })
                     key={number}
                     onClick={() => onPageChange(number)}
                     aria-current={currentPage === number ? 'page' : undefined}
-                    className={`mx-1 border-gray-300 text-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium ${currentPage === number ? 'font-bold' : ''}`}
+                    className={`mx-1 border-gray-400 text-gray-400 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium ${currentPage === number ? 'font-bold' : ''}`}
                 >
                     {number}
                 </button>

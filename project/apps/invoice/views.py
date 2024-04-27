@@ -31,8 +31,16 @@ class UserInvoicesAPIView(APIView):
         user_invoices = Invoice.objects.filter(buyer__user=request.user).order_by('-created_at')
         
         serializer = InvoiceSerializer(user_invoices, many=True)
+
+        invoices_count = len(user_invoices)
+
+        response_data = {
+            "invoices": serializer.data,
+            "invoices_count": invoices_count,
+        }
+
         # Retornar la lista de facturas en formato JSON
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 def send_invoice_email(invoice, user):
     subject = 'Confirmación de Compra - Orden #{}'.format(invoice.transaction_number)
@@ -138,26 +146,14 @@ class AddInvoiceAPIView(APIView):
             invoice.total_amount = total_amount
             invoice.save()
 
-            # Genera el informe PDF
-            # pdf_data = self.generate_invoice_pdf(invoice)
-
-            # # Guarda el PDF en la carpeta del usuario
-            # user_folder = os.path.join('invoices', f'user_{request.user.email}')
-            # if not os.path.exists(user_folder):
-            #     os.makedirs(user_folder)
-            # pdf_path = os.path.join(user_folder, f'invoice_{invoice.transaction_number}.pdf')
-            # with open(pdf_path, 'wb') as f:
-            #     f.write(pdf_data)
-
-            # # Guarda la ruta del PDF en el campo pdf_path de la factura
-            # invoice.pdf_path = pdf_path
-            invoice.save()
-
             # Envía el correo electrónico
             send_invoice_email(invoice, request.user)
 
             # Elimina el carrito
-            cart.delete()
+            #cart.delete()
+            # Desactiva el carrito en lugar de eliminarlo
+            cart.is_active = False
+            cart.save()
 
             # Devuelve la URL del PDF para descargar
             #pdf_url = f'/{pdf_path}'

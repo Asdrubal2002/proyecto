@@ -8,9 +8,10 @@ import { get_user_profile } from '../redux/actions/profile';
 import { get_user_carts } from '../redux/actions/cart';
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
-
-
 import { check_authenticated, load_user, refresh } from '../redux/actions/auth';
+import { get_user_invoices } from '../redux/actions/Invoice';
+
+
 
 const Layout = (props) => {
 
@@ -20,6 +21,7 @@ const Layout = (props) => {
         props.load_user();
         props.get_user_profile();
         props.get_user_carts()
+        props.get_user_invoices()
     }, []);
 
     return (
@@ -41,4 +43,5 @@ export default connect(null, {
     refresh,
     get_user_profile,
     get_user_carts,
+    get_user_invoices,
 })(Layout)

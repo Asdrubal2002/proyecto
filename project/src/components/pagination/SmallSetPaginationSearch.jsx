@@ -44,7 +44,7 @@ function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
             if (active === page) {
                 content = (
                     <div key={i} className={`hidden md:-mt-px md:flex`}>
-                        <div className="border-gray-700 text-gray-700 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
+                        <div className="border-gray-400 text-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
                             {pageNumber}
                         </div>
                     </div>
@@ -54,7 +54,7 @@ function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
                     <div key={i} onClick={() => {
                         visitPage(page)
                     }} className={`hidden md:-mt-px md:flex`}>
-                        <div className="cursor-pointer border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
+                        <div className="cursor-pointer border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
                             {pageNumber}
                         </div>
                     </div>
@@ -74,7 +74,7 @@ function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
                     <div className="-mt-px w-0 flex-1 flex">
                         <div
                             onClick={() => { previous_number() }}
-                            className="cursor-pointer border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            className="cursor-pointer border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-300 hover:border-gray-300"
                         >
                             <ArrowLeftCircleIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                             Anterior
@@ -83,9 +83,8 @@ function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
                     :
                     <div className="-mt-px w-0 flex-1 flex">
                         <div
-                            className="cursor-pointer border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            className="cursor-pointer border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-300 hover:border-gray-400"
                         >
-
                         </div>
                     </div>
             }
@@ -99,7 +98,7 @@ function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
                     <div className="-mt-px w-0 flex-1 flex justify-end">
                         <button
                             onClick={() => { next_number() }}
-                            className="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            className="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-300 hover:border-gray-300"
                         >
                             Siguiente
                             <ArrowRightCircleIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />

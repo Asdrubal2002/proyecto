@@ -24,7 +24,7 @@ class view_user_carts(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        carts = Cart.objects.filter(user=user)
+        carts = Cart.objects.filter(user=user, is_active=True)
 
         serializer = CartSerializer(carts, many=True)
 

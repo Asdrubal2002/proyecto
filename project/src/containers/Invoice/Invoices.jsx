@@ -8,7 +8,7 @@ import { Link, Navigate } from 'react-router-dom';
 
 import { get_user_invoices } from '../../redux/actions/Invoice';
 import { Rings } from 'react-loader-spinner';
-import { CheckIcon, ExclamationCircleIcon, MapIcon, MapPinIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ExclamationCircleIcon, MapIcon, MapPinIcon, PaperAirplaneIcon, TrashIcon } from '@heroicons/react/24/outline';
 import NoFoundCarts from '../Cart/NoFoundCarts';
 
 
@@ -47,13 +47,16 @@ function Invoices({
                         <div className="mx-auto max-w-2xl sm:text-center">
                             <h2 className="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">Centro de ordenes</h2>
                         </div>
-                        {invoices.map((invoice) => (
+                        {invoices && invoices.map((invoice) => (
                             <div key={invoice.id} className="mx-auto mt-10 max-w-2xl rounded-3xl sm:mt-10 lg:mx-0 lg:flex lg:max-w-none bg-stone-900">
                                 <div className="p-8 sm:p-10 lg:flex-auto">
                                     <div className="flex items-center">
                                         <Link to={`/store/${invoice.store.slug}`} className="flex items-center flex-grow">
                                             <h3 className="text-2xl font-bold tracking-tight text-gray-300">{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
                                         </Link>
+                                        <button className="ml-2 text-gray-400" >
+                                            <TrashIcon className="w-6 h-6" />
+                                        </button>
                                     </div>
 
                                     <div className="mt-10 flex items-center gap-x-4">
@@ -115,7 +118,7 @@ function Invoices({
 
                             </div>
                         ))}
-                        {invoices.length === 0 && <NoFoundCarts />}
+                        {invoices && invoices.length === 0 && <NoFoundCarts />}
 
                     </div>
                 </div>
@@ -129,9 +132,8 @@ function Invoices({
 
 const mapStateToProps = state => ({
     isAuthenticated: state.Auth.isAuthenticated,
-    invoices: state.Invoice.invoices,
+    invoices: state.Invoice.invoices.invoices,
     loading: state.Invoice.loading
-
 
 })
 

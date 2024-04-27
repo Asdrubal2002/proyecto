@@ -36,11 +36,11 @@ const navigation = {
                     items: [
                         { name: 'Datos personales', to: '/dashboard' },
                         { name: 'Facturas', to: '/invoices' },
-                       
-                       
+
+
                     ],
                 },
-                
+
                 {
                     id: 'product',
                     name: 'Productos',
@@ -125,7 +125,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-function Navbar({ isAuthenticated, user, logout, cart_count }) {
+function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
     const [open, setOpen] = useState(false)
     const [redirect, setRedirect] = useState(false);
 
@@ -200,7 +200,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count }) {
                                             <Tab.Panels as={Fragment}>
                                                 {navigation.categories.map((category) => (
                                                     <Tab.Panel key={category.name} className="space-y-10 px-4 pb-8 pt-10">
-                                                        
+
                                                         <div className="grid grid-cols-2 gap-x-4">
                                                             {category.featured.map((item) => (
                                                                 <div key={item.name} className="group relative text-sm">
@@ -438,14 +438,15 @@ function Navbar({ isAuthenticated, user, logout, cart_count }) {
                                                     <span className="sr-only">items in cart, view bag</span>
                                                 </Link>
                                             </div>
-                                            
+
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/invoices'} className="group -m-2 flex items-center p-2">
                                                     <ClipboardDocumentCheckIcon
                                                         className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                                                         aria-hidden="true"
                                                     />
-                                                   
+                                                    <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp_ho text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>
+
                                                 </Link>
                                             </div>
 
@@ -585,7 +586,8 @@ function Navbar({ isAuthenticated, user, logout, cart_count }) {
 const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
     user: state.Auth.user,
-    cart_count: state.Cart.carts.cart_count
+    cart_count: state.Cart.carts.cart_count,
+    invoice_count: state.Invoice.invoices.invoices_count
 });
 
 export default connect(mapStateToProps, {
