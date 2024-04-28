@@ -200,6 +200,11 @@ export const REMOVE_LOADER_INVOICE = 'REMOVE_LOADER_INVOICE';
 export const INVOICES_SUCCESS = 'INVOICES_SUCCESS';
 export const INVOICES_FAIL = 'INVOICES_FAIL';
 
+export const INVOICES_SUCCESS_DELETE = 'INVOICES_SUCCESS_DELETE';
+export const INVOICES_FAIL_DELETE = 'INVOICES_FAIL_DELETE';
+
+
+
 // Comentatios products ******************************************************* 
 
 export const GET_COMMENT_PRODUCT_SUCCESS = 'GET_COMMENT_PRODUCT_SUCCESS';

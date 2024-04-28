@@ -445,7 +445,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                         className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                                                         aria-hidden="true"
                                                     />
-                                                    <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp_ho text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>
+                                                    <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>
 
                                                 </Link>
                                             </div>

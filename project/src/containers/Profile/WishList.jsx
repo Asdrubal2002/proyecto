@@ -3,7 +3,7 @@ import Layout from '../../hocs/Layout'
 import { get_user_wish_list } from '../../redux/actions/wish_list'
 import { connect } from "react-redux";
 import ProductCard from '../../components/product/ProductCard'
-import { Rings } from 'react-loader-spinner';
+import { InfinitySpin, Rings } from 'react-loader-spinner';
 import NoFoundCarts from '../Cart/NoFoundCarts';
 import { Helmet } from 'react-helmet';
 import { Link, Navigate } from 'react-router-dom';
@@ -69,7 +69,7 @@ const WishList = ({
                       
                         <div className="lg:col-span-3">
                             {loading ? (
-                                <Rings width={80} height={80} color="#fff" radius="6" />
+                               <InfinitySpin width={200} height={200} color="#fff" radius="6" />
                             ) : (
                                 <>
                                     <div className="mx-auto max-w-2xl lg:max-w-7xl lg:px-8">

@@ -39,17 +39,13 @@ class view_user_carts(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-def crear_item_carrito(product_option_id, user):
+def crear_item_carrito(product_option_id, user, cart):
     try:
         # Obtener la instancia de ProductOption
         product_option = ProductOption.objects.get(id=product_option_id)
 
         # Verificar si la cantidad disponible es mayor que cero
         if product_option.quantity > 0:
-            # Verificar si el usuario tiene un carrito asociado a la tienda
-            store = product_option.product.category.store
-            cart, created = Cart.objects.get_or_create(user=user, store=store)
-
             # Verificar si ya existe un ítem con el mismo número de producto en el carrito
             item_carrito, created = ItemCarrito.objects.get_or_create(product_option=product_option, cart=cart)
 
@@ -85,7 +81,17 @@ class AddToCart(APIView):
         if not product_option:
             return Response({'error': 'La cantidad del ítem seleccionado es 0. No se pudo agregar al carrito.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        item_carrito, created = crear_item_carrito(product_option_id, user)
+        # Verificar si el usuario tiene un carrito activo para la tienda del producto
+        store = product_option.product.category.store
+        cart = Cart.objects.filter(user=user, store=store, is_active=True).first()
+
+        if cart:
+            # El usuario tiene un carrito activo, procedemos como antes
+            item_carrito, created = crear_item_carrito(product_option_id, user, cart)
+        else:
+            # El usuario no tiene un carrito activo, creamos uno nuevo
+            cart = Cart.objects.create(user=user, store=store, is_active=True)
+            item_carrito, created = crear_item_carrito(product_option_id, user, cart)
 
         if created:
             return Response({'message': 'El ítem fue agregado al carrito correctamente'}, status=status.HTTP_201_CREATED)

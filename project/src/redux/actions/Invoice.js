@@ -5,14 +5,16 @@ import {
     SET_LOADER_INVOICE,
     REMOVE_LOADER_INVOICE,
     INVOICES_SUCCESS,
-    INVOICES_FAIL
+    INVOICES_FAIL,
+    INVOICES_SUCCESS_DELETE,
+    INVOICES_FAIL_DELETE
 } from './types';
 
 import { setAlert } from './alert';
 
 const exito = '#00B906';
 
-const error = '#bb2929';
+const errorC = '#bb2929';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -82,8 +84,7 @@ export const add_invoice = (profile, storeP, shipping_id, location, cartP) => as
     }
 }
 
-
-export const get_user_invoices = () => async dispatch => {  
+export const get_user_invoices = () => async dispatch => {
     dispatch({
         type: SET_LOADER_INVOICE,
     });
@@ -128,6 +129,62 @@ export const get_user_invoices = () => async dispatch => {
             // Por ejemplo, redireccionar a la página de inicio de sesión
             // O mostrar un mensaje de error al usuario
             // ...
+        }
+    } finally {
+        // Cerrar la conexión de manera controlada si es necesario
+        console.log("Proceso finalizado, conexión cerrada");
+    }
+}
+
+export const remove_invoice = (IdInvoice) => async dispatch => {
+    dispatch({
+        type: SET_LOADER_INVOICE,
+    });
+    try {
+        const accessToken = localStorage.getItem('access');
+
+        const invoice_id = IdInvoice;
+        const body = JSON.stringify({ invoice_id });
+
+        if (!accessToken) {
+            throw new Error('No hay token de acceso disponible');
+        }
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `JWT ${accessToken}`,
+            },
+            data: body
+        };
+        const res = await axios.delete(`${apiUrl}/api/invoice/delete_invoice`, config);
+        // Manejar la respuesta exitosa aquí si es necesario
+        if (res.status === 204) {
+            dispatch({
+                type: INVOICES_SUCCESS_DELETE,
+                payload: res.data,
+            });
+        } else {
+            dispatch({
+                type: INVOICES_FAIL_DELETE
+            });
+        }
+        dispatch({
+            type: REMOVE_LOADER_INVOICE,
+        });
+    } catch (error) {
+        console.error("Error al agregar el producto al carrito:", error);
+
+        // Manejar el error de autorización específicamente
+        if (error.response && error.response.status === 400) {
+            dispatch(setAlert("Tu pedido ya esta en proceso. No lo puedes eliminar.", errorC));
+            dispatch({
+                type: INVOICES_FAIL_DELETE
+            });
+            dispatch({
+                type: REMOVE_LOADER_INVOICE,
+            });
         }
     } finally {
         // Cerrar la conexión de manera controlada si es necesario

@@ -21,15 +21,15 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 
 
-
-
 class UserInvoicesAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Obtener todas las facturas del usuario actual
-        user_invoices = Invoice.objects.filter(buyer__user=request.user).order_by('-created_at')
-        
+        user_invoices = Invoice.objects.filter(buyer__user=request.user).order_by(
+            "-created_at"
+        )
+
         serializer = InvoiceSerializer(user_invoices, many=True)
 
         invoices_count = len(user_invoices)
@@ -43,10 +43,12 @@ class UserInvoicesAPIView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 def send_invoice_email(invoice, user):
-    subject = 'Confirmación de Compra - Orden #{}'.format(invoice.transaction_number)
-    html_message = render_to_string('invoice_created_email.html', {'invoice': invoice})
+    subject = "Confirmación de Compra - Orden #{}".format(invoice.transaction_number)
+    html_message = render_to_string("invoice_created_email.html", {"invoice": invoice})
     plain_message = strip_tags(html_message)
-    from_email = 'tu_email@example.com'  # Reemplaza con tu dirección de correo electrónico
+    from_email = (
+        "tu_email@example.com"  # Reemplaza con tu dirección de correo electrónico
+    )
     to_email = user.email
     send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
 
@@ -58,79 +60,150 @@ class AddInvoiceAPIView(APIView):
         buffer = BytesIO()
         # Crear un documento PDF
         doc = SimpleDocTemplate(buffer, pagesize=letter)
-        
+
         # Obtener estilos de muestra
         styles = getSampleStyleSheet()
 
         # Agregar contenido al PDF
         elements = []
-        elements.append(Paragraph(f'Factura #{invoice.transaction_number}', styles['Title']))
-        elements.append(Paragraph(f'Fecha de compra: {invoice.created_at.strftime("%d/%m/%Y %H:%M:%S")}', styles['Normal']))
-        
+        elements.append(
+            Paragraph(f"Factura #{invoice.transaction_number}", styles["Title"])
+        )
+        elements.append(
+            Paragraph(
+                f'Fecha de compra: {invoice.created_at.strftime("%d/%m/%Y %H:%M:%S")}',
+                styles["Normal"],
+            )
+        )
+
         # Comprador
-        elements.append(Paragraph('Comprador:', styles['Heading2']))
-        elements.append(Paragraph(f'Nombre: {invoice.buyer.firs_name} {invoice.buyer.last_name}', styles['Normal']))
-        elements.append(Paragraph(f'Identificación: {invoice.buyer.identification}', styles['Normal']))
-        elements.append(Paragraph(f'Correo electrónico: {invoice.buyer.user.email}', styles['Normal']))
-        elements.append(Paragraph(f'Teléfono: {invoice.buyer.phone}', styles['Normal']))
-        elements.append(Paragraph(f'Dirección: {invoice.shipping_location.address_line_1} {invoice.shipping_location.address_line_2} {invoice.shipping_location.city.nombre}', styles['Normal']))
-        elements.append(Paragraph(f'Notas: {invoice.shipping_location.delivery_notes}', styles['Normal']))
-        
+        elements.append(Paragraph("Comprador:", styles["Heading2"]))
+        elements.append(
+            Paragraph(
+                f"Nombre: {invoice.buyer.firs_name} {invoice.buyer.last_name}",
+                styles["Normal"],
+            )
+        )
+        elements.append(
+            Paragraph(
+                f"Identificación: {invoice.buyer.identification}", styles["Normal"]
+            )
+        )
+        elements.append(
+            Paragraph(
+                f"Correo electrónico: {invoice.buyer.user.email}", styles["Normal"]
+            )
+        )
+        elements.append(Paragraph(f"Teléfono: {invoice.buyer.phone}", styles["Normal"]))
+        elements.append(
+            Paragraph(
+                f"Dirección: {invoice.shipping_location.address_line_1} {invoice.shipping_location.address_line_2} {invoice.shipping_location.city.nombre}",
+                styles["Normal"],
+            )
+        )
+        elements.append(
+            Paragraph(
+                f"Notas: {invoice.shipping_location.delivery_notes}", styles["Normal"]
+            )
+        )
+
         # Información de entrega
-        elements.append(Paragraph('Información de entrega:', styles['Heading2']))
-        elements.append(Paragraph(f'Método: {invoice.shipping_method.name}', styles['Normal']))
-        elements.append(Paragraph(f'Precio: ${invoice.shipping_method.price}', styles['Normal']))
-        elements.append(Paragraph(f'Tiempo: {invoice.shipping_method.time_to_delivery} - dias', styles['Normal']))
-        
+        elements.append(Paragraph("Información de entrega:", styles["Heading2"]))
+        elements.append(
+            Paragraph(f"Método: {invoice.shipping_method.name}", styles["Normal"])
+        )
+        elements.append(
+            Paragraph(f"Precio: ${invoice.shipping_method.price}", styles["Normal"])
+        )
+        elements.append(
+            Paragraph(
+                f"Tiempo: {invoice.shipping_method.time_to_delivery} - dias",
+                styles["Normal"],
+            )
+        )
+
         # Información de la tienda
-        elements.append(Paragraph('Información de la Tienda:', styles['Heading2']))
-        elements.append(Paragraph(f'Nombre: {invoice.store.name}', styles['Normal']))
-        elements.append(Paragraph(f'Teléfono: {invoice.store.phone}', styles['Normal']))
-        elements.append(Paragraph(f'Dirección: {invoice.store.address}', styles['Normal']))
+        elements.append(Paragraph("Información de la Tienda:", styles["Heading2"]))
+        elements.append(Paragraph(f"Nombre: {invoice.store.name}", styles["Normal"]))
+        elements.append(Paragraph(f"Teléfono: {invoice.store.phone}", styles["Normal"]))
+        elements.append(
+            Paragraph(f"Dirección: {invoice.store.address}", styles["Normal"])
+        )
 
-        
+        elements.append(
+            Paragraph(f"Correo electrónico: {invoice.store.email}", styles["Normal"])
+        )
 
-        elements.append(Paragraph(f'Correo electrónico: {invoice.store.email}', styles['Normal']))
-        
         # Productos
-        product_data = [['Producto', 'Impuesto', 'Cantidad', 'Valor', 'Precio', 'Moneda']]
+        product_data = [
+            ["Producto", "Impuesto", "Cantidad", "Valor", "Precio", "Moneda"]
+        ]
         for item in invoice.cart.items.all():
-            product_data.append([f'{item.product_option.product.name} {item.product_option.option}',
-                                 item.product_option.product.tax,
-                                 item.quantity,
-                                 f'${item.product_option.product.price}',
-                                 f'${item.subtotal}',
-                                 f"${invoice.store.city.estado_o_departamento.pais.currency.typecurrency}"])
+            product_data.append(
+                [
+                    f"{item.product_option.product.name} {item.product_option.option}",
+                    item.product_option.product.tax,
+                    item.quantity,
+                    f"${item.product_option.product.price}",
+                    f"${item.subtotal}",
+                    f"${invoice.store.city.estado_o_departamento.pais.currency.typecurrency}",
+                ]
+            )
         product_table = Table(product_data)
-        product_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), '#CCCCCC'),
-                                           ('TEXTCOLOR', (0, 0), (-1, 0), '#000000'),
-                                           ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                                           ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                                           ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                                           ('BACKGROUND', (0, 1), (-1, -1), '#FFFFFF'),
-                                           ('GRID', (0, 0), (-1, -1), 1, '#CCCCCC')]))
-        elements.append(Paragraph('Tus Productos:', styles['Heading2']))
+        product_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), "#CCCCCC"),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), "#000000"),
+                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                    ("BACKGROUND", (0, 1), (-1, -1), "#FFFFFF"),
+                    ("GRID", (0, 0), (-1, -1), 1, "#CCCCCC"),
+                ]
+            )
+        )
+        elements.append(Paragraph("Tus Productos:", styles["Heading2"]))
         elements.append(product_table)
-        
+
         # Total
-        elements.append(Paragraph(f'Total: ${invoice.total_amount} {invoice.store.city.estado_o_departamento.pais.currency.name}', styles['Heading2']))
-        
+        elements.append(
+            Paragraph(
+                f"Total: ${invoice.total_amount} {invoice.store.city.estado_o_departamento.pais.currency.name}",
+                styles["Heading2"],
+            )
+        )
+
         # Mensajes
-        elements.append(Paragraph('Gracias por confiar en nosotros. Esperamos que tu experiencia con FZashion sea excepcional. Te invitamos a seguir el estado de tu pedido aquí.', styles['Normal']))
+        elements.append(
+            Paragraph(
+                "Gracias por confiar en nosotros. Esperamos que tu experiencia con FZashion sea excepcional. Te invitamos a seguir el estado de tu pedido aquí.",
+                styles["Normal"],
+            )
+        )
 
-        elements.append(Paragraph(f'Advertencia: Por favor, asegúrate de revisar los productos recibidos y reportar '
-                                  f'cualquier problema dentro del plazo especificado en política de devolución de '
-                                  f'{invoice.store.name}.', styles['Normal']))
-        elements.append(Paragraph('Aviso Importante: Si en algún momento consideras que es necesario reportar incumplimientos o cualquier otra situación grave relacionada con aspectos económicos, éticos o morales en la tienda FZashion, por favor, presiona aquí para abrir un caso especial. Tu opinión es fundamental para mantener la integridad y el buen funcionamiento de nuestra plataforma. ¡Gracias por tu colaboración!', styles['Normal']))
-
+        elements.append(
+            Paragraph(
+                f"Advertencia: Por favor, asegúrate de revisar los productos recibidos y reportar "
+                f"cualquier problema dentro del plazo especificado en política de devolución de "
+                f"{invoice.store.name}.",
+                styles["Normal"],
+            )
+        )
+        elements.append(
+            Paragraph(
+                "Aviso Importante: Si en algún momento consideras que es necesario reportar incumplimientos o cualquier otra situación grave relacionada con aspectos económicos, éticos o morales en la tienda FZashion, por favor, presiona aquí para abrir un caso especial. Tu opinión es fundamental para mantener la integridad y el buen funcionamiento de nuestra plataforma. ¡Gracias por tu colaboración!",
+                styles["Normal"],
+            )
+        )
 
         # Construir el PDF
         doc.build(elements)
-        
+
         # Obtener el contenido del buffer
         pdf_data = buffer.getvalue()
         buffer.close()
-        
+
         return pdf_data
 
     def post(self, request):
@@ -140,7 +213,7 @@ class AddInvoiceAPIView(APIView):
             invoice = serializer.save()
 
             # Calcula el total del carrito
-            cart_id = request.data.get('cart')
+            cart_id = request.data.get("cart")
             cart = get_object_or_404(Cart, id=cart_id)
             total_amount = cart.total_sin_impuestos + cart.total_impuestos
             invoice.total_amount = total_amount
@@ -150,15 +223,79 @@ class AddInvoiceAPIView(APIView):
             send_invoice_email(invoice, request.user)
 
             # Elimina el carrito
-            #cart.delete()
+            # cart.delete()
             # Desactiva el carrito en lugar de eliminarlo
             cart.is_active = False
             cart.save()
 
             # Devuelve la URL del PDF para descargar
-            #pdf_url = f'/{pdf_path}'
+            # pdf_url = f'/{pdf_path}'
 
             # Devuelve la respuesta con la URL del PDF
-            return Response({'success': 'ya listo'}, status=status.HTTP_201_CREATED)
+            return Response({"success": "Listo"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteInvoiceAPIView(APIView):
+    def delete(self, request):
+        # Verifica si se proporcionó un ID de factura en el cuerpo de la solicitud
+        invoice_id = request.data.get("invoice_id")
+        if not invoice_id:
+            return Response(
+                {"error": "Se requiere un ID de factura en el cuerpo de la solicitud."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Busca la factura por su ID o devuelve un error 404 si no se encuentra
+        try:
+            invoice = Invoice.objects.get(id=invoice_id)
+        except Invoice.DoesNotExist:
+            return Response(
+                {"error": "La factura no existe."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Verifica si el estado de la factura es "Pendiente"
+        if invoice.status.name != "Pendiente":
+            return Response(
+                {"error": "Tu pedido ya está en proceso y no puede ser eliminado."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Guarda el ID del carrito asociado a la factura
+        cart_id = invoice.cart_id
+
+        # Elimina la factura
+        invoice.delete()
+
+        # Actualiza el carrito para activarlo nuevamente
+        try:
+            cart = Cart.objects.get(id=cart_id)
+            cart.is_active = True
+            cart.save()
+        except Cart.DoesNotExist:
+            pass  # Manejar el caso si el carrito no existe
+
+        # Renderizar la plantilla HTML para el correo electrónico
+        html_message = render_to_string("invoice_delete_email.html", {"invoice": invoice})
+        
+        # Enviar correo electrónico al usuario
+        subject = "Cancela correctamente la orden #{}".format(invoice.transaction_number)
+        from_email = "tu_correo@example.com"
+        to_email = [request.user.email]
+        send_mail(
+            subject,
+            strip_tags(html_message),
+            from_email,
+            to_email,
+            html_message=html_message,
+            fail_silently=True,
+        )
+
+        # Devuelve una respuesta de éxito
+        return Response(
+            {
+                "message": "La factura se ha eliminado correctamente y el carrito se ha activado nuevamente. Se ha enviado un correo electrónico al usuario."
+            },
+            status=status.HTTP_204_NO_CONTENT,
+        )

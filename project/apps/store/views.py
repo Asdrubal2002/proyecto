@@ -228,8 +228,6 @@ class CreateStoreAPIView(APIView):
 
         request.data["administrator"] = request.user.id
 
-        print(request.data)
-
         serializer = CreateStoreSerializer(data=request.data)
         if serializer.is_valid():
             # Guardar la tienda en la base de datos

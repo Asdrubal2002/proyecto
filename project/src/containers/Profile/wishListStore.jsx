@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Layout from '../../hocs/Layout'
 import { connect } from "react-redux";
-import { Rings } from 'react-loader-spinner';
+import { InfinitySpin, Rings } from 'react-loader-spinner';
 import NoFoundCarts from '../Cart/NoFoundCarts';
 import { Helmet } from 'react-helmet';
 import { Link, Navigate } from 'react-router-dom';
@@ -60,7 +60,7 @@ const WishListStore = ({
                         <Sidebar />
                         <div className="lg:col-span-3">
                             {loading ? (
-                                <Rings width={80} height={80} color="#fff" radius="6" />
+                               <InfinitySpin width={200} height={200} color="#fff" radius="6" />
                             ) : (
                                 <>
                                     <div className="overflow-hidden px-8">

@@ -7,7 +7,7 @@ import { PencilIcon, PhotoIcon, XMarkIcon, CheckIcon, UserCircleIcon } from '@he
 import { Helmet } from 'react-helmet';
 import { get_user_location } from '../../redux/actions/profile';
 import { Navigate } from 'react-router-dom';
-import { Rings } from 'react-loader-spinner';
+import { InfinitySpin, Rings } from 'react-loader-spinner';
 import Sidebar from '../Home/Sidebar/Sidebar';
 import Searcher from '../../components/searcher/Searcher';
 import { LetrasPerfil } from './styles/Dashboard';
@@ -69,24 +69,24 @@ function Dashboard({
         const fetchData = async () => {
             setLoading(true)
             try {
-              const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/user/edit-profile-photo/`,
-                formData,
-                config)
-      
-              if (res.status === 200) {
-                setLoading(false)
-                setPreviewImage(null);
-                setPhoto(null);
-              } else {
-                setLoading(false)
-              }
+                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/user/edit-profile-photo/`,
+                    formData,
+                    config)
+
+                if (res.status === 200) {
+                    setLoading(false)
+                    setPreviewImage(null);
+                    setPhoto(null);
+                } else {
+                    setLoading(false)
+                }
             } catch (err) {
-              setLoading(false)
-              alert('Error al enviar', err)
+                setLoading(false)
+                alert('Error al enviar', err)
             }
-      
-          }
-          fetchData()
+
+        }
+        fetchData()
     }
 
     return (
@@ -107,7 +107,7 @@ function Dashboard({
                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                         <Sidebar />
                         {isLoading ? (
-                            <Rings width={80} height={80} color="#fff" radius="6" />
+                           <InfinitySpin width={290} height={200} color="#fff" radius="6" />
                         ) : (
                             <div className="lg:col-span-3">
                                 <div className=" rounded-lg shadow-md p-6">
@@ -134,6 +134,10 @@ function Dashboard({
                                                         <div className="flex items-center">
                                                             <span className="mr-4 font-semibold">Identificación:</span>
                                                             <span className="inline-block">{profile.identification && profile.identification.replace(/.(?=.{2})/g, '*')}</span>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <span className="mr-4 font-semibold">Correo:</span>
+                                                            <span className="inline-block">{user.email && user.email}</span>
                                                         </div>
                                                     </div>
                                                 ) : (

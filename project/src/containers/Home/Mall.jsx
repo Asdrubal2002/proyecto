@@ -12,7 +12,7 @@ import { FunnelIcon } from '@heroicons/react/24/solid'
 
 import LoadingStores from "../../components/home/LoadingStores";
 import { Helmet } from "react-helmet";
-import { Rings } from "react-loader-spinner";
+import { InfinitySpin, Rings } from "react-loader-spinner";
 import Sidebar from "./Sidebar/Sidebar";
 import Searcher from "../../components/searcher/Searcher";
 
@@ -30,7 +30,7 @@ const Mall = ({
     next,
     previous,
     loading,
-    cart_count
+    
 
 }) => {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -144,12 +144,11 @@ const Mall = ({
                         <section aria-labelledby="products-heading" className="pb-24 pt-6">
                             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                                 {/* Filters */}
-                                <Sidebar cart_count={cart_count}/>
+                                <Sidebar/>
                                 {/* Product grid */}
                                 <div className="lg:col-span-3">
                                     {loading ? (
-                                        <Rings width={80} height={80} color="#fff" radius="6" />
-                                    ) : stores && stores.length > 0 ? (
+                                        <InfinitySpin width={200} height={200} color="#fff" radius="6" />                                    ) : stores && stores.length > 0 ? (
                                         <StoreList stores={stores} get_store_list_page={get_search_stores_page} slug={slug} search={search} count={count} />
                                     ) : (
                                         <>
@@ -175,7 +174,6 @@ const mapStateToProps = state => ({
     next: state.Stores.next,
     previous: state.Stores.previous,
     loading: state.Stores.loading,
-    cart_count: state.Cart.carts.cart_count
 
 })
 
