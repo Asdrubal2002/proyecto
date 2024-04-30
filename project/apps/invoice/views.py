@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from apps.cart.models import Cart
-
+from apps.shipping.models import Shipping
 from io import BytesIO
 from django.http import FileResponse
 from reportlab.lib.pagesizes import letter
@@ -19,6 +19,7 @@ from reportlab.pdfgen import canvas
 import os
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from decimal import Decimal
 
 
 class UserInvoicesAPIView(APIView):
@@ -216,8 +217,20 @@ class AddInvoiceAPIView(APIView):
             cart_id = request.data.get("cart")
             cart = get_object_or_404(Cart, id=cart_id)
             total_amount = cart.total_sin_impuestos + cart.total_impuestos
+            
+
+            # Obtén el precio del método de envío seleccionado
+            shipping_method_id = request.data.get("shipping_method")
+            if shipping_method_id:
+                shipping_method = get_object_or_404(Shipping, id=shipping_method_id)
+                # Parsear el precio a un número flotante
+                shipping_price = float(shipping_method.price)
+                # Convertir total_amount a Decimal y luego sumarle shipping_price
+                total_amount = Decimal(total_amount) + Decimal(shipping_price)
+
             invoice.total_amount = total_amount
             invoice.save()
+            print(total_amount)
 
             # Envía el correo electrónico
             send_invoice_email(invoice, request.user)

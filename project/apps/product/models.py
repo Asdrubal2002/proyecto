@@ -5,6 +5,7 @@ from django.conf import settings
 import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.store.models import Store
+from django.utils import timezone
 
 from ckeditor.fields import RichTextField
 
@@ -28,24 +29,16 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = RichTextField()
-    # Elimina la línea de photo aquí, ya que se manejará en otro modelo
     slugProduct = models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
-    price = models.PositiveIntegerField(validators=[
-        MinValueValidator(0),
-        MaxValueValidator(1000000)  # Define el límite superior según tus necesidades
-    ])
-    tax = models.PositiveIntegerField(validators=[
-        MinValueValidator(0),
-        MaxValueValidator(1000000)  # Define el límite superior según tus necesidades
-    ],default=0, blank=True)
+    price = models.CharField(max_length=20)  # Se cambia a CharField para permitir decimales personalizados
+    tax = models.CharField(max_length=20, default='0', blank=True)  # Se cambia a CharField para permitir decimales personalizados
     sold = models.IntegerField(default=0)
-    date_created = models.DateTimeField(default=datetime.now)
+    date_created = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
     likes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
-
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -56,7 +49,6 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Imagen de {self.product.name}"
-
 
 class Option(models.Model):
     class Meta:
@@ -69,7 +61,6 @@ class Option(models.Model):
     def __str__(self):
         return self.value
     
-
 class ProductOption(models.Model):
     class Meta:
         verbose_name = "opción de producto"

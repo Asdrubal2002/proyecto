@@ -3,6 +3,7 @@ from apps.product.models import Product, Option, ProductOption
 from apps.store.models import Store
 from django.conf import settings
 import uuid
+from decimal import Decimal
 
 User = settings.AUTH_USER_MODEL
 # Create your models here.
@@ -18,12 +19,12 @@ class Cart(models.Model):
     @property
     def total_impuestos(self):
         # Calcula la suma total de impuestos de todos los elementos en el carrito
-        return sum(item.product_option.product.tax * item.quantity for item in self.items.all())
+        return sum(Decimal(item.product_option.product.tax) * item.quantity for item in self.items.all())
 
     @property
     def total_sin_impuestos(self):
         # Calcula la suma total sin impuestos de todos los elementos en el carrito
-        return sum(item.product_option.product.price * item.quantity for item in self.items.all())
+        return sum(Decimal(item.product_option.product.price) * item.quantity for item in self.items.all())
 
 
 class ItemCarrito(models.Model):
@@ -36,8 +37,8 @@ class ItemCarrito(models.Model):
         # Obtén el precio y el impuesto del product_option
         product_option = self.product_option
         product = product_option.product
-        price = product.price
-        tax = product.tax
+        price = Decimal(product.price)
+        tax = Decimal(product.tax)
         
         # Calcula el subtotal sumando el impuesto por la cantidad
         subtotal_con_impuesto = (price + tax) * self.quantity

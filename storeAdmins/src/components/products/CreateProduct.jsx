@@ -5,7 +5,8 @@ import { PencilSquareIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outli
 import FormCategories from '../../containers/categories/FormCategories'
 import axios from "axios"
 import { get_products } from '../../redux/actions/products/products'
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function CreateProduct({
     categories,
@@ -36,14 +37,21 @@ function CreateProduct({
 
         const data = Object.fromEntries(formData);
 
+
+        console.log(data.description, "esta es la beta")
+
+
+        const editorContent = description;
+
+        formData.set('description', editorContent);
+
         // Validar campos requeridos
         const errors = {};
         if (!data.name) errors.name = 'El nombre es obligatorio';
-        if (!data.description) errors.description = 'La descripción es obligatoria';
+        if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
         if (!data.category) errors.category = 'La categoría es obligatoria';
         if (!data.price) errors.price = 'El precio es obligatorio';
-        else if (!/^\d+$/.test(data.price)) errors.price = 'El precio debe ser un número entero sin puntos ni comas';
-
+        else if (!/^\d+(\.\d+)?$/.test(data.price)) errors.price = 'El precio debe ser un número con cero o un punto decimal.';
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
@@ -85,27 +93,6 @@ function CreateProduct({
 
     const handleCategoryChange = e => {
         setSelectedCategory(e.target.value);
-    };
-
-    const handleDescriptionChange = (e) => {
-        const value = e.target.value;
-        setDescription(value);
-
-        if (value.length > 600) {
-            setDescriptionError('La descripción no debe exceder los 600 caracteres');
-            setFormCanBeSubmitted(false); // Deshabilitar el formulario
-        } else {
-            setDescriptionError('');
-            setFormCanBeSubmitted(true); // Habilitar el formulario
-        }
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setErrors({ ...errors, [name]: '' });
-        // Eliminar puntos y comas del valor del precio
-        const cleanedValue = value.replace(/[^\d]/g, '');
-
     };
 
 
@@ -200,14 +187,50 @@ function CreateProduct({
 
                                         {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
 
+                                        <div className='text-gray-900 text-sm'>
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={description}
+                                                onChange={(event, editor) => {
+                                                    const data = editor.getData();
+                                                    setDescription(data);
 
-                                        <textarea
-                                            name='description'
-                                            placeholder='Nueva descripción'
-                                            className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                            onChange={handleDescriptionChange}
+                                                    if (data.length > 600) {
+                                                        setDescriptionError('La descripción no debe exceder los 600 caracteres');
+                                                        setFormCanBeSubmitted(false); // Deshabilitar el formulario
+                                                    } else {
+                                                        setDescriptionError('');
+                                                        setFormCanBeSubmitted(true); // Habilitar el formulario
+                                                    }
+                                                }}
+                                                config={{
+                                                    toolbar: {
+                                                        items: [
+                                                            //'heading', '|',
+                                                            //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
+                                                            'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
+                                                            //'fontSize', '|', // Tamaño del texto
+                                                            //'alignment', '|', // Alineación del texto
+                                                            //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
+                                                            //'indent', 'outdent', '|', // Aumentar y disminuir sangría
+                                                            //'undo', 'redo' // Deshacer y rehacer
+                                                        ]
+                                                    },
+                                                    // fontSize: {
+                                                    //     options: [
+                                                    //         'default',
+                                                    //         '9pt',
+                                                    //         '11pt',
+                                                    //         '14pt',
+                                                    //         '18pt',
+                                                    //         '24pt',
+                                                    //         '36pt'
+                                                    //     ]
+                                                    // }
+                                                }}
+                                            />
+                                        </div>
 
-                                        />
                                         {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
                                         {descriptionError && <span className="text-red-500 text-sm">{descriptionError}</span>}
 
@@ -215,7 +238,6 @@ function CreateProduct({
                                             name='price'
                                             type='text'
                                             placeholder='Precio sin puntos ni comas.'
-                                            onChange={handleChange}
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                         />
                                         {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}

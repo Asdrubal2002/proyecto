@@ -59,10 +59,9 @@ function FormShippings({
       errors.time_to_delivery = 'El tiempo de entrega no puede exceder los 40 caracteres';
     }
     // Validar el precio
-    const priceWithoutCommas = formData.price ? formData.price.replace(/,/g, '') : ''; // Eliminar comas solo si hay un valor
-    if (formData.price && !/^\d+$/.test(priceWithoutCommas)) {
-      errors.price = 'El precio solo puede contener números';
-    } else if (formData.price && parseInt(priceWithoutCommas) > 1000000) {
+    if (formData.price && !/^\d+(\.\d+)?$/.test(formData.price)) {
+      errors.price = 'El precio debe ser un número válido';
+    } else if (formData.price && parseFloat(formData.price) > 1000000) {
       errors.price = 'El precio no puede ser mayor a 1000000';
     }
     setFormErrors(errors);
@@ -77,9 +76,9 @@ function FormShippings({
       if (editingShippingId) {
         // Llamar a la función para editar la categoría
         console.log("llega para edición", editingShippingId)
-        update_shipping(editingShippingId,formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
+        update_shipping(editingShippingId, formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
         get_shippings()
-        
+
       } else {
         // Llamar a la función para crear un nuevo método
         console.log("llega para creación", editingShippingId)

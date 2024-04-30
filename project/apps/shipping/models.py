@@ -11,7 +11,7 @@ class Shipping(models.Model):
     name = models.CharField(max_length=255)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='shipping_store')
     time_to_delivery = models.CharField(max_length=255)
-    price = models.PositiveIntegerField(blank=True, null=True)
+    price = models.CharField(max_length=20)  # Se cambia a CharField para permitir decimales personalizados
     additional_notes = models.CharField(max_length=200, blank=True, null=True)
     is_active = models.BooleanField(default=False)
 

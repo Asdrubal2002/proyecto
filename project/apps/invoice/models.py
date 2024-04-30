@@ -24,7 +24,7 @@ class Invoice(models.Model):
     shipping_method = models.ForeignKey(Shipping, on_delete=models.SET_NULL, null=True, blank=True)
     shipping_location = models.ForeignKey(UserLocation, on_delete=models.SET_NULL, null=True, blank=True)
     cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, blank=True)  # o SET_DEFAULT dependiendo de tu caso
-    total_amount = models.PositiveIntegerField(null=True, blank=True)  # Ahora puede ser nulo
+    total_amount = models.CharField(max_length=20) # Ahora puede ser nulo
     status = models.ForeignKey(InvoiceStatus, on_delete=models.SET_NULL, null=True, blank=True, default=1)
     transaction_number = models.CharField(max_length=20, unique=True, blank=True)  # Permitimos que sea nulo
     created_at = models.DateTimeField(default=timezone.now)  # Campo para almacenar la fecha de creación
@@ -39,6 +39,7 @@ def generate_transaction_number(sender, instance, created, **kwargs):
         # Generar un número de transacción único utilizando UUID
         instance.transaction_number = str(uuid.uuid4().hex[:12].upper())
         instance.save()
+
 
 
 

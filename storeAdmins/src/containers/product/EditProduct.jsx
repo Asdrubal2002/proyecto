@@ -570,41 +570,41 @@ function EditProduct({
                                             <>
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
                                                     <div className='mt-1 p-2 rounded-md w-full focus:outline-none text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900'>
-                                                    <CKEditor editor={ClassicEditor} 
-                                                    className=""
-                                                        data={description}
-                                                        onChange={(event, editor) => {
-                                                            const data = editor.getData();
-                                                            onChange({ target: { name: 'description', value: data } });
-                                                        }}
-                                                        config={{
-                                                            toolbar: {
-                                                                items: [
-                                                                    //'heading', '|',
-                                                                    //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
-                                                                    'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
-                                                                    //'fontSize', '|', // Tamaño del texto
-                                                                    //'alignment', '|', // Alineación del texto
-                                                                    //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
-                                                                    //'indent', 'outdent', '|', // Aumentar y disminuir sangría
-                                                                    //'undo', 'redo' // Deshacer y rehacer
-                                                                ]
-                                                            },
-                                                            // fontSize: {
-                                                            //     options: [
-                                                            //         'default',
-                                                            //         '9pt',
-                                                            //         '11pt',
-                                                            //         '14pt',
-                                                            //         '18pt',
-                                                            //         '24pt',
-                                                            //         '36pt'
-                                                            //     ]
-                                                            // }
-                                                        }}
-                                                    />
+                                                        <CKEditor editor={ClassicEditor}
+                                                            className=""
+                                                            data={description}
+                                                            onChange={(event, editor) => {
+                                                                const data = editor.getData();
+                                                                onChange({ target: { name: 'description', value: data } });
+                                                            }}
+                                                            config={{
+                                                                toolbar: {
+                                                                    items: [
+                                                                        //'heading', '|',
+                                                                        //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
+                                                                        'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
+                                                                        //'fontSize', '|', // Tamaño del texto
+                                                                        //'alignment', '|', // Alineación del texto
+                                                                        //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
+                                                                        //'indent', 'outdent', '|', // Aumentar y disminuir sangría
+                                                                        //'undo', 'redo' // Deshacer y rehacer
+                                                                    ]
+                                                                },
+                                                                // fontSize: {
+                                                                //     options: [
+                                                                //         'default',
+                                                                //         '9pt',
+                                                                //         '11pt',
+                                                                //         '14pt',
+                                                                //         '18pt',
+                                                                //         '24pt',
+                                                                //         '36pt'
+                                                                //     ]
+                                                                // }
+                                                            }}
+                                                        />
                                                     </div>
-                                                    
+
                                                     {/* <textarea 
                                                         value={description}
                                                         onChange={e => onChange(e)}
@@ -618,7 +618,7 @@ function EditProduct({
                                                     {description === '' && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
                                                     )}
-                                                      {description.length > 500 && (
+                                                    {description.length > 500 && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción excede 500 caracteres</span>
                                                     )}
                                                     <div className="flex items-center space-x-2 ml-4">
@@ -664,7 +664,11 @@ function EditProduct({
                                                         value={price}
                                                         onChange={e => {
                                                             const { value } = e.target;
-                                                            const cleanedValue = value.replace(/[^\d]/g, ''); // Eliminar todos los caracteres que no sean números
+                                                            // Mantener solo los números y un punto decimal
+                                                            const cleanedValue = value.replace(/[^\d.]/g, match => {
+                                                                // Solo permitir un punto decimal si no hay otro presente
+                                                                return match === '.' && value.indexOf('.') === -1 ? '.' : '';
+                                                            }).replace(/(\..*)\./g, '$1'); // Eliminar puntos decimales adicionales
                                                             onChange({ target: { name: 'price', value: cleanedValue } }); // Llamar a la función onChange con el valor limpio
                                                         }}
                                                         name='price'
@@ -673,6 +677,8 @@ function EditProduct({
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         placeholder='Nuevo precio'
                                                     />
+
+
                                                     {/* Mensaje de error si el campo de precio está vacío */}
                                                     {price === '' && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">El precio es obligatorio</span>
@@ -680,7 +686,7 @@ function EditProduct({
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            disabled={price === '' || !(/^\d+(\.\d{1,2})?$/.test(price)) || price.length > 10} // Deshabilitar el botón si el precio está vacío, no es un valor monetario válido o excede el límite
+                                                            disabled={price === '' || price.length > 10} // Deshabilitar el botón si el precio está vacío, no es un valor monetario válido o excede el límite
                                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
