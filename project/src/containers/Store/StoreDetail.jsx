@@ -379,7 +379,7 @@ const StoreDetail = ({
                                                     <div>
                                                         {profile.firs_name == null ? (
                                                             <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
-                                                                <p className="text-center text-gray-200 mb-2 font-sm">No puedes comentar, no tienes perfil creado.</p>
+                                                                <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
                                                                 <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
                                                                     <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
                                                                     Ir al perfil del usuario

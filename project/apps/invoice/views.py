@@ -45,7 +45,7 @@ class UserInvoicesAPIView(APIView):
 
 def send_invoice_email(invoice, user):
     subject = "Confirmación de Compra - Orden #{}".format(invoice.transaction_number)
-    html_message = render_to_string("invoice_created_email.html", {"invoice": invoice})
+    html_message = render_to_string("invoices/invoice_created_email.html", {"invoice": invoice})
     plain_message = strip_tags(html_message)
     from_email = (
         "tu_email@example.com"  # Reemplaza con tu dirección de correo electrónico
@@ -218,7 +218,7 @@ class AddInvoiceAPIView(APIView):
             cart = get_object_or_404(Cart, id=cart_id)
             total_amount = cart.total_sin_impuestos + cart.total_impuestos
             
-
+            
             # Obtén el precio del método de envío seleccionado
             shipping_method_id = request.data.get("shipping_method")
             if shipping_method_id:
@@ -290,7 +290,7 @@ class DeleteInvoiceAPIView(APIView):
             pass  # Manejar el caso si el carrito no existe
 
         # Renderizar la plantilla HTML para el correo electrónico
-        html_message = render_to_string("invoice_delete_email.html", {"invoice": invoice})
+        html_message = render_to_string("invoices/invoice_delete_email.html", {"invoice": invoice})
         
         # Enviar correo electrónico al usuario
         subject = "Cancela correctamente la orden #{}".format(invoice.transaction_number)

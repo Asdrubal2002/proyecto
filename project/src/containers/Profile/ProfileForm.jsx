@@ -70,10 +70,15 @@ const ProfileForm = ({
 
         if (formData.first_name.trim() === '') {
             errors.first_name = 'El nombre es obligatorio.';
+        }else if(formData.first_name.trim().length > 20){
+            errors.first_name = 'El nombre es demasiado largo.';
         }
 
+        
         if (formData.last_name.trim() === '') {
             errors.last_name = 'El apellido es obligatorio.';
+        }else if(formData.last_name.trim().length > 20){
+            errors.last_name = 'El apellido es demasiado largo.';
         }
 
         const phoneRegex = /^\d{10}$/;

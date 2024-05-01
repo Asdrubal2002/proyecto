@@ -73,9 +73,7 @@ const Activate = ({ activate, loading }) => {
                   A un paso de Ruvlo
                 </MensajePrincipal>
                 <ContenidoMensaje>
-                  Te has registrado con nosotros y estás más cerca de aprovechar
-                  lo que tenemos para ti, te damos la bienvenida y te invitamos a
-                  acercarte a las personas con el potencial que tú tienes.
+                  "¡Bienvenido a nuestro mundo! Tu registro nos llena de alegría y nos emociona poder compartir contigo lo mejor de lo que tenemos. Te invitamos a explorar todas las posibilidades que te esperan y a conectar con personas que comparten tu potencial. Juntos, podemos lograr grandes cosas. ¡Bienvenido a la comunidad!"
                 </ContenidoMensaje>
 
                 <ContenedorExcel>

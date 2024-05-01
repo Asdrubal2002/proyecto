@@ -235,7 +235,7 @@ class CreateStoreAPIView(APIView):
 
             # Renderizar la plantilla HTML
             html_message = render_to_string(
-                "store_created_email.html", {"username": request.user.email}
+                "stores/store_created_email.html", {"username": request.user.email}
             )
 
             # Enviar correo electrónico al usuario
