@@ -732,8 +732,8 @@ function EditProduct({
                                                         placeholder='Nueva opción'
                                                     />
                                                     {/* Mensaje de error si optionPr excede el límite de caracteres */}
-                                                    {optionPr.length > 10 && (
-                                                        <span className="text-red-500 text-sm mt-1 ml-4">La opción no puede exceder los 10 caracteres</span>
+                                                    {optionPr.length > 150 && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">La opción no puede exceder los 150 caracteres</span>
                                                     )}
 
                                                     <input

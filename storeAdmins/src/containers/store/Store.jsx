@@ -281,7 +281,10 @@ function Store({
                                   </div>
                                 </div>
                                 {/* Botón */}
-                                <button className="text-sm text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
+                                <div className='m-4'>
+                                <button className=" text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
+
+                                </div>
                               </div>
 
 

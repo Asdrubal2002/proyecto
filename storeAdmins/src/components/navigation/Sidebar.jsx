@@ -11,10 +11,11 @@ import {
   XMarkIcon,
   CheckIcon,
   BarsArrowUpIcon,
-  ArrowLeftStartOnRectangleIcon
+  ArrowLeftStartOnRectangleIcon,
+  QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline'
 import ItemsSidebar from './ItemsSidebar'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LetrasPerfil } from './styles/sidebar'
 
 
@@ -134,6 +135,14 @@ export default function Sidebar({ children, logout, profile, user }) {
               </div>
               <ItemsSidebar />
             </div>
+            <div className='mt-5 space-y-1 px-2'>
+              <Link to="/help" className='group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600'>
+                <QuestionMarkCircleIcon className='mr-4 flex-shrink-0 h-6 w-6' />
+                ¿Necesitas ayuda con tu tienda?
+
+              </Link>
+            </div>
+
             <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
               <button onClick={e => setOpen(true)} className="group block w-full flex-shrink-0">
                 <div className="flex items-center">

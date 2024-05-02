@@ -80,7 +80,7 @@ class Store(models.Model):
 
             full_url = 'http://localhost:5173/store/' + self.slug
 
-            qr.add_data(f'Tienda: {self.name}, Dirección: {self.address}, Teléfono: {self.phone}, URL: {full_url}')
+            qr.add_data(f'Tienda: {self.name}, URL: {full_url}')
             qr.make(fit=True)
             
             qr_img = qr.make_image(fill_color="black", back_color="white")

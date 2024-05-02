@@ -237,7 +237,7 @@ function CreateProduct({
                                         <input
                                             name='price'
                                             type='text'
-                                            placeholder='Precio sin puntos ni comas.'
+                                            placeholder='Precio'
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                         />
                                         {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}

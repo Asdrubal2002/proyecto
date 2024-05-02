@@ -143,7 +143,7 @@ function FormCategories({
                                 leaveTo="transform scale-95 opacity-0"
                             >
                                 <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                    Bautiza una categoria dentro de tu negocio
+                                    Asigna un nombre a una categoría dentro de tu negocio.
                                 </Disclosure.Panel>
                             </Transition>
                         </Disclosure>
@@ -154,7 +154,7 @@ function FormCategories({
                         name="name"
                         id="name"
                         placeholder='¿Que nombre le vas a poner a tu categoria?'
-                        className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
+                        className="placeholder:text-sm mt-1 p-2 block w-full rounded-md shadow-sm bg-gray-700 text-gray-300 focus:outline-none"
                         value={formData.name}
                         onChange={handleChange}
 
@@ -165,7 +165,7 @@ function FormCategories({
                 </div>
                 <div className="mb-4">
                     <div className="flex items-center">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Padre:</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Principal:</label>
                         <Disclosure>
                             <Disclosure.Button className="focus:outline-none">
                                 <InformationCircleIcon className="w-6 h-6 text-gray-400" />
@@ -179,7 +179,7 @@ function FormCategories({
                                 leaveTo="transform scale-95 opacity-0"
                             >
                                 <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                    Escoge la categoria principal que tendra esta nueva.
+                                    Selecciona la categoría principal para esta nueva entrada.
                                 </Disclosure.Panel>
                             </Transition>
                         </Disclosure>
@@ -257,9 +257,10 @@ function FormCategories({
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className={`px-6 py-4 whitespace-nowrap ${category.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>
                                                 {category.is_active ? "Activa" : "Inactiva"}
                                             </td>
+
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <p>Principal</p>
                                             </td>
@@ -288,9 +289,10 @@ function FormCategories({
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className={`px-6 py-4 whitespace-nowrap ${subCategory.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>
                                                     {subCategory.is_active ? "Activa" : "Inactiva"}
                                                 </td>
+
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {category.name} {/* Aquí se muestra el nombre de la categoría padre */}
 
@@ -306,10 +308,7 @@ function FormCategories({
                                 ))}
                                 {!categories && (
                                     <tr>
-                                        {/* <td colSpan="5">No hay categorías en tu tienda</td> */}
-                                        <div className="bg-gray-800 text-gray-200 rounded-md p-2">
-                                            <p className="text-center text-gray-300 mb-2 text-sm">No hay productos para esta categoria.</p>
-                                        </div>
+                                        <td colSpan="5">No hay categorias en tu tienda</td>
                                     </tr>
                                 )}
                             </tbody>

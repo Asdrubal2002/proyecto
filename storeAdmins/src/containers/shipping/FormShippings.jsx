@@ -162,7 +162,7 @@ function FormShippings({
     <div>
       <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre de tu entrega *</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre de entrega *</label>
           <input
             type="text"
             name="name"
@@ -285,10 +285,11 @@ function FormShippings({
                         <td className="px-6 py-4 whitespace-normal text-gray-300">
                           <div className="max-w-xs overflow-hidden overflow-ellipsis ">{shipping.additional_notes}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className={`px-6 py-4 whitespace-nowrap ${shipping.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>
                           {shipping.is_active ? "Activo" : "Inactivo"}
                         </td>
-                        <td className="py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                        <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <button onClick={() => handleOpenModal(shipping.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
                           <button onClick={() => handleEditModal(shipping)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline">Editar</button>
                           <button onClick={() => handleToggleActive(shipping.id)} className="text-green-600 dark:text-green-500 hover:underline">{shipping.is_active ? 'Desactivar' : 'Activar'}</button>
