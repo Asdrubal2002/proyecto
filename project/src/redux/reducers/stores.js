@@ -12,7 +12,9 @@ import {
     SET_STORE_LOADING,
     REMOVE_STORE_LOADING,
     GET_STORE_LIST_CATEGORIES_SUCCESS,
-    GET_STORE_LIST_CATEGORIES_FAIL
+    GET_STORE_LIST_CATEGORIES_FAIL,
+    GET_STORE_POLICIES_SUCCESS,
+    GET_STORE_POLICIES_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -25,7 +27,8 @@ const initialState = {
     loading: false,
     count: null,
     next: null,
-    previous: null
+    previous: null,
+    policies: null
 };
 
 export default function Stores(state = initialState, action) {
@@ -120,6 +123,18 @@ export default function Stores(state = initialState, action) {
                 next: null,
                 previous: null
             }
+
+        case GET_STORE_POLICIES_SUCCESS:
+            return {
+                ...state,
+                policies: payload.policies
+            }
+        case GET_STORE_POLICIES_FAIL:
+            return {
+                ...state,
+                policies: null
+            }
+
         default:
             return state
 

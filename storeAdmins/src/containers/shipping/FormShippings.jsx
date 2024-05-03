@@ -75,14 +75,11 @@ function FormShippings({
 
       if (editingShippingId) {
         // Llamar a la función para editar la categoría
-        console.log("llega para edición", editingShippingId)
         update_shipping(editingShippingId, formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
         get_shippings()
 
       } else {
         // Llamar a la función para crear un nuevo método
-        console.log("llega para creación", editingShippingId)
-
         await create_shippings(formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
         get_shippings()
         setFormData(initialFormData);
@@ -152,7 +149,6 @@ function FormShippings({
   // Función para limpiar el formulario
   const clearFormData = () => {
     setFormData(initialFormData);
-    console.log("llega a clearFor", editingShippingId)
     setMessageEdit(false)
     setEditingShippingId(null)
   };

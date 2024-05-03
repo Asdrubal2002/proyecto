@@ -9,6 +9,7 @@ import uuid
 User = settings.AUTH_USER_MODEL
 import qrcode
 from io import BytesIO
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -114,8 +115,16 @@ class Store(models.Model):
         return self.name
 
 
+class StorePolicy(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='policies')
+    name = models.CharField(max_length=100)  # Nuevo campo para el nombre de la política
+    policy_text =  models.TextField(max_length=1000, blank=False)
 
-
+    def save(self, *args, **kwargs):
+        # Limitar la longitud del contenido HTML a un máximo de 10000 caracteres
+        if len(self.policy_text) > 10000:
+            self.policy_text = self.policy_text[:10000]
+        super().save(*args, **kwargs)
 
 
 

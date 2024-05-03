@@ -69,7 +69,7 @@ function ProductModal({
         return (
             <>
 
-                <h2 className="text-sm font-semibold mb-2">¿Que prefieres?</h2>
+                <h2 className="text-base font-semibold mb-4">Opciones disponibles</h2>
                 <div className='grid gap-3 grid-cols-1 sm:grid-cols-2'>
 
                     {options.filter(option => option.quantity > 0).map((option, index) => (
@@ -170,13 +170,13 @@ function ProductModal({
                             <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.price}</p>
                         </div>
 
-                        <div className="mt-6">
-                            <h3 className="sr-only">Description</h3>
-                            <p className="text-base text-gray-300 " dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
-
+                        <div className="mt-6 border-b border-gray-300 pb-4">
+                            <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3>
+                            <p className="text-base text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
                         </div>
 
-                        <div className="mt-3">
+
+                        <div className="mt-6">
                             <h3 className="sr-only">options</h3>
                             {loading ?
                                 <Rings width={20} height={20} color="#fff" radius="6" />

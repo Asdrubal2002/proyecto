@@ -10,6 +10,7 @@ import { Rings } from 'react-loader-spinner';
 import axios from "axios"
 import { Dialog, Menu, Transition, Disclosure, Tab } from '@headlessui/react'
 import { get_store_comments } from '../../redux/actions/comments/Comments_store';
+import FormCreatePolicy from '../../components/store/FormCreatePolicy';
 
 
 
@@ -220,9 +221,6 @@ function Store({
                             {count_comments}
                           </span>
                         </div>
-
-
-
                       </Tab>
                       <Tab className={({ selected }) =>
                         classNames(
@@ -232,7 +230,8 @@ function Store({
                             ? 'bg-white text-azul_corp_ho shadow'
                             : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
                         )
-                      }>Tab 3</Tab>
+                      }>Políticas de mi negocio
+                      </Tab>
                     </Tab.List>
                     <Tab.Panels>
                       <Tab.Panel>
@@ -282,7 +281,7 @@ function Store({
                                 </div>
                                 {/* Botón */}
                                 <div className='m-4'>
-                                <button className=" text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
+                                  <button className=" text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
 
                                 </div>
                               </div>
@@ -471,18 +470,12 @@ function Store({
                                     >
                                       Descargar código QR
                                     </button>
-
-
-
                                   </Dialog.Panel>
                                 </Transition.Child>
                               </div>
                             </div>
                           </Dialog>
                         </Transition.Root>
-
-
-
                       </Tab.Panel>
                       <Tab.Panel>
                         <div className='bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md'>
@@ -526,7 +519,13 @@ function Store({
 
 
                       </Tab.Panel>
-                      <Tab.Panel>Content 3</Tab.Panel>
+                      <Tab.Panel>
+                        <div className="bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md">
+                          <FormCreatePolicy />
+
+                        </div>
+
+                      </Tab.Panel>
                     </Tab.Panels>
                   </Tab.Group>
                 </div>

@@ -13,7 +13,9 @@ import {
     SET_STORE_LOADING,
     REMOVE_STORE_LOADING,
     GET_STORE_LIST_CATEGORIES_SUCCESS,
-    GET_STORE_LIST_CATEGORIES_FAIL
+    GET_STORE_LIST_CATEGORIES_FAIL,
+    GET_STORE_POLICIES_SUCCESS,
+    GET_STORE_POLICIES_FAIL
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -303,4 +305,40 @@ export const get_related_stores = (storeSlug) => async dispatch => {
     }
 }
 
+export const get_store_policies = (storeSlug) => async dispatch => {
+    dispatch({
+        type:SET_STORE_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/store/policies/${storeSlug}/`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_STORE_POLICIES_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_STORE_POLICIES_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_STORE_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_STORE_POLICIES_FAIL
+        });
+        dispatch({
+            type: REMOVE_STORE_LOADING
+        });
+    }
+}
 

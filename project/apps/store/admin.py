@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Store
+from .models import Store, StorePolicy
 
 
 # Register your models here.
@@ -11,4 +11,7 @@ class StoreAdmin(admin.ModelAdmin):
     list_per_page = 25
 
 admin.site.register(Store, StoreAdmin)
+
+admin.site.register(StorePolicy)
+
 

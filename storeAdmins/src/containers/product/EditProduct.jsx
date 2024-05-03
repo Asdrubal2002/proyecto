@@ -5,7 +5,7 @@ import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import { get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
-import { BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, InformationCircleIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
 import { get_categories } from '../../redux/actions/categories_product/categories_product';
@@ -655,7 +655,33 @@ function EditProduct({
                                     </dd>
                                 </div>
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">Precio</dt>
+                                    <dt className="text-sm font-medium text-gray-200">
+
+
+                                    <Disclosure>
+                                            <Disclosure.Button className="focus:outline-none">
+                                                <p className='flex'>
+                                                    Precio  <InformationCircleIcon className="w-6 h-6 text-gray-400 mx-2" />
+                                                </p>
+                                            </Disclosure.Button>
+                                            <Transition
+                                                enter="transition duration-100 ease-out"
+                                                enterFrom="transform scale-95 opacity-0"
+                                                enterTo="transform scale-100 opacity-100"
+                                                leave="transition duration-75 ease-out"
+                                                leaveFrom="transform scale-100 opacity-100"
+                                                leaveTo="transform scale-95 opacity-0"
+                                            >
+                                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
+                                                    <p>
+                                                    En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.
+                                                    </p>
+                                                </Disclosure.Panel>
+                                            </Transition>
+                                        </Disclosure>
+
+
+                                    </dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updatePrice ? (
                                             <>
@@ -716,7 +742,35 @@ function EditProduct({
 
 
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">Opciones del producto</dt>
+                                    <dt className="text-sm font-medium text-gray-200">
+
+                                        <Disclosure>
+                                            <Disclosure.Button className="focus:outline-none">
+                                                <p className='flex'>
+                                                    Opciones del producto  <InformationCircleIcon className="w-6 h-6 text-gray-400 mx-2" />
+                                                </p>
+                                            </Disclosure.Button>
+                                            <Transition
+                                                enter="transition duration-100 ease-out"
+                                                enterFrom="transform scale-95 opacity-0"
+                                                enterTo="transform scale-100 opacity-100"
+                                                leave="transition duration-75 ease-out"
+                                                leaveFrom="transform scale-100 opacity-100"
+                                                leaveTo="transform scale-95 opacity-0"
+                                            >
+                                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
+                                                    <p>
+                                                        puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
+                                                    </p>
+                                                    <br />
+                                                    <p>
+                                                        No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
+                                                    </p>
+                                                </Disclosure.Panel>
+                                            </Transition>
+                                        </Disclosure>
+                                    </dt>
+
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updateOptions ? (
                                             <>

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Store
+from .models import Store, StorePolicy
 from apps.store_category.serializers import CategorySerializer
 from apps.locations.serializers import CiudadSerializer
 
@@ -42,5 +42,8 @@ class CreateStoreSerializer(serializers.ModelSerializer):
        
         exclude = ['is_active', 'likes', 'complaints', 'verified', 'created_on','logo','banner','delivery']
 
-        
+class StorePolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StorePolicy
+        fields = 'name', "policy_text"
         

@@ -7,8 +7,8 @@ from django.db.models import Q
 from django.core.files.base import ContentFile
 
 
-from apps.store.models import Store
-from apps.store.serializers import StoreSerializer, CreateStoreSerializer
+from apps.store.models import Store,StorePolicy
+from apps.store.serializers import StoreSerializer, CreateStoreSerializer, StorePolicySerializer
 from apps.store_category.models import Category
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import default_storage
@@ -21,6 +21,9 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from rest_framework.parsers import MultiPartParser, FormParser
 from .permissions import CanEditStore
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.exceptions import NotFound
+
 # Create your views here.
 
 
@@ -325,3 +328,75 @@ class EditStoreBannerView(APIView):
             return Response({"success": "Banner uploaded"})
         else:
             return Response({"error": "Banner image is required"})
+
+
+class StorePolicyCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = StorePolicySerializer(data=request.data)
+        if serializer.is_valid():
+            # Obtener el usuario autenticado
+            user = request.user
+            # Verificar si el usuario tiene una tienda asociada
+            if not hasattr(user, 'store'):
+                return Response({"error": "El usuario autenticado no tiene una tienda asociada"}, status=status.HTTP_400_BAD_REQUEST)
+            # Obtener la tienda asociada al usuario
+            store = user.store
+            serializer.save(store=store)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class StorePolicyUpdateAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return StorePolicy.objects.get(pk=pk)
+        except StorePolicy.DoesNotExist:
+            raise NotFound()
+
+    def put(self, request, pk, format=None):
+        policy = self.get_object(pk)
+        serializer = StorePolicySerializer(policy, data=request.data)
+        if serializer.is_valid():
+            # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
+            store = request.user.store_set.first()
+            if not store or policy.store != store:
+                return Response({"error": "No tienes permiso para actualizar esta política"}, status=status.HTTP_403_FORBIDDEN)
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class StorePolicyDeleteAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return StorePolicy.objects.get(pk=pk)
+        except StorePolicy.DoesNotExist:
+            raise NotFound()
+
+    def delete(self, request, pk, format=None):
+        policy = self.get_object(pk)
+        # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
+        store = request.user.store_set.first()
+        if not store or policy.store != store:
+            return Response({"error": "No tienes permiso para eliminar esta política"}, status=status.HTTP_403_FORBIDDEN)
+        policy.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class StorePolicyListByStoreAPIView(APIView):
+    def get(self, request, store_slug, format=None):
+        # Obtenemos la tienda por su slug
+        store = get_object_or_404(Store, slug=store_slug)
+        try:
+            # Filtramos las políticas por la tienda encontrada
+            policies = StorePolicy.objects.filter(store=store)
+            serializer = StorePolicySerializer(policies, many=True)
+            return Response({"policies":serializer.data}, status=status.HTTP_200_OK)
+        except StorePolicy.DoesNotExist:
+            return Response({"error": "No se encontraron políticas para esta tienda"}, status=status.HTTP_404_NOT_FOUND)

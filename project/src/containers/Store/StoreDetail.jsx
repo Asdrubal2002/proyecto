@@ -32,6 +32,8 @@ import { get_store_comments, add_comment_store, delete_comment_store, edit_comme
 import CategoriesStoreMobile from "./CategoriesStoreMobile";
 import CommentStore from "../../components/store/CommentStore";
 import { Tab } from '@headlessui/react'
+import FooterStores from "../../components/store/FooterStores";
+
 
 
 function classNames(...classes) {
@@ -62,7 +64,8 @@ const StoreDetail = ({
     profile,
     delete_comment_store,
     edit_comment_store,
-    comments_count
+    comments_count,
+    
 
 }) => {
 
@@ -455,6 +458,7 @@ const StoreDetail = ({
                             </main>
                         </div>
                     </div>
+                    <FooterStores storeSlug={storeSlug}/>
                 </>
             }
         </Layout>
@@ -487,5 +491,6 @@ export default connect(mapStateToProps, {
     get_store_comments,
     add_comment_store,
     delete_comment_store,
-    edit_comment_store
+    edit_comment_store,
+    
 })(StoreDetail)

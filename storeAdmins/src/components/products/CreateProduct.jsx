@@ -34,15 +34,8 @@ function CreateProduct({
         event.preventDefault();
 
         const formData = new FormData(event.target);
-
         const data = Object.fromEntries(formData);
-
-
-        console.log(data.description, "esta es la beta")
-
-
         const editorContent = description;
-
         formData.set('description', editorContent);
 
         // Validar campos requeridos
@@ -140,11 +133,10 @@ function CreateProduct({
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
-                                    <h2 className="text-lg font-medium leading-6 text-gray-800">crear tu producto</h2>
 
                                     <div className='py-4'>
                                         <Disclosure>
-                                            <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-stone-800 rounded-lg text-sm p-4">
+                                            <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-azul_corp rounded-lg text-sm p-4 mb-2">
                                                 <span>Necesito crear una nueva categoría</span>
                                                 <PlusIcon className="ml-1" width={10} height={10} color="#fff" radius="6" />
                                             </Disclosure.Button>
@@ -187,8 +179,9 @@ function CreateProduct({
 
                                         {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
 
-                                        <div className='text-gray-900 text-sm'>
+                                        <div className='text-gray-900 text-sm '>
                                             <CKEditor
+
                                                 editor={ClassicEditor}
                                                 data={description}
                                                 onChange={(event, editor) => {
@@ -206,27 +199,12 @@ function CreateProduct({
                                                 config={{
                                                     toolbar: {
                                                         items: [
-                                                            //'heading', '|',
-                                                            //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
+                                                          
                                                             'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
-                                                            //'fontSize', '|', // Tamaño del texto
-                                                            //'alignment', '|', // Alineación del texto
-                                                            //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
-                                                            //'indent', 'outdent', '|', // Aumentar y disminuir sangría
-                                                            //'undo', 'redo' // Deshacer y rehacer
+                                                           
                                                         ]
                                                     },
-                                                    // fontSize: {
-                                                    //     options: [
-                                                    //         'default',
-                                                    //         '9pt',
-                                                    //         '11pt',
-                                                    //         '14pt',
-                                                    //         '18pt',
-                                                    //         '24pt',
-                                                    //         '36pt'
-                                                    //     ]
-                                                    // }
+                                                   
                                                 }}
                                             />
                                         </div>
@@ -241,6 +219,11 @@ function CreateProduct({
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                         />
                                         {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+                                        <div className='bg-sky-100 text-gray-900 p-4 rounded-md text-sm'>
+                                            <p className=' text-gray-900'><strong className='text-azul_corp'>Importante:</strong> En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.</p>
+
+
+                                        </div>
 
                                         <button
                                             type="submit"
