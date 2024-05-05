@@ -233,6 +233,7 @@ function Create({
         city.nombre.toLowerCase().slice(0, inputLength) === inputValue
       );
   };
+  
   const onSuggestionsFetchRequested = ({ value }) => {
     setSuggestions(getSuggestions(value));
   };

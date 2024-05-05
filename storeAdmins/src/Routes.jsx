@@ -17,6 +17,9 @@ import EditProduct from './containers/product/EditProduct'
 import Shippings from './containers/shipping/Shippings'
 import ProductsByCategory from './containers/product/ProductsByCategory'
 import HelpWithMyStore from './containers/ayuda/HelpWithMyStore'
+import Options_admin from './containers/options-products/Options_admin'
+
+
 
 
 
@@ -46,6 +49,10 @@ function AnimatedRoutes() {
               <Route exact path='/products_by_category/:storeSlug/:categorySlug' element={<ProductsByCategory />} />
 
               <Route exact path='/help' element={<HelpWithMyStore />} />
+
+
+              <Route exact path='/my_options' element={<Options_admin />} />
+
 
 
 

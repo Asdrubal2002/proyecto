@@ -12,7 +12,11 @@ import {
     GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_SUCCESS,
     GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL,
     SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
-    REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+    REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
+    GET_OPTIONS_SUCCESS,
+    GET_OPTIONS_FAIL,
+    SET_LOADING_OPTIONS,
+    REMOVE_LOADING_OPTIONS
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -145,7 +149,7 @@ export const get_products_options = (slugProduct) => async dispatch => {
     };
 
     try {
-        const res = await axios.get(`${apiUrl}/api/product/options/${slugProduct}`, config);
+        const res = await axios.get(`${apiUrl}/api/product/options-product-admin/${slugProduct}`, config);
 
         if (res.status === 200) {
             dispatch({
@@ -172,7 +176,7 @@ export const get_products_options = (slugProduct) => async dispatch => {
 
 export const get_products_by_category = (storeSlug, categorySlug) => async dispatch => {
     dispatch({
-        type:SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        type: SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
     });
 
     const config = {
@@ -209,7 +213,7 @@ export const get_products_by_category = (storeSlug, categorySlug) => async dispa
 
 export const get_products_by_category_page = (storeSlug, categorySlug, page) => async dispatch => {
     dispatch({
-        type:SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        type: SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
     });
 
     const config = {
@@ -240,6 +244,45 @@ export const get_products_by_category_page = (storeSlug, categorySlug, page) => 
         });
         dispatch({
             type: REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+        });
+    }
+}
+
+
+export const get_options_admin = () => async dispatch => {
+    dispatch({
+        type: SET_LOADING_OPTIONS
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/user-admin-options-view/`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_OPTIONS_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_OPTIONS_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_LOADING_OPTIONS
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_OPTIONS_FAIL
+        });
+        dispatch({
+            type: REMOVE_LOADING_OPTIONS
         });
     }
 }

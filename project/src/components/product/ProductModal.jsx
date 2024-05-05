@@ -171,7 +171,7 @@ function ProductModal({
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">
-                            <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3>
+                            {/* <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3> */}
                             <p className="text-base text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
                         </div>
 

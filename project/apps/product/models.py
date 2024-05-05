@@ -30,8 +30,12 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = RichTextField()
     slugProduct = models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
-    price = models.CharField(max_length=20)  # Se cambia a CharField para permitir decimales personalizados
-    tax = models.CharField(max_length=20, default='0', blank=True)  # Se cambia a CharField para permitir decimales personalizados
+    price = models.CharField(
+        max_length=20
+    )  # Se cambia a CharField para permitir decimales personalizados
+    tax = models.CharField(
+        max_length=20, default="0", blank=True
+    )  # Se cambia a CharField para permitir decimales personalizados
     sold = models.IntegerField(default=0)
     date_created = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
@@ -39,6 +43,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -50,27 +55,33 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Imagen de {self.product.name}"
 
+
 class Option(models.Model):
     class Meta:
         verbose_name = "opción"
         verbose_name_plural = "opciones"
-    
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='options_store')
+
+    store = models.ForeignKey(
+        Store, on_delete=models.CASCADE, related_name="options_store"
+    )
     value = models.CharField(max_length=255, blank=False, null=False)
 
     def __str__(self):
         return self.value
-    
+
+
 class ProductOption(models.Model):
     class Meta:
         verbose_name = "opción de producto"
         verbose_name_plural = "opciones de productos"
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_options')
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_options"
+    )
     option = models.ForeignKey(Option, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
     sold = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.product.name} - {self.option}"
-

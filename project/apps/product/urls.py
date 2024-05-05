@@ -16,7 +16,9 @@ from .views import (
     CreateProductView,
     ProductOptionsView,
     DeleteProductOptionView,
-    ListProductsByCategoryViewAdmin
+    ListProductsByCategoryViewAdmin,
+    CreateOptionsAPIView,
+    OptionListAdminAPIView
 )
 
 urlpatterns = [
@@ -24,11 +26,7 @@ urlpatterns = [
     path("products/<storeSlug>", ProductsByStore.as_view()),
     path("search", SearchProductInView.as_view(), name="search_in_store_category"),
     path("detail/<slugProduct>", ProductDetailView.as_view()),
-    path(
-        "options/<product_slug>",
-        ProductOptionListView.as_view(),
-        name="product-options-list",
-    ),
+    path("options/<product_slug>",ProductOptionListView.as_view(),name="product-options-list"),
     path("options/", OptionListView.as_view()),
     path("create-option/", CreateOptionAPIView.as_view()),
     path("user-products/", UserProductsAPIView.as_view(), name="user_products"),
@@ -38,8 +36,12 @@ urlpatterns = [
     path("delete-photo/<id>", DeletePhotoProductView.as_view()),
     path("edit-product-photo/", EditProductPhotosView.as_view()),
     path("create-product/", CreateProductView.as_view()),
-    path("options/<slug>", ProductOptionsView.as_view()),
+    path("options-product-admin/<slug>", ProductOptionsView.as_view()),
     path("delete-option/<option_id>", DeleteProductOptionView.as_view()),
     path("product-admin/<storeSlug>/<categorySlug>", ListProductsByCategoryViewAdmin.as_view()),
+
+    path("create-options-admin/", CreateOptionsAPIView.as_view()),
+
+    path("user-admin-options-view/", OptionListAdminAPIView.as_view(), name="user_admin_products"),
 
 ]

@@ -42,7 +42,7 @@ class ProductOptionSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     class Meta:
         model = ProductOption
-        fields = ['id','option','quantity','product']
+        fields = ['id','option','quantity','product','is_active']
 
 class CreateOptionSerializer(serializers.ModelSerializer):
     class Meta:

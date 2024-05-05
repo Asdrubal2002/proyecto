@@ -128,7 +128,7 @@ class ProductOptionListView(APIView):
         product = get_object_or_404(Product, slugProduct=product_slug)
 
         # Obtener las opciones del producto si existen
-        product_options = ProductOption.objects.filter(product=product)
+        product_options = ProductOption.objects.filter(product=product, is_active=True)
 
         if product_options.exists():
             # Serializar las opciones del producto si existen
@@ -167,33 +167,52 @@ class CreateOptionAPIView(APIView):
         # Agregar el usuario autenticado como administrador de la tienda
         data["store"] = request.user.store.id
 
-        # Crear un serializador con los datos de la solicitud
-        serializer = CreateOptionSerializer(data=data)
+        # Obtener el ID del producto y la cantidad de la solicitud
+        product_id = data.get('product', None)
+        quantity = data.get('quantity', 0)
 
-        if serializer.is_valid():
-            # Guardar la opción en la base de datos
-            option = serializer.save()
+        # Verificar si se proporcionó un ID de producto válido
+        if product_id is None:
+            return Response({"error": "ID de producto no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Obtener el producto y la opción relacionados
-            product_id = data.get('product', None)
-            option_id = option.id
+        # Obtener el valor de la opción de la solicitud
+        option_value = data.get('value', None)
 
-            # Verificar si se proporcionó un ID de producto válido
-            if product_id is None:
-                return Response({"error": "ID de producto no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
+        # Verificar si se proporcionó un valor de opción válido
+        if option_value is None:
+            return Response({"error": "Valor de opción no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Obtener el valor de quantity
-            quantity = data.get('quantity', 0)
+        # Verificar si se proporcionó un ID de opción en la solicitud
+        option_id = data.get('option', None)
 
-            # Crear una instancia de ProductOption y guardarla en la base de datos
-            product_option = ProductOption.objects.create(product_id=product_id, option_id=option_id, quantity=quantity)
-            
-            # Obtener la representación serializada de la opción creada
+        # Si se proporcionó un ID de opción, intenta obtener la opción existente
+        if option_id:
+            try:
+                # Obtener la opción existente
+                option = Option.objects.get(pk=option_id)
+            except Option.DoesNotExist:
+                return Response({"error": "La opción especificada no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Si la opción existe, crear la relación con el producto
+            product_option = ProductOption.objects.create(product_id=product_id, option=option, quantity=quantity)
             serialized_option = OptionSerializer(option).data
 
             return Response(serialized_option, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Si no se proporcionó un ID de opción, crear una nueva opción
+            serializer = CreateOptionSerializer(data=data)
+
+            if serializer.is_valid():
+                # Guardar la nueva opción en la base de datos
+                option = serializer.save()
+
+                # Crear la relación con el producto
+                product_option = ProductOption.objects.create(product_id=product_id, option=option, quantity=quantity)
+                serialized_option = OptionSerializer(option).data
+
+                return Response(serialized_option, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProductsAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -375,6 +394,44 @@ class ListProductsByCategoryViewAdmin(APIView):
         
         # Devolver la lista de productos serializados
         return paginator.get_paginated_response({"products": products_serialized.data})
+    
+class CreateOptionsAPIView(APIView):
+    permission_classes = (CanEditProduct,)
+
+    def post(self, request, *args, **kwargs):
+        # Agregar el usuario autenticado como administrador de la tienda
+        data = request.data.copy() 
+        data["store"] = request.user.store.id
+
+        # Crear un serializador con los datos de la solicitud
+        serializer = CreateOptionSerializer(data=data)
+
+        if serializer.is_valid():
+            # Guardar la opción en la base de datos
+            option = serializer.save()
+            
+            # Obtener la representación serializada de la opción creada
+            serialized_option = OptionSerializer(option).data
+
+            return Response(serialized_option, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OptionListAdminAPIView(APIView):
+    def get(self, request):
+        try:
+            # Obtener la tienda del usuario autenticado
+            store = get_object_or_404(Store, administrator=request.user)
+            # Obtener todas las opciones asociadas con la tienda del usuario autenticado
+            options = Option.objects.filter(store=store)
+            # Serializar las opciones
+            serializer = OptionSerializer(options, many=True)
+            # Devolver la respuesta con las opciones serializadas
+            return Response({"options":serializer.data },status=status.HTTP_200_OK)
+        except Store.DoesNotExist:
+            # Si no se encuentra la tienda del usuario autenticado, devolver un mensaje de error
+            return Response({"error": "No se encontró la tienda asociada al usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
 
 
 

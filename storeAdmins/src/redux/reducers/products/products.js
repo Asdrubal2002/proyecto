@@ -8,6 +8,11 @@ import {
     SET_PRODUCT_SUCCESS_LOADING,
     GET_PRODUCTS_OPTIONS_SUCCESS,
     GET_PRODUCTS_OPTIONS_FAIL,
+
+    GET_OPTIONS_SUCCESS,
+    GET_OPTIONS_FAIL,
+    SET_LOADING_OPTIONS,
+    REMOVE_LOADING_OPTIONS
 } from "../../actions/products/types";
 
 const initialState = {
@@ -19,6 +24,8 @@ const initialState = {
     count: null,
     next: null,
     previous: null,
+    list_admin_options: null,
+    loading_options: false,
 
 };
 
@@ -85,6 +92,29 @@ export default function Products(state = initialState, action) {
                 ...state,
                 options: null
             }
+
+        case GET_OPTIONS_SUCCESS:
+            return {
+                ...state,
+                list_admin_options: payload.options
+            }
+        case GET_OPTIONS_FAIL:
+            return {
+                ...state,
+                list_admin_options: null
+            }
+
+        case SET_LOADING_OPTIONS:
+            return {
+                ...state,
+                loading_options: true
+            }
+        case REMOVE_LOADING_OPTIONS:
+            return {
+                ...state,
+                loading_options: false
+            }
+
 
         default:
             return state

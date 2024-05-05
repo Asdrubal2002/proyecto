@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
 import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
-import { get_product, get_products_options } from '../../redux/actions/products/products';
+import { get_options_admin, get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
 import { BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, InformationCircleIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
@@ -13,6 +13,8 @@ import FormCategories from '../categories/FormCategories';
 import DOMPurify from 'dompurify'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import OptionDataInput from './OptionDataInput';
+
 
 
 function EditProduct({
@@ -22,10 +24,10 @@ function EditProduct({
     get_categories,
     categories,
     get_products_options,
-    options
+    options,
+    get_options_admin,
+    all_options
 }) {
-
-
     const [loading, setLoading] = useState(false)
 
     const params = useParams()
@@ -35,8 +37,8 @@ function EditProduct({
         get_product(slug)
         get_categories()
         get_products_options(slug)
+        get_options_admin()
     }, []);
-
 
     const [open, setOpen] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
@@ -54,8 +56,7 @@ function EditProduct({
 
     const [openAddCategory, setOpenAddCategory] = useState(false)
 
-    const [descriptionContent, setDescriptionContent] = useState('')
-
+    const [suggestions, setSuggestions] = useState([]);
 
 
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -75,7 +76,6 @@ function EditProduct({
         quantity: ''
 
     })
-
 
     const {
         name,
@@ -385,6 +385,11 @@ function EditProduct({
         fetchData()
     };
 
+
+
+
+
+
     return (
         <Layout>
             {loading_product ? <Rings width={30} height={30} color="#fff" radius="6" />
@@ -432,7 +437,7 @@ function EditProduct({
                         <div className="mt-5 border-t border-gray-200">
                             <dl className="divide-y divide-gray-200">
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">Nobre del producto</dt>
+                                    <dt className="text-sm font-medium text-gray-200">Nombre del producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updateName ? (
                                             <>
@@ -485,12 +490,12 @@ function EditProduct({
                                         )}
                                     </dd>
                                 </div>
+                                {/* Categoria */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Categoria de tu producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updateCategory ? (
                                             <>
-
 
                                                 <form onSubmit={e => onSubmit(e)} className="flex w-full">
                                                     <select
@@ -561,8 +566,9 @@ function EditProduct({
                                             </>
                                         )}
                                     </dd>
-
                                 </div>
+
+                                {/* description */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Descripción</dt>
                                     <dd className="mt-1 flex text-sm text-gray-800 sm:col-span-2 sm:mt-0">
@@ -580,27 +586,10 @@ function EditProduct({
                                                             config={{
                                                                 toolbar: {
                                                                     items: [
-                                                                        //'heading', '|',
-                                                                        //'fontColor', 'fontBackgroundColor', '|', // Color del texto y del fondo
-                                                                        'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
-                                                                        //'fontSize', '|', // Tamaño del texto
-                                                                        //'alignment', '|', // Alineación del texto
-                                                                        //'numberedList', 'bulletedList', '|', // Listas numeradas y con viñetas
-                                                                        //'indent', 'outdent', '|', // Aumentar y disminuir sangría
-                                                                        //'undo', 'redo' // Deshacer y rehacer
+                                                                        'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayad
                                                                     ]
                                                                 },
-                                                                // fontSize: {
-                                                                //     options: [
-                                                                //         'default',
-                                                                //         '9pt',
-                                                                //         '11pt',
-                                                                //         '14pt',
-                                                                //         '18pt',
-                                                                //         '24pt',
-                                                                //         '36pt'
-                                                                //     ]
-                                                                // }
+
                                                             }}
                                                         />
                                                     </div>
@@ -654,11 +643,13 @@ function EditProduct({
                                         )}
                                     </dd>
                                 </div>
+
+                                {/* Precio */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
 
 
-                                    <Disclosure>
+                                        <Disclosure>
                                             <Disclosure.Button className="focus:outline-none">
                                                 <p className='flex'>
                                                     Precio  <InformationCircleIcon className="w-6 h-6 text-gray-400 mx-2" />
@@ -674,7 +665,7 @@ function EditProduct({
                                             >
                                                 <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
                                                     <p>
-                                                    En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.
+                                                        En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.
                                                     </p>
                                                 </Disclosure.Panel>
                                             </Transition>
@@ -740,121 +731,66 @@ function EditProduct({
                                     </dd>
                                 </div>
 
+                                {/* Optiones */}
+
+
 
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">
+                                    <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
+                                        <span className="flex-grow">
+                                            <OptionDataInput all_options={all_options} product={product} resetStates={resetStates} slug={slug} get_products_options={get_products_options} />
 
-                                        <Disclosure>
-                                            <Disclosure.Button className="focus:outline-none">
-                                                <p className='flex'>
-                                                    Opciones del producto  <InformationCircleIcon className="w-6 h-6 text-gray-400 mx-2" />
-                                                </p>
-                                            </Disclosure.Button>
-                                            <Transition
-                                                enter="transition duration-100 ease-out"
-                                                enterFrom="transform scale-95 opacity-0"
-                                                enterTo="transform scale-100 opacity-100"
-                                                leave="transition duration-75 ease-out"
-                                                leaveFrom="transform scale-100 opacity-100"
-                                                leaveTo="transform scale-95 opacity-0"
-                                            >
-                                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                                    <p>
-                                                        puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
-                                                    </p>
-                                                    <br />
-                                                    <p>
-                                                        No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
-                                                    </p>
-                                                </Disclosure.Panel>
-                                            </Transition>
-                                        </Disclosure>
-                                    </dt>
+                                            <table className="min-w-full divide-y divide-gray-700 rounded-md">
+                                                <thead className="bg-gray-800">
+                                                    <tr>
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nombre de la Opción</th>
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cantidad</th>
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
 
-                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
-                                        {updateOptions ? (
-                                            <>
-                                                <form onSubmit={e => onSubmitOption(e)} className="flex w-full">
-                                                    <input
-                                                        value={optionPr}
-                                                        onChange={e => onChange(e)}
-                                                        name='optionPr'
-                                                        type='text'
-                                                        maxLength={10} // Límite de 10 caracteres para optionPr
-                                                        className="mt-1 mx-2 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                                        required
-                                                        placeholder='Nueva opción'
-                                                    />
-                                                    {/* Mensaje de error si optionPr excede el límite de caracteres */}
-                                                    {optionPr.length > 150 && (
-                                                        <span className="text-red-500 text-sm mt-1 ml-4">La opción no puede exceder los 150 caracteres</span>
-                                                    )}
-
-                                                    <input
-                                                        value={quantity}
-                                                        onChange={e => onChange(e)}
-                                                        name='quantity'
-                                                        type='number'
-                                                        max={10000} // Límite de 10000 para quantity
-                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                                        required
-                                                        placeholder='Unidades para esta opción.'
-                                                    />
-                                                    {/* Mensaje de error si quantity es mayor a 10000 */}
-                                                    {quantity > 10000 && (
-                                                        <span className="text-red-500 text-sm mt-1 ml-4">Las unidades no pueden ser mayores a 10000</span>
-                                                    )}
-
-                                                    <div className="flex items-center space-x-2 ml-4">
-                                                        <button
-                                                            type="submit"
-                                                            disabled={optionPr.length === 0 || optionPr.length > 10 || quantity === '' || quantity > 10000}
-                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none  "
-                                                        >
-                                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setUpdateOptions(false)}
-                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none  "
-                                                        >
-                                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                        </button>
-                                                    </div>
-                                                </form>
-
-
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span className="flex-grow">
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-gray-900 divide-y divide-gray-700">
                                                     {options && options.length === 0 ? (
-                                                        <p className="text-gray-300">No hay opciones disponibles</p>
+                                                        <tr>
+                                                        <td className="px-6 py-4 whitespace-normal" colSpan="4">
+                                                            <div className="text-sm text-gray-300">
+                                                                <p>
+                                                                    Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
+                                                                </p>
+                                                                <p className='text-red-500'>
+                                                                    <strong>
+                                                                        No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
+                                                                    </strong>
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    
                                                     ) : (
                                                         options && options.map((option, index) => (
-                                                            <div key={index} className="inline-block bg-gray-800 text-white rounded-lg px-4 py-2 m-1 hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-400">
-                                                                <span className="flex items-center">
-                                                                    <span className="mr-2">{option.option.value} : </span>
-                                                                    <span>{option.quantity} Unidades</span>
+                                                            <tr key={index}>
+                                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{option.option.value}</td>
+                                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{option.quantity} Unidades</td>
+                                                                <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-300 ${option.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>{option.is_active ? "Activo" : "Inactivo"}</td>
+
+                                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                                     <button className="ml-2 focus:outline-none">
                                                                         <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option.id)} />
                                                                     </button>
-                                                                </span>
-                                                            </div>
-
+                                                                    <button className="ml-2 focus:outline-none">
+                                                                        <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option.id)} />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
                                                         ))
                                                     )}
-                                                </span>
+                                                </tbody>
+                                            </table>
 
+                                        </span>
+                                    </div>
 
-                                                <button
-                                                    onClick={() => setUpdateOptions(true)}
-                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
-                                                    <PlusIcon width={20} height={20} color="#fff" radius="6" />
-
-                                                </button>
-                                            </>
-                                        )}
-                                    </dd>
                                 </div>
 
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
@@ -932,11 +868,8 @@ function EditProduct({
                                 )}
                             </div>
                         </div>
-
                     </>
                 </>}
-
-
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={setOpen}>
                     <Transition.Child
@@ -1138,11 +1071,14 @@ const mapStateToProps = state => ({
     loading_product: state.Products.loading_product,
     product: state.Products.product,
     categories: state.Product_category.categories,
-    options: state.Products.options
+    options: state.Products.options,
+    all_options: state.Products.list_admin_options,
+
 })
 
 export default connect(mapStateToProps, {
     get_product,
     get_products_options,
-    get_categories
+    get_categories,
+    get_options_admin
 })(EditProduct)
