@@ -65,7 +65,7 @@ const StoreDetail = ({
     delete_comment_store,
     edit_comment_store,
     comments_count,
-    
+
 
 }) => {
 
@@ -416,26 +416,29 @@ const StoreDetail = ({
                                                     </div>
                                                     : <></>}
                                             </div>
-                                            {/* Segunda fila */}
-                                            <div className="flex pb-4 items-center">
-                                                <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-gray-400" />
-                                                <span className="ml-1">{comments_count} Comentarios sobre {store && store.name}</span>
-                                            </div>
-                                            <div>
-                                                {comments && Array.isArray(comments) && comments.length === 0 ? (
-                                                    <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
-                                                        <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
-                                                        <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
-                                                    </div>
-                                                ) : (
-                                                    Array.isArray(comments) && comments.map((comment, index) => (
-                                                        <div key={index}>
-                                                            <CommentStore comment={comment} profile={profile} isAuthenticated={isAuthenticated} delete_comment_store={delete_comment_store} edit_comment_store={edit_comment_store} />
-
+                                            <div className="my-4">
+                                                {/* Segunda fila */}
+                                                <div className="flex pb-4 items-center">
+                                                    <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-azul_corp_ho" />
+                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
+                                                </div>
+                                                <div>
+                                                    {comments && Array.isArray(comments) && comments.length === 0 ? (
+                                                        <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
+                                                            <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
+                                                            <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
                                                         </div>
-                                                    ))
-                                                )}
+                                                    ) : (
+                                                        Array.isArray(comments) && comments.map((comment, index) => (
+                                                            <div key={index}>
+                                                                <CommentStore comment={comment} profile={profile} isAuthenticated={isAuthenticated} delete_comment_store={delete_comment_store} edit_comment_store={edit_comment_store} />
+
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                </div>
                                             </div>
+
                                         </div>
                                         {/* Segunda columna */}
                                         <div className="lg:col-span-3">
@@ -458,7 +461,7 @@ const StoreDetail = ({
                             </main>
                         </div>
                     </div>
-                    <FooterStores storeSlug={storeSlug}/>
+                    <FooterStores storeSlug={storeSlug} />
                 </>
             }
         </Layout>
@@ -492,5 +495,5 @@ export default connect(mapStateToProps, {
     add_comment_store,
     delete_comment_store,
     edit_comment_store,
-    
+
 })(StoreDetail)

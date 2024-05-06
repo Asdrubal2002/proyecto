@@ -40,9 +40,10 @@ function CreateOptions({
         }));
     };
 
-    const filteredOptions = options.filter(option =>
+    const filteredOptions = options ? options.filter(option =>
         option.value.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ) : [];
+    
 
     return (
         <>

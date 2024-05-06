@@ -1,6 +1,7 @@
 import Layout from "../../hocs/Layout";
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon, InformationCircleIcon } from '@heroicons/react/20/solid'
+import { Switch } from '@headlessui/react'
 
 import { Boton, ContenedorFormulario, ContenedorFormulario2, Formulario, MensajeError } from "./styles/Formulario";
 import { useState } from "react";
@@ -20,6 +21,9 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
         return <Navigate to="/" />
     }
 
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    }
 
     const [email, changeMail] = useState({ campo: "", valido: null });
     const [password, changePass] = useState({ campo: "", valido: null });
@@ -27,6 +31,9 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
     const [formularioValido, cambiarFormularioValido] = useState(null);
 
     const [accountCreated, setAccountCreated] = useState(false);
+
+    const [terminosAceptados, setTerminosAceptados] = useState(false);
+
 
     const expresiones = {
         correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -53,7 +60,8 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
         if (
             email.valido === "true" &&
             password.valido === "true" &&
-            re_password.valido === "true"
+            re_password.valido === "true" &&
+            terminosAceptados
         ) {
             signup(
                 email.campo,
@@ -99,7 +107,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
 
             <div className="flex items-center justify-center py-4 pt-10">
                 <div className="max-w-md w-full space-y-8 ">
-                    <h2 className="text-3xl font-bold text-center">Registrarse</h2> {/* Título agregado */}
+                    <h2 className="text-3xl font-bold text-center">¡Regístrate ahora!</h2> {/* Título agregado */}
 
                     <ContenedorFormulario>
                         <ContenedorFormulario2>
@@ -137,6 +145,34 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                     leyendaError="Ambas contraseñas deben ser iguales."
                                     funcion={validarPassword2}
                                 />
+                                <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2 ">
+                                    <div className="flex h-6 items-center">
+                                        <Switch
+                                            checked={terminosAceptados}
+                                            onChange={setTerminosAceptados}
+                                            className={classNames(
+                                                terminosAceptados ? 'bg-azul_corp' : 'bg-gray-500',
+                                                'flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azul_corp'
+                                            )}
+                                        >
+                                            <span className="sr-only">Agree to policies</span>
+                                            <span
+                                                aria-hidden="true"
+                                                className={classNames(
+                                                    terminosAceptados ? 'translate-x-3.5' : 'translate-x-0',
+                                                    'h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out'
+                                                )}
+                                            />
+                                        </Switch>
+                                    </div>
+                                    <Switch.Label className="text-sm leading-6 text-gray-400">
+                                        Aceptas nuestros {' '}
+                                        <Link to="/conditions" className="font-semibold text-azul_corp_ho">
+                                            términos y condiciones
+                                        </Link>
+                                        .
+                                    </Switch.Label>
+                                </Switch.Group>
                                 <div>
                                     {loading ? (
                                         <Boton type="submit">
@@ -149,14 +185,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                 </div>
                             </Formulario>
                             <div className="mt-6">
-                                {/* <div className="relative">
-<div className="absolute inset-0 flex items-center">
-<div className="w-full border-t border-gray-300" />
-</div>
-<div className="relative flex justify-center text-sm">
-<span className="px-2 bg-stone-900 text-gray-400">O continua con</span>
-</div>
-</div> */}
+
                                 {formularioValido === false && (
                                     <MensajeError>
                                         <p className="flex">
@@ -167,7 +196,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                         </p>
                                     </MensajeError>
                                 )}
-                                <div className="mt-6 grid grid-cols-3 gap-3">
+                                {/* <div className="mt-6 grid grid-cols-3 gap-3">
                                     <div>
                                         <a
                                             href="#"
@@ -209,7 +238,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                             </svg>
                                         </a>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </ContenedorFormulario2>
                     </ContenedorFormulario>

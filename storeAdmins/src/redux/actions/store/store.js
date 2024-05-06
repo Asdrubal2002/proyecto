@@ -95,7 +95,7 @@ export const createStore = (
                 type: CREATE_STORE_FAIL
             });
             dispatch(
-                setAlert("Lo sentimos", error));
+                setAlert("Lo sentimos, parece que ya existe una tienda con esta dirección. Por favor, intenta con una dirección diferente.", error));
             dispatch({
                 type: REMOVE_LOADED_STORE,
             });

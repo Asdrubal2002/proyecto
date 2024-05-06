@@ -60,8 +60,6 @@ export const MensajeError = tw.div`
     rounded
     flex
     text-red-700
-    border border-red-400
-    
 	p {
 		m-0
 	} 
@@ -118,10 +116,6 @@ export const Boton = tw.button`
     text-white 
     bg-azul_corp 
     hover:bg-azul_corp_ho 
-    focus:outline-none 
-    focus:ring-2 
-    focus:ring-offset-2 
-    focus:ring-indigo-500
 `;
 
 

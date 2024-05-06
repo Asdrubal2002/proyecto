@@ -4,13 +4,14 @@ import Layout from '../../hocs/Layout'
 
 import { get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
-import { BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, LockClosedIcon, PaperClipIcon, PhotoIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArchiveBoxArrowDownIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, InformationCircleIcon, LockClosedIcon, PaperClipIcon, PhotoIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Create from './Create';
 import { Rings } from 'react-loader-spinner';
 import axios from "axios"
 import { Dialog, Menu, Transition, Disclosure, Tab } from '@headlessui/react'
 import { get_store_comments } from '../../redux/actions/comments/Comments_store';
 import FormCreatePolicy from '../../components/store/FormCreatePolicy';
+import PoliticsFoundations from '../../components/store/PoliticsFoundations';
 
 
 
@@ -520,9 +521,9 @@ function Store({
 
                       </Tab.Panel>
                       <Tab.Panel>
-                        <div className="bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md">
+                        <div className="bg-gray-800 py-6 px-4 sm:px-6 lg:px-8 rounded-md">
+                          <PoliticsFoundations/>
                           <FormCreatePolicy />
-
                         </div>
 
                       </Tab.Panel>

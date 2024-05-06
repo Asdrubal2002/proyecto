@@ -32,26 +32,28 @@ function FormCreatePolicy({
   const onSubmit = async (e) => {
     e.preventDefault();
     const errors = {};
-
+  
     if (!formData.name.trim()) {
       errors.name = 'El nombre es requerido';
     } else if (formData.name.length > 50) {
       errors.name = 'El nombre no puede exceder los 50 caracteres';
     }
-
-    if (formData.policy_text.length > 1000) {
-      errors.policy_text = 'El texto de la política no puede exceder los 200 caracteres';
+  
+    if (!formData.policy_text.trim()) {
+      errors.policy_text = 'La descripción de la política es requerida';
+    } else if (formData.policy_text.length > 1000) {
+      errors.policy_text = 'El texto de la política no puede exceder los 1000 caracteres';
     }
-
+  
     setFormErrors(errors);
-
+  
     // Si no hay errores, envía los datos del formulario
     if (Object.keys(errors).length === 0) {
       const trimmedFormData = {
         name: formData.name.trim(),
         policy_text: formData.policy_text.trim()
       };
-
+  
       setFormData(initialFormData);
       await create_policy(formData.name, formData.policy_text);
     } else {
@@ -59,6 +61,7 @@ function FormCreatePolicy({
       console.log('El formulario contiene errores. No se enviará.');
     }
   };
+  
 
   return (
     <div>

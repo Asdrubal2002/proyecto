@@ -10,9 +10,11 @@ import {
 } from './types';
 import { setAlert } from './alert';
 
-const exito = '#00B906';
+const exito = '#00BD2B';
 
 const error = '#bb2929';
+
+const mensaje_exito_negativo = '#922B21'
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -88,7 +90,7 @@ export const add_to_wish_list = (productSlug) => async dispatch => {
             });
             dispatch(
                 setAlert(
-                    "Añadido a tu productos guardados",
+                    "¡Producto añadido a tus favoritos!",
                     exito
                 )
             );
@@ -99,8 +101,8 @@ export const add_to_wish_list = (productSlug) => async dispatch => {
             });
             dispatch(
                 setAlert(
-                    "Eliminado de tus productos guardados",
-                    exito
+                    "¡Producto eliminado de tus favoritos!",
+                    mensaje_exito_negativo
                 )
             );
         } else {
@@ -108,8 +110,8 @@ export const add_to_wish_list = (productSlug) => async dispatch => {
                 type: ADD_WISHLIST_FAIL
             });
             setAlert(
-                "Error al Añadir a tu productos guardados",
-                exito
+                "¡Ups! Hubo un problema al añadir el producto a tus favoritos. Por favor, inténtalo de nuevo más tarde.",
+                error
             )
         }
     } catch (error) {

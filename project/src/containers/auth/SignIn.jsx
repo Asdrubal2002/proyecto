@@ -77,7 +77,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
       </Helmet>
       <div className="flex items-center justify-center py-4 pt-10">
         <div className="max-w-md w-full space-y-8 ">
-        <h2 className="text-3xl font-bold text-center">Iniciar sesión</h2> {/* Título agregado */}
+        <h2 className="text-3xl font-bold text-center">¡Ingresar ahora!</h2> {/* Título agregado */}
 
           <ContenedorFormulario>
             <ContenedorFormulario2>
@@ -111,7 +111,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
 
                   <div className="text-sm">
                     <Link to="/reset_password" className="font-medium text-azul_corp_ho hover:text-azul_corp">
-                      Olvide mi contraseña
+                    ¿Olvidaste tu contraseña?
                     </Link>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
                   </MensajeError>
                 )}
 
-                <div className="mt-6 grid grid-cols-3 gap-3">
+                {/* <div className="mt-6 grid grid-cols-3 gap-3">
                   <div>
                     <a
                       href="#"
@@ -193,7 +193,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
                       </svg>
                     </a>
                   </div>
-                </div>
+                </div> */}
               </div>
             </ContenedorFormulario2>
           </ContenedorFormulario>

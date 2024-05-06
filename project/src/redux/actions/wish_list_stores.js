@@ -88,7 +88,7 @@ export const add_to_wish_list_store = (storeSlug) => async dispatch => {
             });
             dispatch(
                 setAlert(
-                    "Añadido a tus tiendas guardadas",
+                    "Añadido a tus tiendas favoritas",
                     exito
                 )
             );
@@ -99,8 +99,8 @@ export const add_to_wish_list_store = (storeSlug) => async dispatch => {
             });
             dispatch(
                 setAlert(
-                    "Eliminado de tus tiendas guardadas",
-                    exito
+                    "La tienda ha sido eliminada de tus tiendas favoritas.",
+                    error
                 )
             );
         } else {

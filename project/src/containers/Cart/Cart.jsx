@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import NoFoundCarts from './NoFoundCarts';
-import { CheckIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, TrashIcon, DocumentCheckIcon } from '@heroicons/react/24/outline'
 import { InfinitySpin, Rings } from "react-loader-spinner";
 import { remove_cart } from '../../redux/actions/cart';
 
@@ -44,10 +44,14 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
                   <div className="flex items-center">
                     <Link to={`/store/${cart.store.slug}`} className="flex items-center flex-grow">
                       <h3 className="text-2xl font-bold tracking-tight text-gray-300">{cart.store.name}</h3>
+                     
                     </Link>
                     <button onClick={() => handleRemoveCart(cart.slug)} className="ml-2 text-gray-400" disabled={isRemovingCart}>
                       <TrashIcon className="w-6 h-6" />
                     </button>
+                    <Link to={`/policies/${cart.store.slug}`} className="ml-2 text-gray-400" disabled={isRemovingCart}>
+                      <DocumentCheckIcon className="w-6 h-6" />
+                    </Link>
                   </div>
                   <p className="mt-6 text-base text-gray-400">
                     {cart.store.description.length > 150

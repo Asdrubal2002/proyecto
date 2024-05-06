@@ -28,6 +28,8 @@ import Invoices from './containers/Invoice/Invoices.jsx';
 import CreateStore from './containers/Store/CreateStore.jsx';
 import ProductDetail from './components/product/ProductDetail.jsx';
 import StorePolicies from './containers/Store/StorePolicies.jsx';
+import PoliciesUser from './containers/Home/PoliciesUser.jsx';
+
 
 
 
@@ -61,6 +63,9 @@ function AnimatedRoutes() {
 
         <Route exact path='/create_store' element={<CreateStore />} />
         <Route exact path='/policies/:storeSlug' element={<StorePolicies />} />
+
+        <Route exact path='/policies' element={<PoliciesUser />} />
+
 
 
       </Routes>

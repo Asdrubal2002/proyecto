@@ -67,7 +67,7 @@ const Reset_password = ({ reset_password, loading }) => {
             </Helmet>
             <div className="flex items-center justify-center py-4 pt-10">
                 <div className="max-w-md w-full space-y-8 ">
-                <h2 className="text-xl font-bold text-center">Recuperar contraseña</h2> {/* Título agregado */}
+                <h2 className="text-3xl font-bold text-center">Recuperar contraseña</h2> {/* Título agregado */}
 
                     <ContenedorFormulario>
                         <ContenedorFormulario2>
@@ -84,8 +84,8 @@ const Reset_password = ({ reset_password, loading }) => {
                                     expresionRegular={expresiones.correo}
                                 />
 
-                                <div className="flex items-center justify-between">
-                                </div>
+                                {/* <div className="flex items-center justify-between">
+                                </div> */}
                                 <div>
                                     {loading ? (
                                         <Boton type="submit">
@@ -107,8 +107,6 @@ const Reset_password = ({ reset_password, loading }) => {
                                         </p>
                                     </MensajeError>
                                 )}
-
-
                             </div>
                         </ContenedorFormulario2>
                     </ContenedorFormulario>
