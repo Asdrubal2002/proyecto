@@ -44,8 +44,8 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
                   <div className="flex items-center">
                     <Link to={`/store/${cart.store.slug}`} className="flex items-center flex-grow">
                       <h3 className="text-2xl font-bold tracking-tight text-gray-300">{cart.store.name}</h3>
-                     
                     </Link>
+                    
                     <button onClick={() => handleRemoveCart(cart.slug)} className="ml-2 text-gray-400" disabled={isRemovingCart}>
                       <TrashIcon className="w-6 h-6" />
                     </button>

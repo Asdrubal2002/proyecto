@@ -18,9 +18,11 @@ import Shippings from './containers/shipping/Shippings'
 import ProductsByCategory from './containers/product/ProductsByCategory'
 import HelpWithMyStore from './containers/ayuda/HelpWithMyStore'
 import Options_admin from './containers/options-products/Options_admin'
+import HelpWithPhotos from './containers/ayuda/HelpWithPhotos'
 
 
 
+HelpWithPhotos
 
 
 function AnimatedRoutes() {
@@ -52,6 +54,11 @@ function AnimatedRoutes() {
 
 
               <Route exact path='/my_options' element={<Options_admin />} />
+
+              <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
+
+
+
 
 
 

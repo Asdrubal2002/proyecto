@@ -4,11 +4,11 @@ import PaginationProducts from '../pagination/PaginationProducts'
 
 function ProductList({ products, get_products_list_page, storeSlug, count }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 16; // o cualquier otro número que prefieras
+    const pageSize = 21; // o cualquier otro número que prefieras
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-        window.scrollTo(0, 670);
+        window.scrollTo(0, 510);
         get_products_list_page(storeSlug, newPage);
     };
 

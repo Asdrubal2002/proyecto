@@ -7,6 +7,7 @@ export const ContenedorFormulario = tw.div`
     sm:mx-auto 
     sm:w-full 
     sm:max-w-md
+    
 `;
 
 export const ContenedorFormulario2 = tw.div`
@@ -16,10 +17,12 @@ export const ContenedorFormulario2 = tw.div`
     shadow 
     sm:rounded-lg 
     sm:px-10
+    
 `;
 
 export const Formulario = tw.form`
   space-y-6
+  
 `;
 
 export const Label = tw.label`

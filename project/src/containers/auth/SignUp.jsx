@@ -14,6 +14,7 @@ import { Rings } from "react-loader-spinner";
 import { connect } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import ImagesForms from "./components/ImagesForms";
 
 const SignUp = ({ signup, loading, isAuthenticated }) => {
 
@@ -105,98 +106,96 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
 
-            <div className="flex items-center justify-center py-4 pt-10">
-                <div className="max-w-md w-full space-y-8 ">
-                    <h2 className="text-3xl font-bold text-center">¡Regístrate ahora!</h2> {/* Título agregado */}
-
-                    <ContenedorFormulario>
-                        <ContenedorFormulario2>
-                            <Formulario onSubmit={onSubmit}>
-                                <ComponenteInput
-                                    estado={email}
-                                    cambiarEstado={changeMail}
-                                    placeholder="Correo Electrónico"
-                                    tipo="text"
-                                    numero="40"
-                                    label=""
-                                    name="email"
-                                    leyendaError="Digita tu correo"
-                                    expresionRegular={expresiones.correo}
-                                />
-                                <ComponenteInput
-                                    estado={password}
-                                    cambiarEstado={changePass}
-                                    placeholder="Contraseña"
-                                    tipo="password"
-                                    numero="20"
-                                    label=""
-                                    name="password"
-                                    leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
-                                    expresionRegular={expresiones.clave}
-                                />
-                                <ComponenteInput
-                                    estado={re_password}
-                                    cambiarEstado={changePass2}
-                                    tipo="password"
-                                    numero="20"
-                                    placeholder="Confirma tu contraseña"
-                                    label=""
-                                    name="re_password"
-                                    leyendaError="Ambas contraseñas deben ser iguales."
-                                    funcion={validarPassword2}
-                                />
-                                <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2 ">
-                                    <div className="flex h-6 items-center">
-                                        <Switch
-                                            checked={terminosAceptados}
-                                            onChange={setTerminosAceptados}
+            {/* Si quito las imagenes solo es llamar al formulari */}
+            <ImagesForms title="¡Regístrate ahora!">
+                <ContenedorFormulario>
+                    <ContenedorFormulario2>
+                        <Formulario onSubmit={onSubmit}>
+                            <ComponenteInput
+                                estado={email}
+                                cambiarEstado={changeMail}
+                                placeholder="Correo Electrónico"
+                                tipo="text"
+                                numero="40"
+                                label=""
+                                name="email"
+                                leyendaError="Digita tu correo"
+                                expresionRegular={expresiones.correo}
+                            />
+                            <ComponenteInput
+                                estado={password}
+                                cambiarEstado={changePass}
+                                placeholder="Contraseña"
+                                tipo="password"
+                                numero="20"
+                                label=""
+                                name="password"
+                                leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
+                                expresionRegular={expresiones.clave}
+                            />
+                            <ComponenteInput
+                                estado={re_password}
+                                cambiarEstado={changePass2}
+                                tipo="password"
+                                numero="20"
+                                placeholder="Confirma tu contraseña"
+                                label=""
+                                name="re_password"
+                                leyendaError="Ambas contraseñas deben ser iguales."
+                                funcion={validarPassword2}
+                            />
+                            <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2 ">
+                                <div className="flex h-6 items-center">
+                                    <Switch
+                                        checked={terminosAceptados}
+                                        onChange={setTerminosAceptados}
+                                        className={classNames(
+                                            terminosAceptados ? 'bg-azul_corp' : 'bg-gray-500',
+                                            'flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azul_corp'
+                                        )}
+                                    >
+                                        <span className="sr-only">Agree to policies</span>
+                                        <span
+                                            aria-hidden="true"
                                             className={classNames(
-                                                terminosAceptados ? 'bg-azul_corp' : 'bg-gray-500',
-                                                'flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azul_corp'
+                                                terminosAceptados ? 'translate-x-3.5' : 'translate-x-0',
+                                                'h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out'
                                             )}
-                                        >
-                                            <span className="sr-only">Agree to policies</span>
-                                            <span
-                                                aria-hidden="true"
-                                                className={classNames(
-                                                    terminosAceptados ? 'translate-x-3.5' : 'translate-x-0',
-                                                    'h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out'
-                                                )}
-                                            />
-                                        </Switch>
-                                    </div>
-                                    <Switch.Label className="text-sm leading-6 text-gray-400">
-                                        Aceptas nuestros {' '}
-                                        <Link to="/conditions" className="font-semibold text-azul_corp_ho">
-                                            términos y condiciones
-                                        </Link>
-                                        .
-                                    </Switch.Label>
-                                </Switch.Group>
-                                <div>
-                                    {loading ? (
-                                        <Boton type="submit">
-                                            <Rings width={20} height={20} color="#fff" radius="6" />
-                                        </Boton>
-                                    ) : (
-                                        <Boton type="submit">Regístrarse</Boton>
-                                    )}
-
+                                        />
+                                    </Switch>
                                 </div>
-                            </Formulario>
-                            <div className="mt-6">
-
-                                {formularioValido === false && (
-                                    <MensajeError>
-                                        <p className="flex">
-                                            <b className="h-5 w-5 mr-2">
-                                                <InformationCircleIcon />
-                                            </b>
-                                            Por favor rellena el formulario completamente.
-                                        </p>
-                                    </MensajeError>
+                                <Switch.Label className="text-sm leading-6 text-gray-400">
+                                    Aceptas nuestros {' '}
+                                    <Link to="/conditions" className="font-semibold text-azul_corp_ho">
+                                        términos y condiciones
+                                    </Link>
+                                    .
+                                </Switch.Label>
+                            </Switch.Group>
+                            <div>
+                                {loading ? (
+                                    <Boton type="submit">
+                                        <Rings width={20} height={20} color="#fff" radius="6" />
+                                    </Boton>
+                                ) : (
+                                    <Boton type="submit">Regístrarse</Boton>
                                 )}
-                                {/* <div className="mt-6 grid grid-cols-3 gap-3">
+
+                            </div>
+                        </Formulario>
+                        <div className="mt-6">
+
+                            {formularioValido === false && (
+                                <MensajeError>
+                                    <p className="flex">
+                                        <b className="h-5 w-5 mr-2">
+                                            <InformationCircleIcon />
+                                        </b>
+                                        Por favor rellena el formulario completamente.
+                                    </p>
+                                </MensajeError>
+                            )}
+                            {/* <div className="mt-6 grid grid-cols-3 gap-3">
                                     <div>
                                         <a
                                             href="#"
@@ -239,11 +238,11 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                         </a>
                                     </div>
                                 </div> */}
-                            </div>
-                        </ContenedorFormulario2>
-                    </ContenedorFormulario>
-                </div>
-            </div>
+                        </div>
+                    </ContenedorFormulario2>
+                </ContenedorFormulario>
+            </ImagesForms>
+
 
         </Layout>
     )

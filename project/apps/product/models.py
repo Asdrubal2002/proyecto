@@ -16,9 +16,14 @@ import os
 
 
 def product_directory_path_store(instance, filename):
-    # función para definir la ruta de almacenamiento de las imágenes
-    # por ejemplo, "productos/{nombre_producto}/{filename}"
-    return "productos/{0}/{1}".format(instance.product.name, filename)
+    # Obtener el slug del producto
+    product_slug = instance.product.slugProduct
+    # Obtener el slug de la tienda
+    store_slug = instance.product.category.store.slug
+    # Retornar la ruta de almacenamiento con el slug de la tienda y del producto
+    return f"productos/{store_slug}/{product_slug}/{filename}"
+
+
 
 
 class Product(models.Model):

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
-import { Navigate, useParams, useNavigate } from 'react-router-dom';
+import { Navigate, useParams, useNavigate, Link } from 'react-router-dom';
 
 import { get_options_admin, get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
@@ -607,13 +607,13 @@ function EditProduct({
                                                     {description === '' && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
                                                     )}
-                                                    {description.length > 500 && (
+                                                    {description.length > 900 && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción excede 500 caracteres</span>
                                                     )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            disabled={description === '' || description.length > 500} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
+                                                            disabled={description === '' || description.length > 900} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
                                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
@@ -753,20 +753,20 @@ function EditProduct({
                                                 <tbody className="bg-gray-900 divide-y divide-gray-700">
                                                     {options && options.length === 0 ? (
                                                         <tr>
-                                                        <td className="px-6 py-4 whitespace-normal" colSpan="4">
-                                                            <div className="text-sm text-gray-300">
-                                                                <p>
-                                                                    Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
-                                                                </p>
-                                                                <p className='text-red-500'>
-                                                                    <strong>
-                                                                        No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
-                                                                    </strong>
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    
+                                                            <td className="px-6 py-4 whitespace-normal" colSpan="4">
+                                                                <div className="text-sm text-gray-300">
+                                                                    <p>
+                                                                        Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
+                                                                    </p>
+                                                                    <p className='text-red-500'>
+                                                                        <strong>
+                                                                            No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
+                                                                        </strong>
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
                                                     ) : (
                                                         options && options.map((option, index) => (
                                                             <tr key={index}>
@@ -843,7 +843,17 @@ function EditProduct({
                             </dl>
                         </div>
                         <div className="bg-stone-900 text-white p-4 rounded-md">
-                            <h2 className="text-lg font-semibold mb-2">Galería de tu producto</h2>
+                            <div className='flex items-center'>
+                                <h2 className="text-lg font-semibold mb-2 flex items-center flex-grow">Galería de tu producto</h2>
+
+                                <Link to={'/help_with_photos'} className='text-gray-400 hover:text-gray-300 flex'>
+                                    <InformationCircleIcon width={20} height={20} color="#fff" radius="6" />
+
+                                    <p className='mx-2 text-sm font-medium'>Necesitas ayuda con tus fotos </p>
+
+                                </Link>
+
+                            </div>
                             <div className="grid grid-cols-3 gap-4">
                                 {product && product.images.length > 0 ? (
                                     product.images.map((image, index) => (

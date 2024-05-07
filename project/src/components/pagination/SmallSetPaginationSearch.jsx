@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 function SmallSetPaginationSearch({ list_page, slug, search, list, count }) {
     const [active, setActive] = useState(1);
-    const [listingsPerPage,] = useState(16);
+    const [listingsPerPage,] = useState(21);
     const [currentPage, setCurrentPage] = useState(1);
 
     const visitPage = (page) => {

@@ -12,6 +12,7 @@ import { Rings } from "react-loader-spinner";
 import { login } from "../../redux/actions/auth";
 import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import ImagesForms from "./components/ImagesForms";
 
 const SignIn = ({ login, loading, isAuthenticated }) => {
 
@@ -75,11 +76,9 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
         <meta name="twitter:image" content='https://bafybeicwrhxloesdlojn3bxyjqnxgsagtd4sl53a7t4cn4vfe2abmybzua.ipfs.w3s.link/lightbnuilbg.jpg' />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
-      <div className="flex items-center justify-center py-4 pt-10">
-        <div className="max-w-md w-full space-y-8 ">
-        <h2 className="text-3xl font-bold text-center">¡Ingresar ahora!</h2> {/* Título agregado */}
 
-          <ContenedorFormulario>
+      <ImagesForms title="¡Ingresar ahora!">
+      <ContenedorFormulario>
             <ContenedorFormulario2>
               <Formulario onSubmit={onSubmit}>
                 <ComponenteInput
@@ -197,8 +196,8 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
               </div>
             </ContenedorFormulario2>
           </ContenedorFormulario>
-        </div>
-      </div>
+      </ImagesForms>
+     
 
     </Layout>
   )

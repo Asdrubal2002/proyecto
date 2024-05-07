@@ -69,6 +69,11 @@ class Store(models.Model):
     complaints = models.IntegerField(default=0, blank=True)
     city = models.ForeignKey(Ciudad, on_delete=models.CASCADE)
     qr_code = models.ImageField(upload_to=store_directory_qr, blank=True)
+    instagram = models.URLField(max_length=100, blank=True, null=True)
+    facebook = models.URLField(max_length=100, blank=True, null=True)
+    x_red_social = models.URLField(max_length=100, blank=True, null=True)
+
+
 
     def save(self, *args, **kwargs):
         if not self.pk:  # Solo si es un objeto nuevo

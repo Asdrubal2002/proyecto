@@ -141,7 +141,7 @@ function Home({
                   maxLength={100}
                   className={`bg-stone-800 relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-300 placeholder-gray-400 focus:z-10 focus:border-azul_corp_ho focus:outline-none focus:ring-azul_corp_ho sm:text-sm ${errors.email ? 'border-red-500' : ''
                     }`}
-                  placeholder="Email address"
+                  placeholder="Correo electrónico"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
@@ -159,7 +159,7 @@ function Home({
                   maxLength={50}
                   className={`bg-stone-800 relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-300 placeholder-gray-400 focus:z-10 focus:border-azul_corp_ho focus:outline-none focus:ring-azul_corp_ho sm:text-sm ${errors.password ? 'border-red-500' : ''
                     }`}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                 />
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>

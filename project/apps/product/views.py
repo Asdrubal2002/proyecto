@@ -417,7 +417,6 @@ class CreateOptionsAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class OptionListAdminAPIView(APIView):
     def get(self, request):
         try:

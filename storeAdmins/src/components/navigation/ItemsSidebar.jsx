@@ -48,7 +48,7 @@ export default function ItemsSidebar() {
           to={item.href}
           className={classNames(
             item.current
-              ? 'bg-gray-100 text-gray-900'
+              ? 'bg-blue-100 text-gray-900'
               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
             'group flex items-center px-2 py-2 text-base font-medium rounded-md'
           )}

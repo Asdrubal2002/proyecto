@@ -74,6 +74,10 @@ const StoreDetail = ({
     const [buttonText, setButtonText] = useState('Compartir');
     const [activeTab, setActiveTab] = useState(0);
 
+    const instagram = store&&store.instagram
+    const facebook = store&&store.facebook
+    const x_red_social = store&&store.x_red_social
+
 
     const handleHeartClick = () => {
         // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
@@ -121,6 +125,7 @@ const StoreDetail = ({
             setExpandedCategories([...expandedCategories, categoryId]);
         }
     };
+
 
     return (
         <Layout>
@@ -206,78 +211,6 @@ const StoreDetail = ({
                                             {store && store.description}
                                         </DescriptionStore>
                                         {/* Store data */}
-                                        {/* <ContenedorInfoUbication>
-                                            <ContenedorInfoUbication1>
-                                                <GlobeAmericasIcon className="h-4 w-4 mr-2 inline-block" />
-                                                {store && store.city.estado_o_departamento.pais.nombre} - {store && store.city.nombre}
-                                            </ContenedorInfoUbication1>
-                                            <SeparadorVertical>|</SeparadorVertical>
-                                            <ContenedorInfoUbication1>
-                                                <CurrencyDollarIcon className="h-4 w-4 mr-2 inline-block" />
-                                                {store && store.city.estado_o_departamento.pais.currency.name} ({store && store.city.estado_o_departamento.pais.currency.typecurrency})
-                                            </ContenedorInfoUbication1>
-                                            <SeparadorVertical>|</SeparadorVertical>
-                                            <ContenedorInfoUbication1>
-                                                <MapIcon className="h-4 w-4 mr-2 inline-block" />
-                                                {store && store.location}
-                                            </ContenedorInfoUbication1>
-                                            <SeparadorVertical>|</SeparadorVertical>
-                                            <ContenedorInfoUbication1>
-                                                <ClockIcon className="h-4 w-4 mr-2 inline-block" />
-                                                {store && store.schedule}
-                                            </ContenedorInfoUbication1>
-                                            {store && store.delivery ? <>
-                                                <SeparadorVertical>|</SeparadorVertical>
-                                                <ContenedorInfoUbication1>
-                                                    <PaperAirplaneIcon className="h-4 w-4 mr-2 inline-block" />
-                                                    Envios a domicilio
-                                                </ContenedorInfoUbication1>
-                                            </> : <></>}
-                                        </ContenedorInfoUbication> */}
-
-                                        <div className="pt-2">
-                                            <Tab.Group>
-                                                <Tab.List className="flex p-2">
-                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer"> Información de la tienda</Tab>
-                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer">Ubicaciones</Tab>
-                                                    <Tab className="text-sm text-gray-300 hover:text-gray-400 px-3 py-1 rounded-md cursor-pointer">Horario de Atención</Tab>
-                                                </Tab.List>
-                                                <Tab.Panels className="p-2">
-                                                    <Tab.Panel className="text-gray-700">
-                                                        <div className="inline-flex text-gray-400 text-sm">
-                                                            <div>
-                                                                <p> <GlobeAmericasIcon className="h-4 w-4 mr-2 inline-block" />{store && store.city.estado_o_departamento.pais.nombre} - {store && store.city.nombre}</p>
-                                                            </div>
-                                                            <div className="ml-4">
-                                                                <p><CurrencyDollarIcon className="h-4 w-4 mr-2 inline-block" />{store && store.city.estado_o_departamento.pais.currency.name} ({store && store.city.estado_o_departamento.pais.currency.typecurrency})</p>
-                                                            </div>
-                                                            <div className="ml-4 ">
-                                                                <p> {store && store.delivery ? <><PaperAirplaneIcon className="h-4 w-4 mr-2 inline-block" />Envios a domicilio</> : <></>}</p>
-                                                            </div>
-                                                        </div>
-                                                    </Tab.Panel>
-                                                    <Tab.Panel className="text-gray-700">
-                                                        <div className="inline-flex text-gray-400 text-sm">
-                                                            <div className="mr-4 ">
-                                                                <p> <MapIcon className="h-4 w-4 mr-2 inline-block" /> {store && store.location}</p>
-                                                            </div>
-
-                                                        </div>
-                                                    </Tab.Panel>
-                                                    <Tab.Panel className="text-gray-700">
-                                                        <div className="inline-flex text-gray-400 text-sm">
-                                                            <div className="mr-4 ">
-                                                                <p>  <ClockIcon className="h-4 w-4 mr-2 inline-block" />{store && store.schedule}</p>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </Tab.Panel>
-                                                </Tab.Panels>
-                                            </Tab.Group>
-                                        </div>
-
-
                                     </ConetenedorProfile2>
                                 </div>
                             </ConetenedorProfile1>
@@ -380,7 +313,7 @@ const StoreDetail = ({
                                                 </div> */}
                                                 {isAuthenticated ?
                                                     <div>
-                                                        {profile.firs_name == null ? (
+                                                        {profile && profile.firs_name == null ? (
                                                             <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
                                                                 <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
                                                                 <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
@@ -461,7 +394,27 @@ const StoreDetail = ({
                             </main>
                         </div>
                     </div>
-                    <FooterStores storeSlug={storeSlug} />
+                    <FooterStores 
+                    storeSlug={storeSlug} 
+                    instagram={instagram} 
+                    facebook={facebook} 
+                    x_red_social={x_red_social} 
+                    locationStore={store && store.location} 
+                    scheduleStore={store && store.schedule}
+                    phoneStore={store && store.phone}
+                    emailStore={store && store.email}
+                    AddresStore={store && store.address}
+                    CountryStore={store && store.city.estado_o_departamento.pais.nombre}
+                    cityStore={store && store.city.nombre}
+                    nameCurrencyStore={store && store.city.estado_o_departamento.pais.currency.name} 
+                    currencyStore={store && store.city.estado_o_departamento.pais.currency.typecurrency}
+                    
+
+
+
+
+                    
+                    />
                 </>
             }
         </Layout>
