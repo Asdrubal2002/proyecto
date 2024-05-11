@@ -6,11 +6,14 @@ import { get_categories } from '../../../../project/src/redux/actions/store_cate
 import { get_cities } from '../../redux/actions/cities/cities'
 import axios from "axios"
 
-import { createStore } from '../../redux/actions/store/store';
+import { createStore, get_user_store } from '../../redux/actions/store/store';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Rings } from 'react-loader-spinner';
 import { Disclosure, Transition } from '@headlessui/react';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+
+
+
 
 function Create({
   get_categories,
@@ -18,7 +21,8 @@ function Create({
   get_cities,
   cities,
   createStore,
-  loading
+  loading,
+  get_user_store
 }) {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
@@ -63,6 +67,7 @@ function Create({
     account_pay: '',
     description: '',
   });
+  const [errorSlug, setErrorSlug] = useState(null); // Estado para manejar errores
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +77,7 @@ function Create({
     });
     console.log(formData.nit)
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,9 +137,11 @@ function Create({
   
           if (res.status === 201) {
             setLoading(false)
-            navigate('/store')
+            get_user_store()
           } else {
             setLoading(false)
+            setError('Ocurrió un error. Por favor, intenta nuevamente.'); // Establecer el mensaje de error general
+
           }
         } catch (err) {
           setLoading(false)
@@ -539,6 +547,9 @@ function Create({
           {formErrors.address && (
             <p className="text-red-500 text-sm">{formErrors.address}</p>
           )}
+          <p>
+            {errorSlug}
+          </p>
         </div>
         {/* Dirección de la tienda */}
 
@@ -729,5 +740,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   get_categories,
   get_cities,
-  createStore
+  createStore,
+  get_user_store
 })(Create)
