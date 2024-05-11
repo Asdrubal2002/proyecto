@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Option, ProductOption
+from .models import Product, ProductImage, Option, ProductOption, Like
 
 # Register your models here.
 
@@ -26,6 +26,9 @@ admin.site.register(ProductOption, ProductOptionAdmin)
 
 admin.site.register(ProductImage)
 admin.site.register(Option, OptionAdmin)
+
+admin.site.register(Like)
+
 
 
 

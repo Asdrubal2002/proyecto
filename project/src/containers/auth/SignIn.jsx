@@ -48,7 +48,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
 
   if (activated) return <Navigate to="/" replace={true} />;
 
- 
+
 
 
   return (
@@ -78,56 +78,51 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
       </Helmet>
 
       <ImagesForms title="¡Ingresar ahora!">
-      <ContenedorFormulario>
-            <ContenedorFormulario2>
-              <Formulario onSubmit={onSubmit}>
-                <ComponenteInput
-                  estado={email}
-                  cambiarEstado={changeMail}
-                  placeholder="Correo Electrónico"
-                  tipo="text"
-                  numero="40"
-                  label=""
-                  name="email"
-                  leyendaError="Digita el correo que registraste"
-                  expresionRegular={expresiones.correo}
-                />
+        <ContenedorFormulario>
+          <ContenedorFormulario2>
+            <Formulario onSubmit={onSubmit}>
+              <ComponenteInput
+                estado={email}
+                cambiarEstado={changeMail}
+                placeholder="Correo Electrónico"
+                tipo="text"
+                numero="40"
+                label=""
+                name="email"
+                leyendaError="Digita el correo que registraste"
+                expresionRegular={expresiones.correo}
+              />
 
-                <ComponenteInput
-                  estado={password}
-                  cambiarEstado={changePass}
-                  placeholder="Contraseña"
-                  tipo="password"
-                  numero="20"
-                  label=""
-                  name="password"
-                  leyendaError="Digita la contraseña que registraste"
-                  expresionRegular={expresiones.clave}
-                />
-
-                <div className="flex items-center justify-between">
-
-
-                  <div className="text-sm">
-                    <Link to="/reset_password" className="font-medium text-azul_corp_ho hover:text-azul_corp">
+              <ComponenteInput
+                estado={password}
+                cambiarEstado={changePass}
+                placeholder="Contraseña"
+                tipo="password"
+                numero="20"
+                label=""
+                name="password"
+                leyendaError="Digita la contraseña que registraste"
+                expresionRegular={expresiones.clave}
+              />
+              <div className="flex items-center justify-between">
+                <div className="text-sm">
+                  <Link to="/reset_password" className="font-medium text-azul_corp_ho hover:text-azul_corp">
                     ¿Olvidaste tu contraseña?
-                    </Link>
-                  </div>
+                  </Link>
                 </div>
-
-                <div>
-                  {loading ? (
-                    <Boton type="submit">
-                      <Rings width={20} height={20} color="#fff" radius="6" />
-                    </Boton>
-                  ) : (
-                    <Boton type="submit">Ingresar</Boton>
-                  )}
-                </div>
-              </Formulario>
-
-              <div className="mt-6">
-                {/* <div className="relative">
+              </div>
+              <div>
+                {loading ? (
+                  <Boton type="submit">
+                    <Rings width={20} height={20} color="#fff" radius="6" />
+                  </Boton>
+                ) : (
+                  <Boton type="submit">Ingresar</Boton>
+                )}
+              </div>
+            </Formulario>
+            <div className="mt-6">
+              {/* <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-gray-300" />
                     </div>
@@ -136,18 +131,18 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
                     </div>
                   </div> */}
 
-                {formularioValido === false && (
-                  <MensajeError>
-                    <p className="flex">
-                      <b className="h-5 w-5 mr-2">
-                        <InformationCircleIcon />
-                      </b>
-                      Por favor rellena el formulario completamente.
-                    </p>
-                  </MensajeError>
-                )}
+              {formularioValido === false && (
+                <MensajeError>
+                  <p className="flex">
+                    <b className="h-5 w-5 mr-2">
+                      <InformationCircleIcon />
+                    </b>
+                    Por favor rellena el formulario completamente.
+                  </p>
+                </MensajeError>
+              )}
 
-                {/* <div className="mt-6 grid grid-cols-3 gap-3">
+              {/* <div className="mt-6 grid grid-cols-3 gap-3">
                   <div>
                     <a
                       href="#"
@@ -193,11 +188,11 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
                     </a>
                   </div>
                 </div> */}
-              </div>
-            </ContenedorFormulario2>
-          </ContenedorFormulario>
+            </div>
+          </ContenedorFormulario2>
+        </ContenedorFormulario>
       </ImagesForms>
-     
+
 
     </Layout>
   )

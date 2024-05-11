@@ -33,7 +33,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'sold',
             'date_created',
             'is_active',
-            'likes',
             'images',
         ]
 

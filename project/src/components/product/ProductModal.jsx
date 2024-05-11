@@ -3,17 +3,17 @@ import { connect } from "react-redux";
 import ImageGallery from './ImageGallery';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { get_options } from '../../redux/actions/products';
+import { add_like_dislike_product, get_options, get_product_likes } from '../../redux/actions/products';
 import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
-import { add_item } from '../../redux/actions/cart';
-import { add_to_wish_list } from '../../redux/actions/wish_list';
-import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, HeartIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon } from '@heroicons/react/24/solid';
-
+import { add_item, get_user_carts } from '../../redux/actions/cart';
+import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { Disclosure } from '@headlessui/react'
 import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
 import DOMPurify from 'dompurify'
+import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
+import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -25,7 +25,6 @@ function ProductModal({
     loading,
     loadingToCar,
     add_item,
-    add_to_wish_list,
     profile,
     get_product_comments,
     comments,
@@ -33,7 +32,13 @@ function ProductModal({
     delete_comment_product,
     edit_comment_prodcut,
     add_comment_product,
-    loading_comments
+    loading_comments,
+    get_product_likes,
+    likes,
+    add_like_dislike_product,
+    userLiked,
+    cart_count,
+    get_user_carts
 
 }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -45,9 +50,9 @@ function ProductModal({
 
 
     useEffect(() => {
-
         get_options(data.slugProduct)
         get_product_comments(data.slugProduct)
+        get_product_likes(data.slugProduct)
     }, [])
 
     const handleOptionClick = (optionValue) => {
@@ -56,7 +61,6 @@ function ProductModal({
         setErrorMessage(''); // Limpiar cualquier mensaje de error cuando se selecciona una opción
 
     };
-
     const renderOptions = () => {
         if (!options || options.every(option => option.quantity === 0)) {
             return (
@@ -95,8 +99,6 @@ function ProductModal({
 
         );
     };
-
-
     const addItemToCart = async () => {
         if (!options || options.length === 0) {
             // Si el producto no tiene opciones, llamar directamente a addItemToCart sin seleccionar una opción
@@ -104,7 +106,6 @@ function ProductModal({
             //navigate(`/store/${product.category.store.slug}`);
             return;
         }
-
         if (!selectedOption) {
             setErrorMessage('Por favor selecciona una opción'); // Establecer mensaje de error si no se ha seleccionado ninguna opción
             return; // Salir de la función si no se ha seleccionado ninguna opción
@@ -112,13 +113,17 @@ function ProductModal({
         // Lógica para agregar el producto al carrito con la opción seleccionada
         await add_item(selectedOption.id)
         //navigate(`/store/${product.category.store.slug}`);
-
+        get_user_carts()
     };
-
-    const handleHeartClick = () => {
-        // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
-
-        add_to_wish_list(data.slugProduct)
+    const handleHeartClick = async () => {
+        try {
+            // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
+            // Asegúrate de que add_like_dislike_product devuelva una promesa
+            await add_like_dislike_product(data.slugProduct);
+        } catch (error) {
+            // Maneja cualquier error que pueda ocurrir durante la solicitud
+            console.error('Error al manejar el clic del corazón:', error);
+        }
     };
 
     const handleComments = async (e) => {
@@ -137,9 +142,6 @@ function ProductModal({
             // Si el comentario está vacío, no hacer nada
             return;
         }
-
-        console.log(productId, commentText)
-
         // Si el comentario no está vacío, llamar a la función add_comment_product
         add_comment_product(productId, commentText);
 
@@ -206,13 +208,17 @@ function ProductModal({
                                     <div className="flex items-center">
                                         <button
                                             onClick={handleHeartClick}
-                                            className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-700"
+                                            className="ml-4 py-2 px-2 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-300 hover:text-gray-900"
                                         >
-                                            <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                                            <span className="sr-only">Agregar a favoritos
-                                            </span>
+                                            {userLiked ? (
+                                                <div className="animate-ping">
+                                                    <SolidHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                                </div>
+                                            ) : (
+                                                <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                            )}
+                                            <span className="ml-2  ">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
                                         </button>
-                                        <span className="ml-2 text-gray-400">{data.likes}</span> {/* Muestra el número de likes al lado del botón */}
                                     </div>
                                 </div>
                             </div>
@@ -225,8 +231,9 @@ function ProductModal({
                                             >
                                                 Iniciar sesión
                                             </Link>
-                                            <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-100 hover:text-gray-500">
-                                                <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                                            <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500">
+                                                <span className="ml-2 text-gray-400">{likes}  Me gusta</span> {/* Muestra el número de likes al lado del botón */}
+
                                                 <span className="sr-only">Add to favorites</span>
                                             </Link>
                                         </div>
@@ -234,79 +241,79 @@ function ProductModal({
                                 </>
                         }
                     </div>
-                </div>
-                <section aria-labelledby="details-heading" className="mt-4">
-                    <Disclosure>
-                        <Disclosure.Button className="pb-2" onClick={handleComments}>
-                            <p className="hover:bg-stone-800 p-2 rounded-md text-sm font-medium">
-                                {comments_count}  Comentarios del producto
-                            </p>
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="text-gray-500">
-                            {isAuthenticated ? <div>
+                    <section aria-labelledby="details-heading" className="mt-4">
+                        <Disclosure>
+                            <Disclosure.Button className="pb-2" onClick={handleComments}>
+                                <p className="hover:bg-stone-800 p-2 rounded-md text-sm font-medium">
+                                    {comments_count}  Comentarios del producto
+                                </p>
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="text-gray-500">
+                                {isAuthenticated ? <div>
+                                    {
+                                        profile.firs_name == null ? (
+                                            <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
+                                                <p className="text-center text-gray-200 mb-2 font-sm">No puedes comentar, no tienes perfil creado.</p>
+                                                <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
+                                                    <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+                                                    Ir al perfil del usuario
+                                                    {/* <span className="text-xs bg-red-500 text-white font-semibold rounded-full px-2 text-center ml-2">{cart_count}</span> */}
+                                                </Link>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-start pb-5">
+                                                <div className="flex flex-col w-full">
+                                                    <textarea
+                                                        ref={textareaRef}
+                                                        id="commentTextArea"
+                                                        className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-800 border-0 outline-none border-transparent text-sm"
+                                                        placeholder="Cuentanos tu experiencia...."
+                                                        maxLength={200} // Aquí estableces el límite de caracteres
+                                                    ></textarea>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            handleComment();
+                                                        }}
+                                                        disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
+
+                                                        className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
+                                                    >
+                                                        {buttonText}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        )
+                                    }
+                                </div> : <></>}
                                 {
-                                    profile.firs_name == null ? (
-                                        <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
-                                            <p className="text-center text-gray-200 mb-2 font-sm">No puedes comentar, no tienes perfil creado.</p>
-                                            <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
-                                                <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
-                                                Ir al perfil del usuario
-                                                {/* <span className="text-xs bg-red-500 text-white font-semibold rounded-full px-2 text-center ml-2">{cart_count}</span> */}
-                                            </Link>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-start pb-5">
-                                            <div className="flex flex-col w-full">
-                                                <textarea
-                                                    ref={textareaRef}
-                                                    id="commentTextArea"
-                                                    className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-800 border-0 outline-none border-transparent text-sm"
-                                                    placeholder="Cuentanos tu experiencia...."
-                                                    maxLength={200} // Aquí estableces el límite de caracteres
-                                                ></textarea>
-
-                                                <button
-                                                    onClick={() => {
-                                                        handleComment();
-                                                    }}
-                                                    disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
-
-                                                    className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
-                                                >
-                                                    {buttonText}
-                                                </button>
+                                    loading_comments ? <>
+                                    </> : <div className="max-h-96 overflow-y-auto scrollbar-style">
+                                        {comments && Array.isArray(comments) && comments.length === 0 ? (
+                                            <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
+                                                <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
+                                                <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
                                             </div>
-                                        </div>
-
-                                    )
+                                        ) : (
+                                            Array.isArray(comments) && comments.map((comment, index) => (
+                                                <div key={index}>
+                                                    <CommentsProduct
+                                                        comment={comment}
+                                                        profile={profile}
+                                                        isAuthenticated={isAuthenticated}
+                                                        delete_comment_product={delete_comment_product}
+                                                        edit_comment_prodcut={edit_comment_prodcut}
+                                                    />
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
                                 }
-                            </div> : <></>}
-                            {
-                                loading_comments ? <>
-                                </> : <div className="max-h-96 overflow-y-auto scrollbar-style">
-                                    {comments && Array.isArray(comments) && comments.length === 0 ? (
-                                        <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
-                                            <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
-                                            <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
-                                        </div>
-                                    ) : (
-                                        Array.isArray(comments) && comments.map((comment, index) => (
-                                            <div key={index}>
-                                                <CommentsProduct
-                                                    comment={comment}
-                                                    profile={profile}
-                                                    isAuthenticated={isAuthenticated}
-                                                    delete_comment_product={delete_comment_product}
-                                                    edit_comment_prodcut={edit_comment_prodcut}
-                                                />
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            }
-                        </Disclosure.Panel>
-                    </Disclosure>
-                </section>
+                            </Disclosure.Panel>
+                        </Disclosure>
+                    </section>
+                </div>
             </div>
         </div>
     )
@@ -319,22 +326,22 @@ const mapStateToProps = state => ({
     profile: state.Profile.profile,
     comments: state.Comments_Product.comments ? state.Comments_Product.comments.comments : [],
     comments_count: state.Comments_Product.comments ? state.Comments_Product.comments.comments_count : 0,
-    loading_comments: state.Comments_Product.loading_product
-
-
-
-
-
+    loading_comments: state.Comments_Product.loading_product,
+    likes: state.Products.likes ? state.Products.likes.total_likes : 0,
+    userLiked: state.Products.likes ? state.Products.likes.user_liked : false,
+    cart_count: state.Cart.carts.cart_count,
 
 })
 
 export default connect(mapStateToProps, {
     get_options,
     add_item,
-    add_to_wish_list,
     get_product_comments,
     delete_comment_product,
     edit_comment_prodcut,
-    add_comment_product
+    add_comment_product,
+    get_product_likes,
+    add_like_dislike_product,
+    get_user_carts
 })(ProductModal)
 

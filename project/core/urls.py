@@ -29,7 +29,6 @@ urlpatterns = [
 
     path('api/cities/', include('apps.locations.urls')),
 
-    path('api/wishlist/', include('apps.wishlist.urls')),
 
     path('api/coments_store/', include('apps.comments_store.urls')),
 

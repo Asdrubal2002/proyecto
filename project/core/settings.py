@@ -60,7 +60,6 @@ ECCOMERCE_APP=['apps.store_category',
                'apps.cart',
                'apps.currency',
                'apps.shipping',
-               'apps.wishlist',
                'apps.comments_store',
                'apps.invoice',
                'apps.comments_product'

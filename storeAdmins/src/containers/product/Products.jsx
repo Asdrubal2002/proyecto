@@ -44,13 +44,17 @@ function Products({
             {products && products.length > 0 ? (
               <>
                 <CreateProduct />
+                <div className='flex items-center '>
+                  <CategoriesAdminProducts categories={categories} userStore={userStore} />
+                </div>
                 {
-                  loading_products ? (<Rings width={30} height={30} color="#fff" radius="6" />) : 
-                  <div className='flex items-center '>
-                    <CategoriesAdminProducts categories={categories} userStore={userStore} />
-                  </div>
+                  loading_products ? (
+                    <Rings width={30} height={30} color="#fff" radius="6" />
+                  ) :
+                    <>
+                      <ProductList products={products} get_products_list_page={get_products_list_page} count={count} />
+                    </>
                 }
-                <ProductList products={products} get_products_list_page={get_products_list_page} count={count} />
               </>
             ) : (
               <CreateProduct />

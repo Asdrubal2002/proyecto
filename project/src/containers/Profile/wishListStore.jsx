@@ -5,23 +5,36 @@ import { InfinitySpin, Rings } from 'react-loader-spinner';
 import NoFoundCarts from '../Cart/NoFoundCarts';
 import { Helmet } from 'react-helmet';
 import { Link, Navigate } from 'react-router-dom';
-import { get_user_stores_wish_list } from '../../redux/actions/wish_list_stores';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline';
 import Sidebar from '../Home/Sidebar/Sidebar';
 import StoreCardHorizontal from '../../components/store/StoreCardHorizontal';
 import Searcher from '../../components/searcher/Searcher';
+import { add_like_dislike_store, get_user_wish_list_stores } from '../../redux/actions/stores';
+
+
 
 const WishListStore = ({
-    get_user_stores_wish_list,
-    loading,
-    wishlist,
     isAuthenticated,
+    get_user_wish_list_stores,
+    wishlist,
+    loading,
+    add_like_dislike_store
 }) => {
     useEffect(() => {
-        get_user_stores_wish_list()
+        get_user_wish_list_stores()
     }, [])
 
     if (!isAuthenticated) return <Navigate to="/" />;
+
+    const getWishlist = async () => {
+        await get_user_wish_list_stores();
+    };
+
+    const handleRemoveFromFavorites = async (storeSlug) => {
+        await add_like_dislike_store(storeSlug);
+        await getWishlist(); // Espera a que la acción get_user_wish_list_products se complete antes de continuar
+    };
+
 
     return (
         <Layout>
@@ -60,14 +73,20 @@ const WishListStore = ({
                         <Sidebar />
                         <div className="lg:col-span-3">
                             {loading ? (
-                               <InfinitySpin width={200} height={200} color="#fff" radius="6" />
+                                <InfinitySpin width={200} height={200} color="#fff" radius="6" />
                             ) : (
                                 <>
                                     <div className="overflow-hidden px-8">
                                         <ul role="list" className="space-y-8 gap-8 ">
                                             {Array.isArray(wishlist) && wishlist.map((item, index) => (
-                                                <div key={index}>
+                                                <div key={index} className="relative">
                                                     <StoreCardHorizontal data={item.store} key={index} index={index} />
+                                                    <button
+                                                        onClick={() => handleRemoveFromFavorites(item.store.slug)}
+                                                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-full text-sm focus:outline-none"
+                                                    >
+                                                        Eliminar de favoritos
+                                                    </button>
                                                 </div>
                                             ))}
                                         </ul>
@@ -84,10 +103,13 @@ const WishListStore = ({
 }
 const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
-    loading: state.WishList.loading_products,
-    wishlist: state.WishList_Stores.wishlist_store,
+    wishlist: state.Stores.stores_liked ? state.Stores.stores_liked.stores : [],
+    loading: state.Stores.loading,
+    add_like_dislike_store
+
 
 });
 export default connect(mapStateToProps, {
-    get_user_stores_wish_list
+    get_user_wish_list_stores,
+    add_like_dislike_store
 })(WishListStore);

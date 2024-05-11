@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { get_store, get_related_stores } from "../../redux/actions/stores";
+import { get_store, get_related_stores, get_stores_likes, add_like_dislike_store } from "../../redux/actions/stores";
 import { useEffect, useState, Fragment } from "react";
 
 //import { get_products } from "../../redux/actions/products";
@@ -27,13 +27,14 @@ import ProductList from "../../components/product/ProductList";
 import Searcher from "../../components/searcher/Searcher";
 import { Helmet } from "react-helmet";
 import CategoriesStore from "./CategoriesStore";
-import { add_to_wish_list_store } from "../../redux/actions/wish_list_stores";
 import { get_store_comments, add_comment_store, delete_comment_store, edit_comment_store } from "../../redux/actions/comments_store";
 import CategoriesStoreMobile from "./CategoriesStoreMobile";
 import CommentStore from "../../components/store/CommentStore";
 import { Tab } from '@headlessui/react'
 import FooterStores from "../../components/store/FooterStores";
 
+import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
+import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
 
 
 function classNames(...classes) {
@@ -54,7 +55,6 @@ const StoreDetail = ({
     products,
     loading_products,
     count,
-    add_to_wish_list_store,
     next,
     previous,
     get_store_comments,
@@ -65,6 +65,10 @@ const StoreDetail = ({
     delete_comment_store,
     edit_comment_store,
     comments_count,
+    get_stores_likes,
+    likes,
+    add_like_dislike_store,
+    userLiked
 
 
 }) => {
@@ -74,15 +78,20 @@ const StoreDetail = ({
     const [buttonText, setButtonText] = useState('Compartir');
     const [activeTab, setActiveTab] = useState(0);
 
-    const instagram = store&&store.instagram
-    const facebook = store&&store.facebook
-    const x_red_social = store&&store.x_red_social
+    const instagram = store && store.instagram
+    const facebook = store && store.facebook
+    const x_red_social = store && store.x_red_social
 
 
-    const handleHeartClick = () => {
-        // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
-
-        add_to_wish_list_store(storeSlug)
+    const handleHeartClick = async () => {
+        try {
+            // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
+            // Asegúrate de que add_like_dislike_product devuelva una promesa
+            await add_like_dislike_store(storeSlug);
+        } catch (error) {
+            // Maneja cualquier error que pueda ocurrir durante la solicitud
+            console.error('Error al manejar el clic del corazón:', error);
+        }
     };
 
     const params = useParams()
@@ -94,6 +103,7 @@ const StoreDetail = ({
         get_categories_products_store(storeSlug)
         get_products(storeSlug)
         get_store_comments(storeSlug)
+        get_stores_likes(storeSlug)
     }, [])
 
     const handleComment = () => {
@@ -125,6 +135,8 @@ const StoreDetail = ({
             setExpandedCategories([...expandedCategories, categoryId]);
         }
     };
+
+
 
 
     return (
@@ -181,21 +193,31 @@ const StoreDetail = ({
                                                 {
                                                     store && store.logo ? <StoreProfile src={store && store.logo} alt="Store Photo" />
                                                         :
-                                                        <div className="h-24
-                                                        w-24 
-                                                        rounded-full 
-                                                        bg-gray-800
-                                                        sm:h-32 
-                                                        sm:w-32 
-                                                        flex items-center justify-center">
+                                                        <div className="h-24 w-24 rounded-full  bg-gray-800 sm:h-32 sm:w-32 flex items-center justify-center">
                                                             <BuildingStorefrontIcon width={40} height={40} color="#929292" />
-
                                                         </div>
                                                 }
                                             </div>
                                             <ConetenedorInfo>
                                                 <ConetenedorInfo1>
-                                                    <BotonesMeGustaNOMegusta onClick={handleHeartClick}>{store && store.likes} Me gusta</BotonesMeGustaNOMegusta>
+                                                    {/* <BotonesMeGustaNOMegusta onClick={handleHeartClick}>{likes} Me gusta</BotonesMeGustaNOMegusta> */}
+                                                    <div className="flex items-center">
+                                                        <button
+                                                            onClick={handleHeartClick}
+                                                            className="ml-4 py-2 px-2 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-300 hover:text-gray-900"
+                                                        >
+                                                            {userLiked ? (
+                                                                <>
+                                                                    <div className="animate-ping">
+                                                                        <SolidHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                                                    </div>
+                                                                </>
+                                                            ) : (
+                                                                <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                                            )}
+                                                            <span className="ml-2  ">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
+                                                        </button>
+                                                    </div>
                                                 </ConetenedorInfo1>
                                             </ConetenedorInfo>
                                         </ConetenedorProfile3>
@@ -394,26 +416,20 @@ const StoreDetail = ({
                             </main>
                         </div>
                     </div>
-                    <FooterStores 
-                    storeSlug={storeSlug} 
-                    instagram={instagram} 
-                    facebook={facebook} 
-                    x_red_social={x_red_social} 
-                    locationStore={store && store.location} 
-                    scheduleStore={store && store.schedule}
-                    phoneStore={store && store.phone}
-                    emailStore={store && store.email}
-                    AddresStore={store && store.address}
-                    CountryStore={store && store.city.estado_o_departamento.pais.nombre}
-                    cityStore={store && store.city.nombre}
-                    nameCurrencyStore={store && store.city.estado_o_departamento.pais.currency.name} 
-                    currencyStore={store && store.city.estado_o_departamento.pais.currency.typecurrency}
-                    
-
-
-
-
-                    
+                    <FooterStores
+                        storeSlug={storeSlug}
+                        instagram={instagram}
+                        facebook={facebook}
+                        x_red_social={x_red_social}
+                        locationStore={store && store.location}
+                        scheduleStore={store && store.schedule}
+                        phoneStore={store && store.phone}
+                        emailStore={store && store.email}
+                        AddresStore={store && store.address}
+                        CountryStore={store && store.city.estado_o_departamento.pais.nombre}
+                        cityStore={store && store.city.nombre}
+                        nameCurrencyStore={store && store.city.estado_o_departamento.pais.currency.name}
+                        currencyStore={store && store.city.estado_o_departamento.pais.currency.typecurrency}
                     />
                 </>
             }
@@ -434,6 +450,8 @@ const mapStateToProps = state => ({
     isAuthenticated: state.Auth.isAuthenticated,
     profile: state.Profile.profile,
     comments_count: state.Comments_Store.comments ? state.Comments_Store.comments.comments_count : 0,
+    likes: state.Stores.likes ? state.Stores.likes.total_likes : 0,
+    userLiked: state.Stores.likes ? state.Stores.likes.user_liked : false
 
 })
 
@@ -443,10 +461,10 @@ export default connect(mapStateToProps, {
     get_categories_products_store,
     get_products,
     get_products_list_page,
-    add_to_wish_list_store,
     get_store_comments,
     add_comment_store,
     delete_comment_store,
     edit_comment_store,
-
+    get_stores_likes,
+    add_like_dislike_store
 })(StoreDetail)

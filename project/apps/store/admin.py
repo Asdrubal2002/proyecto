@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Store, StorePolicy
+from .models import Store, StorePolicy, StoreLike
 
 
 # Register your models here.
@@ -13,5 +13,7 @@ class StoreAdmin(admin.ModelAdmin):
 admin.site.register(Store, StoreAdmin)
 
 admin.site.register(StorePolicy)
+
+admin.site.register(StoreLike)
 
 

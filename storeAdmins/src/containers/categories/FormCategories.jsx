@@ -34,6 +34,9 @@ function FormCategories({
     const [messageEdit, setMessageEdit] = useState(false);
     const [expandedCategories, setExpandedCategories] = useState([]);
 
+    const [parentEnabled, setParentEnabled] = useState(true); // Estado para habilitar o deshabilitar el campo parent
+
+
     useEffect(() => {
         get_categories()
     }, []);
@@ -97,15 +100,19 @@ function FormCategories({
 
     // Función para establecer los valores predefinidos
     const handleEditModal = (category) => {
-        // Establecer los valores predefinidos en el estado formData
+        window.scrollTo(0, 0)
 
+        // Establecer los valores predefinidos en el estado formData
         setFormData({
             name: category.name, // Nombre predefinido
             parent: category.parent_id // Categoría padre predefinida, si existe
         });
 
+        // Establecer la habilitación del campo parent
+        setParentEnabled(!!category.parent_id);
+
         setEditingCategoryId(category.id);
-        setMessageEdit(true)
+        setMessageEdit(true);
     };
 
     // Función para limpiar el formulario
@@ -122,6 +129,17 @@ function FormCategories({
             setExpandedCategories([...expandedCategories, categoryId]);
         }
     };
+
+    const [categoryFilter, setCategoryFilter] = useState('');
+
+    const handleCategoryFilterChange = (event) => {
+        setCategoryFilter(event.target.value);
+    };
+
+    const filteredCategories = categories ? categories.filter(category =>
+        category.name.toLowerCase().includes(categoryFilter.toLowerCase())
+    ) : [];
+
 
     return (
         <>
@@ -191,6 +209,8 @@ function FormCategories({
                         className="text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
                         value={formData.parent || ''}
                         onChange={handleChange}
+                        disabled={!parentEnabled} // Deshabilitar el campo si parentEnabled es falso
+
                     >
                         <option value="">Categoría Principal</option>
                         {categories && categories
@@ -221,7 +241,16 @@ function FormCategories({
                 loading ? (
                     <Rings width={20} height={20} color="#fff" radius="6" />
                 ) : (
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <div className="relative overflow-x-auto shadow-md rounded-lg">
+                        <div className="w-full p-4 bg-gray-50 bg-gray-800">
+                            <input
+                                type="text"
+                                placeholder="Buscar categoría por nombre..."
+                                className="block w-full p-2 bg-gray-700 bg-gray-700 rounded-md placeholder-gray-400 text-gray-200 outline-none text-sm "
+                                value={categoryFilter}
+                                onChange={handleCategoryFilterChange}
+                            />
+                        </div>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -243,7 +272,7 @@ function FormCategories({
                                 </tr>
                             </thead>
                             <tbody>
-                                {categories && categories.map((category, index) => (
+                                {filteredCategories.map((category, index) => (
                                     <React.Fragment key={category.id}>
                                         <tr key={category.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td className="w-4 p-4">{index + 1}</td>
@@ -295,7 +324,6 @@ function FormCategories({
 
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {category.name} {/* Aquí se muestra el nombre de la categoría padre */}
-
                                                 </td>
                                                 <td className="py-4 whitespace-nowrap">
                                                     <button onClick={() => handleOpenModal(subCategory.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline">Eliminar</button>
@@ -308,7 +336,7 @@ function FormCategories({
                                 ))}
                                 {!categories && (
                                     <tr>
-                                        <td colSpan="5">No hay categorias en tu tienda</td>
+                                        <td colSpan="5">No hay categorías en tu tienda</td>
                                     </tr>
                                 )}
                             </tbody>

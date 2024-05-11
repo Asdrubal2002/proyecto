@@ -129,12 +129,10 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
     const [open, setOpen] = useState(false)
     const [redirect, setRedirect] = useState(false);
 
-
     const logoutHandler = () => {
         logout();
         setRedirect(true);
     };
-
 
     return (
         <>
@@ -426,7 +424,6 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                 {/* Desktop */}
                                 <ParteDerechaNavbar>
                                     <ParteDerechaNavbar1>
-
                                         {isAuthenticated ? <>
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/carts'} className="group -m-2 flex items-center p-2">
@@ -438,7 +435,6 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                     <span className="sr-only">items in cart, view bag</span>
                                                 </Link>
                                             </div>
-
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/invoices'} className="group -m-2 flex items-center p-2">
                                                     <ClipboardDocumentCheckIcon
@@ -446,10 +442,8 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                         aria-hidden="true"
                                                     />
                                                     <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>
-
                                                 </Link>
                                             </div>
-
                                             {/* <div className="flex lg:ml-6">
                                                 <a to="#" className="p-2 text-gray-400 hover:text-gray-500">
                                                     <span className="sr-only">Search</span>

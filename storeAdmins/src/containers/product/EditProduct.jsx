@@ -385,11 +385,6 @@ function EditProduct({
         fetchData()
     };
 
-
-
-
-
-
     return (
         <Layout>
             {loading_product ? <Rings width={30} height={30} color="#fff" radius="6" />
@@ -834,7 +829,10 @@ function EditProduct({
                                                     onClick={() => setUpdatePhoto(true)}
                                                     className="flex-grow  flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-700 focus:outline-none  "
                                                 >
-                                                    <PhotoIcon width={20} height={20} color="#fff" radius="6" />
+                                                    <p className='m-2 text-gray-300'>
+                                                    Agrega imágenes a tu producto
+                                                    </p>
+                                                   <PhotoIcon width={20} height={20} color="#fff" radius="6" />
                                                 </button>
                                             </>
                                         )}

@@ -1,10 +1,9 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
-
 import { get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
-import { ArchiveBoxArrowDownIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, InformationCircleIcon, LockClosedIcon, PaperClipIcon, PhotoIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArchiveBoxArrowDownIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, InformationCircleIcon, LockClosedIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Create from './Create';
 import { Rings } from 'react-loader-spinner';
 import axios from "axios"
@@ -23,6 +22,14 @@ function Store({
   count_comments,
   comments
 }) {
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    get_user_store()
+    handleTabComments()
+  }, []);
+
+
   const profileImagePath = userStore && userStore.logo ? import.meta.env.VITE_REACT_APP_API_URL + userStore.logo : null;
   const bannerImagePath = userStore && userStore.banner ? import.meta.env.VITE_REACT_APP_API_URL + userStore.banner : null;
 
@@ -41,13 +48,27 @@ function Store({
 
   const [open, setOpen] = useState(false)
 
+  const [updateDescrip, setUpdateDescrip] = useState(false)
+  const [updateAddress, setUpdateAddress] = useState(false)
+  const [updateLocations, setUpdateLocations] = useState(false)
+
+  const [updatePhone, setUpdatePhone] = useState(false)
+
+  const [updateEmail, setUpdateEmail] = useState(false)
+
+  const [updateSchedule, setUpdateSchedule] = useState(false)
+
+  const [updateInstragram, setUpdateInstragram] = useState(false)
+
+  const [updateFacebook, setUpdateFacebook] = useState(false)
+
+  const [updateX, setUpdateX] = useState(false)
+
+  const [addNit, setAddNit] = useState(false)
 
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-    get_user_store()
-    handleTabComments()
-  }, []);
+
+
 
   const fileSelectedHandler = (e) => {
     const file = e.target.files[0]
@@ -181,9 +202,101 @@ function Store({
     return classes.filter(Boolean).join(' ')
   }
 
-
   function handleTabComments() {
     get_store_comments(userStore && userStore.slug)
+  }
+
+  const [formData, setFormData] = useState({
+    description: '',
+    address: '',
+    location: '',
+    phone: '',
+    email: '',
+    schedule: '',
+    instagram: '',
+    facebook: '',
+    x_red_social: '',
+    nit: ''
+  })
+
+  const {
+    description,
+    address,
+    location,
+    phone,
+    email,
+    schedule,
+    instagram,
+    facebook,
+    x_red_social,
+    nit
+  } = formData
+
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const resetStates = () => {
+
+    setUpdateDescrip(false)
+    setUpdateAddress(false)
+    setUpdateLocations(false)
+    setUpdatePhone(false)
+    setUpdateEmail(false)
+    setUpdateSchedule(false)
+    setUpdateInstragram(false)
+    setUpdateFacebook(false)
+    setUpdateX(false)
+    setAddNit(false)
+  }
+
+
+  const onSubmitUpdates = e => {
+    e.preventDefault()
+
+    const config = {
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('access')}`
+      }
+    };
+
+    const formData = new FormData()
+    formData.append('description', description)
+    formData.append('address', address)
+    formData.append('location', location)
+    formData.append('phone', phone)
+    formData.append('email', email)
+    formData.append('schedule', schedule)
+    formData.append('instagram', instagram)
+    formData.append('facebook', facebook)
+    formData.append('x_red_social', x_red_social)
+    formData.append('nit', nit)
+
+
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const res = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store/`,
+          formData,
+          config)
+
+        if (res.status === 200) {
+          setLoading(false)
+          resetStates()
+          get_user_store()
+
+        } else {
+          setLoading(false)
+          resetStates()
+
+        }
+      } catch (err) {
+        setLoading(false)
+        resetStates()
+      }
+    }
+    fetchData()
   }
 
   return (
@@ -217,7 +330,7 @@ function Store({
                       }>
                         <div className="ml-4 flow-root lg:ml-6">
 
-                          Comentarios sobre mi negocio
+                          Opiones publicas de tu negocio
                           <span className="text-xs absolute bg-red-500 text-white font-semibold rounded-full px-2 text-center">
                             {count_comments}
                           </span>
@@ -277,50 +390,501 @@ function Store({
                                   {/* Nombre de la tienda y descripción */}
                                   <div>
                                     <h3 className="text-lg font-semibold">{userStore.name} {userStore.verified ? <CheckBadgeIcon className="h-5 w-5 inline-block text-blue-500" /> : <></>}</h3>
-                                    <p className="text-gray-400 text-sm">{userStore.description}</p>
+                                    {
+                                      updateDescrip ? (<>
+                                        <form onSubmit={e => onSubmitUpdates(e)} className="flex w-full">
+                                          <textarea
+                                            value={description}
+                                            onChange={e => onChange(e)}
+                                            name='description'
+                                            type='text'
+                                            maxLength={500} // Máximo de 50 caracteres permitidos
+                                            className="mt-1 p-2 rounded-md w-full sm:w-64 focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200"
+                                            required
+                                            placeholder='Nueva Descricción'
+                                          />
+                                          {description === '' && (
+                                            <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
+                                          )}
+                                          <div className="flex items-center space-x-2 ml-4">
+                                            <button
+                                              type="submit"
+                                              disabled={description === ''} // Deshabilitar el botón si el nombre está vacío
+                                              className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                            >
+                                              <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                            <button
+                                              onClick={() => setUpdateDescrip(false)}
+                                              className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                            >
+                                              <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                          </div>
+                                        </form>
+                                      </>) : (<>
+                                        <div className='flex'>
+                                          <p className="text-gray-400 text-sm">{userStore.description}</p>
+                                          <button
+                                            onClick={() => setUpdateDescrip(true)}
+                                            className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </div>
+                                      </>)
+                                    }
+                                    {userStore.nit ? (
+                                      <p className="text-gray-400 text-sm"># {userStore.nit}</p>
+                                    ) : (
+                                      <>
+                                        {
+                                          addNit ? (<>
+                                            <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                              <input
+                                                value={nit}
+                                                onChange={e => onChange(e)}
+                                                name='nit'
+                                                type='text'
+                                                maxLength={10} // Máximo de 50 caracteres permitidos
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+
+                                                placeholder='Verifica'
+                                              />
+                                              <div className="flex items-center space-x-2 ml-4">
+                                                <button
+                                                  type="submit"
+                                                  disabled={nit.length > 10} // Deshabilitar el botón si el boton si pasa de 10
+                                                  className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                >
+                                                  <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                                <button
+                                                  onClick={() => setAddNit(false)}
+                                                  className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                >
+                                                  <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                              </div>
+
+                                            </form>
+                                          </>) : (
+                                            <>
+                                              <p className="text-gray-400 text-sm flex items-center justify-center">
+                                                <button
+                                                  onClick={() => setAddNit(true)}
+                                                  className="rounded-md  text-white font-medium focus:outline-none mr-2"
+                                                >
+                                                  <PlusIcon width={20} height={20} />
+                                                </button>
+                                                <span>No hay identificador disponible</span>
+                                                <Disclosure>
+                                                  <Disclosure.Button className="focus:outline-none ml-2">
+                                                    <InformationCircleIcon className="w-6 h-6 text-gray-400" />
+                                                  </Disclosure.Button>
+                                                  <Transition
+                                                    enter="transition duration-100 ease-out"
+                                                    enterFrom="transform scale-95 opacity-0"
+                                                    enterTo="transform scale-100 opacity-100"
+                                                    leave="transition duration-75 ease-out"
+                                                    leaveFrom="transform scale-100 opacity-100"
+                                                    leaveTo="transform scale-95 opacity-0"
+                                                  >
+                                                    <Disclosure.Panel className="rounded-md p-2 text-yellow-400 text-sm">
+                                                    Tu tienda será revisada por ruvlo para asegurarse de que todo esté en orden. 
+                                                    Esto es para garantizar que tu negocio sea legítimo y confiable, lo que te da seguridad a ti y 
+                                                    a tus clientes.                                                    
+                                                    </Disclosure.Panel>
+                                                  </Transition>
+                                                </Disclosure>
+                                              </p>
+
+
+                                            </>)
+                                        }
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                                 {/* Botón */}
                                 <div className='m-4'>
                                   <button className=" text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
-
                                 </div>
                               </div>
-
-
                               {/* Información adicional de la tienda */}
                               <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                                 <dl className="sm:divide-y sm:divide-gray-200">
-                                  <div className="py-3 flex justify-between sm:px-4 sm:py-5">
+                                <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Dirección</dt>
-                                    {userStore.address ? (
-                                      <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">{userStore.address}</dd>
-                                    ) : (
-                                      <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">No hay dirección disponible</dd>
-                                    )}
+                                    {/* Validación sin repetir estilos */}
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateAddress ? (<>
+                                          <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                            <input
+                                              value={address}
+                                              onChange={e => onChange(e)}
+                                              name='address'
+                                              type='text'
+                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+
+                                              placeholder='Nueva Dirección'
+                                            />
+                                            <div className="flex items-center space-x-2 ml-4">
+                                            <button
+                                              type="submit"
+                                              disabled={address.length > 90} // Deshabilitar el botón si el boton si pasa de 90
+                                              className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                            >
+                                              <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                            <button
+                                              onClick={() => setUpdateAddress(false)}
+                                              className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                            >
+                                              <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                            </div>
+                                          </form>
+                                        </>) : (<>
+                                          {userStore.address ? (
+                                          userStore.address
+                                        ) : (
+                                          "No hay dirección disponible"
+                                        )}
+                                          <button
+                                            onClick={() => setUpdateAddress(true)}
+                                            className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </>)
+                                      }
+                                    </dd>
                                   </div>
 
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Ubicaciones en {userStore.city.nombre}</dt>
-                                    {userStore.location ? (
-                                      <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">{userStore.location}</dd>
-                                    ) : (
-                                      <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">No hay locaciones disponible</dd>
-                                    )}
-                                  </div>
+                                    {/* Validación sin repetir estilos */}
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateLocations ? (<>
+                                          <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                            <input
+                                              value={location}
+                                              onChange={e => onChange(e)}
+                                              name='location'
+                                              type='text'
+                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
 
+                                              placeholder='Nuevas localidades'
+                                            />
+                                            <div className="flex items-center space-x-2 ml-4">
+                                              <button
+                                                type="submit"
+                                                disabled={location.length > 90} // Deshabilitar el botón si el boton si pasa de 90
+                                                className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                              >
+                                                <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                              <button
+                                                onClick={() => setUpdateLocations(false)}
+                                                className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                              >
+                                                <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                            </div>
+                                          </form>
+                                        </>) : (<>
+                                          {userStore.location ? (
+                                            userStore.location
+                                          ) : (
+                                            "No hay ubicaciones disponibles"
+                                          )}
+                                          <button
+                                            onClick={() => setUpdateLocations(true)}
+                                            className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </>)
+                                      }
+                                    </dd>
+                                  </div>
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Teléfono</dt>
-                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">{userStore.phone}</dd>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updatePhone ? (<>
+                                          <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                            <input
+                                              value={phone}
+                                              onChange={e => onChange(e)}
+                                              name='phone'
+                                              type='number'
+                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                              required
+                                              placeholder='Nuevo teléfono'
+                                            />
+                                            <div className="flex items-center space-x-2 ml-4">
+                                              <button
+                                                type="submit"
+                                                disabled={phone.length > 10 || phone === ''} // Deshabilitar el botón si el boton si pasa de 90
+                                                className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                              >
+                                                <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                              <button
+                                                onClick={() => setUpdatePhone(false)}
+                                                className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                              >
+                                                <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                            </div>
+                                          </form>
+                                        </>) : (<>
+                                          {userStore.phone}
+                                          <button
+                                            onClick={() => setUpdatePhone(true)}
+                                            className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </>)
+                                      }
+                                    </dd>
                                   </div>
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Correo Electrónico</dt>
-                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">{userStore.email}</dd>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateEmail ? (<>
+
+                                          <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                            <input
+                                              value={email}
+                                              onChange={e => onChange(e)}
+                                              name='email'
+                                              type='text'
+                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                              required
+                                              placeholder='Nuevo Correo'
+                                            />
+                                            <div className="flex items-center space-x-2 ml-4">
+                                              <button
+                                                type="submit"
+                                                disabled={email.length > 100 || email === ''} // Deshabilitar el botón si el boton si pasa de 90
+                                                className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                              >
+                                                <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                              <button
+                                                onClick={() => setUpdateEmail(false)}
+                                                className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                              >
+                                                <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                            </div>
+                                          </form>
+                                        </>) : (<>
+                                          {userStore.email}
+                                          <button
+                                            onClick={() => setUpdateEmail(true)}
+                                            className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </>)
+                                      }
+                                    </dd>
+                                  </div>
+                                  <div className="py-3 flex justify-between sm:px-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-300">Horario de atención</dt>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+
+                                      {
+                                        updateSchedule ? (
+                                          <>
+                                            <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                              <input
+                                                value={schedule}
+                                                onChange={e => onChange(e)}
+                                                name='schedule'
+                                                type='text'
+                                                maxLength={50} // Máximo de 50 caracteres permitidos
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                                required
+                                                placeholder='Nuevo Correo'
+                                              />
+                                              <div className="flex items-center space-x-2 ml-4">
+                                                <button
+                                                  type="submit"
+                                                  disabled={schedule.length > 100 || schedule === ''} // Deshabilitar el botón si el boton si pasa de 90
+                                                  className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                >
+                                                  <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                                <button
+                                                  onClick={() => setUpdateSchedule(false)}
+                                                  className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                >
+                                                  <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                              </div>
+                                            </form>
+
+
+                                          </>) : (
+                                          <>
+                                            {userStore.schedule}
+                                            <button
+                                              onClick={() => setUpdateSchedule(true)}
+                                              className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                              <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                          </>)
+                                      }
+                                    </dd>
                                   </div>
 
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-300">Horario de atención</dt>
-                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">{userStore.schedule}</dd>
+                                    <dt className="text-sm font-medium text-gray-300">Instagram</dt>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateInstragram ? (
+                                          <>
+                                            <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                              <input
+                                                value={instagram}
+                                                onChange={e => onChange(e)}
+                                                name='instagram'
+                                                type='text'
+                                                maxLength={50} // Máximo de 50 caracteres permitidos
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                                placeholder='Instagram de tu tienda'
+                                              />
+                                              <div className="flex items-center space-x-2 ml-4">
+                                                <button
+                                                  type="submit"
+                                                  disabled={instagram.length > 100} // Deshabilitar el botón si el boton si pasa de 90
+                                                  className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                >
+                                                  <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                                <button
+                                                  onClick={() => setUpdateInstragram(false)}
+                                                  className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                >
+                                                  <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                              </div>
+                                            </form>
+
+
+                                          </>) : (
+                                          <>
+                                            {userStore.instagram}
+                                            <button
+                                              onClick={() => setUpdateInstragram(true)}
+                                              className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                              <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                          </>)
+                                      }
+                                    </dd>
+                                  </div>
+
+                                  <div className="py-3 flex justify-between sm:px-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-300">Facebook</dt>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateFacebook ? (
+                                          <>
+                                            <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                              <input
+                                                value={facebook}
+                                                onChange={e => onChange(e)}
+                                                name='facebook'
+                                                type='text'
+                                                maxLength={50} // Máximo de 50 caracteres permitidos
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                                placeholder='Facebook de tu tienda'
+                                              />
+                                              <div className="flex items-center space-x-2 ml-4">
+                                                <button
+                                                  type="submit"
+                                                  disabled={facebook.length > 100} // Deshabilitar el botón si el boton si pasa de 90
+                                                  className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                >
+                                                  <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                                <button
+                                                  onClick={() => setUpdateFacebook(false)}
+                                                  className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                >
+                                                  <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                              </div>
+                                            </form>
+
+
+                                          </>) : (
+                                          <>
+                                            {userStore.facebook}
+                                            <button
+                                              onClick={() => setUpdateFacebook(true)}
+                                              className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                              <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                          </>)
+                                      }
+                                    </dd>
+                                  </div>
+
+                                  <div className="py-3 flex justify-between sm:px-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-300">Otra red social</dt>
+                                    <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
+                                      {
+                                        updateX ? (
+                                          <>
+                                            <form onSubmit={e => onSubmitUpdates(e)} className="flex w-200">
+                                              <input
+                                                value={x_red_social}
+                                                onChange={e => onChange(e)}
+                                                name='x_red_social'
+                                                type='text'
+                                                maxLength={50} // Máximo de 50 caracteres permitidos
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
+                                                placeholder='Red social'
+                                              />
+                                              <div className="flex items-center space-x-2 ml-4">
+                                                <button
+                                                  type="submit"
+                                                  disabled={x_red_social.length > 100} // Deshabilitar el botón si el boton si pasa de 90
+                                                  className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                >
+                                                  <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                                <button
+                                                  onClick={() => setUpdateX(false)}
+                                                  className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                >
+                                                  <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                </button>
+                                              </div>
+                                            </form>
+
+
+                                          </>) : (
+                                          <>
+                                            {userStore.x_red_social}
+                                            <button
+                                              onClick={() => setUpdateX(true)}
+                                              className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
+                                              <PencilIcon width={20} height={20} color="#fff" radius="6" />
+                                            </button>
+                                          </>)
+                                      }
+                                    </dd>
                                   </div>
 
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
@@ -342,7 +906,7 @@ function Store({
                                                   name="banner"
                                                   onChange={fileSelectedHandler}
                                                   className="w-full py-3 px-2 border border-gray-300 rounded-lg"
-                                                  required
+
                                                 />
                                                 <div className="flex items-center space-x-2 ml-4">
                                                   <button
@@ -391,7 +955,7 @@ function Store({
                                                   name="logo"
                                                   onChange={filePhotoSelectedHandler}
                                                   className="w-full py-3 px-2 border border-gray-300 rounded-lg"
-                                                  required
+
                                                 />
                                                 <div className="flex items-center space-x-2 ml-4">
                                                   <button
@@ -522,7 +1086,7 @@ function Store({
                       </Tab.Panel>
                       <Tab.Panel>
                         <div className="bg-gray-800 py-6 px-4 sm:px-6 lg:px-8 rounded-md">
-                          <PoliticsFoundations/>
+                          <PoliticsFoundations />
                           <FormCreatePolicy />
                         </div>
 

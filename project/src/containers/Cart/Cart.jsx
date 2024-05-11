@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../hocs/Layout';
 import { connect } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import NoFoundCarts from './NoFoundCarts';
 import { CheckIcon, TrashIcon, DocumentCheckIcon } from '@heroicons/react/24/outline'
@@ -13,16 +13,20 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
     window.scrollTo(0, 0);
   }, []);
 
+  if (!isAuthenticated) return <Navigate to="/" />;
+
   const [isRemovingCart, setIsRemovingCart] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleRemoveCart = async (slug) => {
     setIsRemovingCart(true);
     await remove_cart(slug);
     setIsRemovingCart(false);
+    navigate('/invoices');
   };
 
-  if (!isAuthenticated) return <Navigate to="/" />;
-
+  
   return (
     <Layout>
       <Helmet>

@@ -1,23 +1,24 @@
+import React, { useState } from 'react';
 import Layout from "../../hocs/Layout";
 import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import { Link } from 'react-router-dom'; // Importar Link desde react-router-dom
+import { Link } from 'react-router-dom';
 
 const faqs = [
     {
         question: "¿Como crear mi tienda?",
         answer: "Al momento que entres por primera vez a administrar tu tienda. Se observara un formulario en todas las pestañas que eligas. Deberas llenarlo cuidadosamente.",
-        
+
     },
-    
+
     {
         question: "¿Como establecer el banner y la foto de mi tienda?",
         answer: (
             <>
                 <p>
-                Ahora que has creado tu tienda, encontrarás dos botones en la parte inferior: <strong className="text-yellow-400">'Agregar banner a tu tienda'</strong> y <strong className="text-yellow-400">'Agregar perfil a tu tienda'</strong>. 
-                 Al presionarlos, se abrirá un selector de archivos donde podrás cargar tus imágenes. 
-                Podrás previsualizarlas y verificar si se ajustan al tema de tu tienda.
+                    Ahora que has creado tu tienda, encontrarás dos botones en la parte inferior: <strong className="text-yellow-400">'Agregar banner a tu tienda'</strong> y <strong className="text-yellow-400">'Agregar perfil a tu tienda'</strong>.
+                    Al presionarlos, se abrirá un selector de archivos donde podrás cargar tus imágenes.
+                    Podrás previsualizarlas y verificar si se ajustan al tema de tu tienda.
                 </p>
             </>
         ),
@@ -112,10 +113,62 @@ const faqs = [
         ]
 
     },
+    {
+        question: "¿Cómo registrar las opciones del producto?",
+        answer: (
+            <>
+                <p>Al acceder al producto que deseas editar, encontrarás dos campos: <strong className="text-yellow-400">'Escriba una opción'</strong> y <strong className="text-yellow-400">'Cantidad'</strong>. Estos campos te permiten especificar las características principales de tu producto y la cantidad disponible de cada una.</p>
+                <br />
+                <p>Cuando registres estas opciones, quedarán almacenadas en tu tienda para que puedas reutilizarlas en otros productos si es necesario. Esto facilita la gestión de tus productos y garantiza consistencia en las opciones disponibles para tus clientes."</p>
+
+            </>
+        ), href: [
+            { link: '/products', step: 'Productos' },
+        ]
+
+    },
+    {
+        question: "¿Como establecer fotos de mi producto?",
+        answer: (
+            <>
+                <p>Cuando accedas al producto que deseas editar, verás en la parte inferior el campo para ingresar imagenes de tu producto. Al momento de subirlas, se podran observar en la galeria de tu producto.</p>
+                
+
+            </>
+        ), href: [
+            { link: '/products', step: 'Productos' },
+        ]
+
+    },
+
+    {
+        question: "¿Que es la verificación de mi negocio",
+        answer: (
+            <>
+                <p>Tu tienda está sujeta a verificación por parte de las autoridades tributarias gubernamentales. Este proceso garantiza la legitimidad y confiabilidad de tu empresa, proporcionando tranquilidad tanto a ti como a tus clientes.</p>
+                
+
+            </>
+        ), href: [
+            { link: '/store', step: 'Negocio' },
+        ]
+
+    },
+
     // Agrega más preguntas y respuestas aquí
 ];
 
 export default function HelpWithMyStore() {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const filteredFaqs = faqs.filter((faq) =>
+        faq.question.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <Layout>
             <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
@@ -127,7 +180,14 @@ export default function HelpWithMyStore() {
             </div>
             <div className="w-full py-4">
                 <div className="rounded-2xl bg-stone-800 p-2">
-                    {faqs.map((faq, index) => (
+                    <input
+                        type="text"
+                        placeholder="Buscar pregunta..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className="text-sm block w-full p-2 mb-4 bg-stone-900 rounded-lg placeholder-gray-400 text-gray-200 focus:outline-none focus:ring-2 focus:ring-azul_corp_ho"
+                    />
+                    {filteredFaqs.map((faq, index) => (
                         <Disclosure key={index}>
                             {({ open }) => (
                                 <>
@@ -140,12 +200,12 @@ export default function HelpWithMyStore() {
                                     </Disclosure.Button>
                                     <Disclosure.Panel className="px-4 py-2 text-sm text-gray-200">
                                         <p>{faq.answer}</p>
-                                        {/* Mapear el array de enlaces */}
-                                        {faq.href && faq.href.map((step, i) => (
-                                            <div key={i} className="my-2">
-                                                <Link to={step.link} className="text-azul_corp_ho font-medium">{step.step}</Link>
-                                            </div>
-                                        ))}
+                                        {faq.href &&
+                                            faq.href.map((step, i) => (
+                                                <div key={i} className="my-2">
+                                                    <Link to={step.link} className="text-azul_corp_ho font-medium">{step.step}</Link>
+                                                </div>
+                                            ))}
                                     </Disclosure.Panel>
                                 </>
                             )}
@@ -154,5 +214,5 @@ export default function HelpWithMyStore() {
                 </div>
             </div>
         </Layout>
-    )
+    );
 }

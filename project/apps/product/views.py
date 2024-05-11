@@ -9,7 +9,7 @@ from .serializer import (
     CreateOptionSerializer,
     ProductSerializerPhotos
 )
-from .models import Product, ProductOption, Option, ProductImage
+from .models import Product, ProductOption, Option, ProductImage, Like
 from apps.store.models import Store
 from apps.product_category.models import Category
 from django.http import JsonResponse
@@ -27,6 +27,8 @@ from .permissions import CanEditProduct
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils import timezone
 from django.db.models import Q
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 # Create your views here.
 
@@ -42,7 +44,7 @@ class ListProductsByCategoryView(APIView):
         category = get_object_or_404(Category, store=store, slug=categorySlug)
 
         # Filtrar los productos por categoría y por si están activos
-        products = Product.objects.filter(category=category, is_active=True)
+        products = Product.objects.filter(category=category, is_active=True).order_by('date_created')
 
         paginator = LargeSetPagination()
         results = paginator.paginate_queryset(products, request)
@@ -432,7 +434,67 @@ class OptionListAdminAPIView(APIView):
             # Si no se encuentra la tienda del usuario autenticado, devolver un mensaje de error
             return Response({"error": "No se encontró la tienda asociada al usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
 
+class ProductLikeDislikeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        product_slug = request.data.get('product_slug', None)
+        if product_slug is None:
+            return Response({'error': 'El campo product_slug es requerido en el cuerpo del JSON.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        product = get_object_or_404(Product, slugProduct=product_slug)
+        user = request.user
+        try:
+            like = Like.objects.get(user=user, product=product)
+            like.delete()  # Eliminar el like/dislike si ya existe
+            message = 'Like removido correctamente'
+            user_liked = False
+        except Like.DoesNotExist:
+            Like.objects.create(user=user, product=product, liked=True)  # Agregar el like/dislike
+            message = 'Like agregado correctamente'
+            user_liked = True
+        
+        total_likes = Like.objects.filter(product=product, liked=True).count()  # Recalcular el recuento de likes
+        return Response({'total_likes': total_likes, 'user_liked': user_liked}, status=status.HTTP_200_OK)
+
+class ProductLikesAPIView(APIView):
+    def get(self, request, slugProduct):
+        product = get_object_or_404(Product, slugProduct=slugProduct)
+        total_likes = Like.objects.filter(product=product, liked=True).count()
+
+        user = request.user
+        user_liked = False
+
+        if user.is_authenticated:
+            try:
+                like = Like.objects.get(user=user, product=product)
+                user_liked = True
+            except Like.DoesNotExist:
+                pass
+
+        return Response({'total_likes': total_likes, 'user_liked': user_liked}, status=status.HTTP_200_OK)
+
+class LikedProductsAPIView(APIView):
+    def get(self, request, format=None):
+        # Obtener el usuario actualmente autenticado
+        user = request.user
+
+        # Obtener todos los productos que el usuario ha marcado como "like"
+        liked_products = Product.objects.filter(like__user=user, like__liked=True, category__store__is_active=True)
+
+        # Contar el número de productos que le han gustado al usuario
+        liked_products_count = liked_products.count()
+
+        # Serializar los productos obtenidos
+        serializer = ProductSerializer(liked_products, many=True)
+
+        # Crear el objeto de respuesta que incluye los productos y el conteo
+        response_data = {
+            'count': liked_products_count,
+            'products': serializer.data
+        }
+
+        return Response(response_data)
 
 
 

@@ -11,8 +11,6 @@ import { connect } from 'react-redux';
 import { check_authenticated, load_user, refresh } from '../redux/actions/auth';
 import { get_user_invoices } from '../redux/actions/Invoice';
 
-
-
 const Layout = (props) => {
 
     useEffect(() => {

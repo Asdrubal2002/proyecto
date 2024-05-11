@@ -69,8 +69,10 @@ function CreateProduct({
 
                 if (res.status === 200) {
                     setLoading(false);
+                    get_products()
                 } else {
                     setLoading(false);
+                    get_products()
                     resetStates();
                 }
             } catch (err) {
@@ -80,7 +82,6 @@ function CreateProduct({
         };
 
         fetchData();
-        get_products()
         setOpen(false)
     }
 
@@ -137,7 +138,7 @@ function CreateProduct({
                                     <div className='py-4'>
                                         <Disclosure>
                                             <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-azul_corp rounded-lg text-sm p-4 mb-2">
-                                                <span>Necesito crear una nueva categoría</span>
+                                                <span>¿Necesitas una nueva categoría?</span>
                                                 <PlusIcon className="ml-1" width={10} height={10} color="#fff" radius="6" />
                                             </Disclosure.Button>
 

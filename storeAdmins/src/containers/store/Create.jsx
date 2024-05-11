@@ -4,6 +4,7 @@ import Layout from '../../hocs/Layout'
 import Autosuggest from 'react-autosuggest';
 import { get_categories } from '../../../../project/src/redux/actions/store_categories'
 import { get_cities } from '../../redux/actions/cities/cities'
+import axios from "axios"
 
 import { createStore } from '../../redux/actions/store/store';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -45,6 +46,7 @@ function Create({
     description: '',
   });
 
+  const [loadingS, setLoading] = useState(false)
   const [formErrors, setFormErrors] = useState({
     name: '',
     category: '',
@@ -80,24 +82,65 @@ function Create({
 
     // Solo enviar el formulario si no hay errores
     if (Object.values(errors).every(error => error === '')) {
-      console.log('Formulario válido, enviando datos:', formData);
 
-      await createStore(
-        formData.name,
-        formData.category,
-        formData.description,
-        formData.location,
-        formData.address,
-        formData.phone,
-        formData.email,
-        formData.schedule,
-        formData.nit,
-        formData.url_pay,
-        formData.account_pay,
-        formData.slug,
-        formData.city_id,
-      )
-      // navigate('/store'); // Reemplaza '/store' con la URL real de la página de la tienda
+      const config = {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `JWT ${localStorage.getItem('access')}`
+        }
+      };
+
+      // await createStore(
+      //   formData.name,
+      //   formData.category,
+      //   formData.description,
+      //   formData.location,
+      //   formData.address,
+      //   formData.phone,
+      //   formData.email,
+      //   formData.schedule,
+      //   formData.nit,
+      //   formData.url_pay,
+      //   formData.account_pay,
+      //   formData.slug,
+      //   formData.city_id,
+      // )
+
+      const dataToSend = {
+        name: formData.name,
+        category: formData.category,
+        description: formData.description,
+        location: formData.location,
+        address: formData.address,
+        phone: formData.phone,
+        email: formData.email,
+        schedule: formData.schedule,
+        nit: formData.nit,
+        url_pay: formData.url_pay,
+        account_pay: formData.account_pay,
+        slug: formData.slug,
+        city: formData.city_id
+      };
+
+      const fetchData = async () => {
+        setLoading(true)
+        try {
+          const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/create-store/`,
+            dataToSend,
+            config)
+  
+          if (res.status === 201) {
+            setLoading(false)
+            navigate('/store')
+          } else {
+            setLoading(false)
+          }
+        } catch (err) {
+          setLoading(false)
+        }
+      }
+      fetchData()
+
     } else {
       console.log('Formulario inválido, por favor revisa los campos');
     }
@@ -105,6 +148,7 @@ function Create({
 
   const validateForm = (formData) => {
     // Lógica de validación de campos aquí
+    window.scrollTo(0, 0);
     let errors = {
       name: '',
       category: '',
@@ -127,10 +171,11 @@ function Create({
 
     if (formData.name.trim() === '') {
       errors.name = 'El nombre es obligatorio.';
-    } else if (formData.name.trim().length > 20) {
-      errors.name = 'El nombre no puede sobrepasar el límite de 20 caracteres.';
-    } else if (/[^\w\s]/.test(formData.name)) {
-      errors.name = 'El nombre no puede contener símbolos';
+    } else if (formData.name.trim().length > 100) {
+      errors.name = 'El nombre no puede sobrepasar el límite de 100 caracteres.';
+      // } else if (/[^\w\s]/.test(formData.name)) {
+      //   errors.name = 'El nombre no puede contener símbolos';
+      // }
     }
 
     if (!formData.category) {
@@ -145,35 +190,35 @@ function Create({
       errors.slug = 'La dirección no puede contener letras mayúsculas';
     } else if (/[^\w\s]/.test(formData.slug)) {
       errors.slug = 'La dirección no puede contener símbolos';
-    }else if(formData.slug.trim().length > 200){
+    } else if (formData.slug.trim().length > 200) {
       errors.slug = 'La dirección no puede contener mas de 200 caracteres';
     }
 
     if (!formData.location) {
       errors.location = 'Completa tu alcance de tiendas';
-    }else if(formData.location.trim().length > 500){
+    } else if (formData.location.trim().length > 500) {
       errors.location = 'La locación no puede contener mas de 100 caracteres';
     }
 
     if (formData.address.trim().length > 100) {
       errors.address = 'la dirección de la tienda no puede contener mas de 100 caracteres';
-    } 
+    }
 
     if (!formData.phone) {
       errors.phone = 'Completa tu teléfono';
-    } else if(formData.phone.trim().length > 10){
-      errors.phone = 'El télefono no puede contener mas de 10 caracteres';
+    } else if (formData.phone.trim().length > 10) {
+      errors.phone = 'El teléfono no puede tener más de 10 caracteres y no debe contener espacios.';
     }
 
     if (!formData.email) {
       errors.email = 'Completa tu email';
-    }else if(formData.email.trim().length > 100){
+    } else if (formData.email.trim().length > 100) {
       errors.email = 'El correo no puede contener mas de 100 caracteres';
     }
 
     if (!formData.schedule) {
       errors.schedule = 'Completa tu Horario';
-    }else if(formData.schedule.trim().length > 100){
+    } else if (formData.schedule.trim().length > 100) {
       errors.schedule = 'El horario no puede contener mas de 100 caracteres';
     }
 
@@ -182,7 +227,7 @@ function Create({
     } else if (/\./.test(formData.nit)) {
       errors.nit = 'El nit no puede contener puntos';
     }
-    
+
 
     if (!formData.city) {
       errors.city = 'Por favor, selecciona una ciudad';
@@ -233,7 +278,7 @@ function Create({
         city.nombre.toLowerCase().slice(0, inputLength) === inputValue
       );
   };
-  
+
   const onSuggestionsFetchRequested = ({ value }) => {
     setSuggestions(getSuggestions(value));
   };
@@ -245,7 +290,7 @@ function Create({
   const getSuggestionValue = (suggestion) => suggestion.nombre;
 
   const renderSuggestion = (suggestion) => (
-    <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white'>
+    <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white cursor-pointer'>
       {suggestion.nombre} - {suggestion.estado_o_departamento.nombre} - {suggestion.estado_o_departamento.pais.nombre}
     </div>
   );
@@ -270,53 +315,106 @@ function Create({
         La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.
       </p>
 
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         {/* nombre */}
         <div>
-          {/* <label htmlFor="name" className="block text-sm font-semibold text-gray-300 my-2">Nombre de la tienda</label> */}
-          <input
-            placeholder='Nombre de tu tienda *'
-            type="text"
-            name="name"
-            id="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
-          />
-          {formErrors.name && (
-            <p className="text-red-500 text-sm">{formErrors.name}</p>
-          )}
+          <div>
+            {/* <label htmlFor="name" className="block text-sm font-semibold text-gray-300 my-2">Nombre de la tienda</label> */}
+            <input
+              placeholder='Nombre de tu tienda *'
+              type="text"
+              name="name"
+              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
+            />
+            {formErrors.name && (
+              <p className="text-red-500 text-sm">{formErrors.name}</p>
+            )}
+            <Disclosure>
+              <Disclosure.Button className="flex items-center focus:outline-none my-2 text-sm text-gray-400">
+                <InformationCircleIcon className="w-6 h-6 mx-2 text-red-600" />
+                <strong className='text-red-600'>
+                  Advertencia
+                </strong>
+              </Disclosure.Button>
+              <Transition
+                enter="transition duration-100 ease-out"
+                enterFrom="transform scale-95 opacity-0"
+                enterTo="transform scale-100 opacity-100"
+                leave="transition duration-75 ease-out"
+                leaveFrom="transform scale-100 opacity-100"
+                leaveTo="transform scale-95 opacity-0"
+              >
+                <Disclosure.Panel className="rounded-md text-sm">
+                  <div>
+                    <p className='text-sm text-red-600'>
+                      El nombre que elijas para tu tienda será permanente, a menos que solicites un cambio, sujeto a las políticas de cambio de nombre dentro de Ruvlo.
+                    </p>
+                  </div>
+                </Disclosure.Panel>
+              </Transition>
+            </Disclosure>
+          </div>
+
         </div>
+
         {/* nombre */}
 
         {/* categoria */}
         <div>
-          {/* <label htmlFor="category" className="block text-sm font-semibold text-gray-300 my-2">Categoría de productos</label> */}
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-gray-100 text-sm"
-          >
-            <option value="" disabled hidden>
-              {formData.slug === '' ? '¿De productos vendes? *' : ''}
-            </option>
-            {
-              categories &&
-              categories !== null &&
-              categories !== undefined &&
-              categories.map((category, index) => (
-                <option key={index} value={category.id}>
-                  {category.name}
-                </option>
-              ))
-            }
-          </select>
-          {formErrors.category && (
-            <p className="text-red-500 text-sm">{formErrors.category}</p>
-          )}
+          <div>
+            {/* <label htmlFor="category" className="block text-sm font-semibold text-gray-300 my-2">Categoría de productos</label> */}
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-gray-200 text-sm"
+            >
+              <option value="" disabled hidden>
+                {formData.slug === '' ? 'Categoría de tu negocio *' : ''}
+              </option>
+              {
+                categories &&
+                categories !== null &&
+                categories !== undefined &&
+                categories.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.name}
+                  </option>
+                ))
+              }
+            </select>
+            {formErrors.category && (
+              <p className="text-red-500 text-sm">{formErrors.category}</p>
+            )}
+          </div>
+          <Disclosure>
+            <Disclosure.Button className="flex items-center focus:outline-none my-2 text-sm text-gray-400">
+              <InformationCircleIcon className="w-6 h-6 mx-2 text-red-600" />
+              <strong className='text-red-600'>
+                Advertencia
+              </strong>
+            </Disclosure.Button>
+            <Transition
+              enter="transition duration-100 ease-out"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              <Disclosure.Panel className="rounded-md text-sm">
+                <div>
+                  <p className='text-sm text-red-600'>
+                    La categoría que elijas para tu tienda será permanente, a menos que solicites un cambio, sujeto a las políticas de cambio de categoría de Ruvlo.
+                  </p>
+                </div>
+              </Disclosure.Panel>
+            </Transition>
+          </Disclosure>
         </div>
         {/* categoria */}
 
@@ -332,13 +430,16 @@ function Create({
               value={formData.slug}
               onChange={handleChange}
               className="rounded-md focus:outline-none focus:ring focus:ring-blue-500 flex-1 bg-transparent py-2 pl-1 pr-4 text-base text-gray-700 placeholder:text-gray-400 text-white text-sm"
-              placeholder="dirección de ruvlo *"
+              placeholder="¿Que dirección le quiere poner? *"
             />
           </div>
 
           <Disclosure>
             <Disclosure.Button className="flex items-center focus:outline-none my-4 text-sm text-gray-400">
-              <InformationCircleIcon className="w-6 h-6  mx-2" /> ¿Que es dirección de ruvlo?
+              <InformationCircleIcon className="w-6 h-6 mx-2 text-yellow-400" />
+              <strong className='text-yellow-400'>
+                ¿Que es dirección de ruvlo?
+              </strong>
             </Disclosure.Button>
             <Transition
               enter="transition duration-100 ease-out"
@@ -356,13 +457,10 @@ function Create({
                   <br />
                   <p className='text-yellow-400'>
                     Por ejemplo, para una tienda llamada <strong>{formData.name}</strong>, la ruta podría
-                    ser: <strong>{formData.name.toLowerCase().replace(/[^\w\s]/gi, '')}</strong>. Es solo un ejemplo,
-                    puedes poner la dirección que te guste para tu tienda.
+                    ser: <strong>{formData.name.toLowerCase().replace(/\s+/g, '_').replace(/[^\w]/g, '')}</strong>.
+                    Ten en cuenta que la ruta no puede contener espacios ni símbolos. Es solo un ejemplo, puedes poner la dirección que te guste para tu tienda.
                   </p>
                 </div>
-
-
-
               </Disclosure.Panel>
             </Transition>
           </Disclosure>
@@ -388,7 +486,11 @@ function Create({
 
           <Disclosure>
             <Disclosure.Button className="flex items-center focus:outline-none my-4 text-sm text-gray-400">
-              <InformationCircleIcon className="w-6 h-6  mx-2" /> ¿Que es Localidades?
+              <InformationCircleIcon className="w-6 h-6  mx-2 text-yellow-400" />
+              <strong className='text-yellow-400'>
+                ¿Que es Localidades?
+              </strong>
+
             </Disclosure.Button>
             <Transition
               enter="transition duration-100 ease-out"
@@ -426,7 +528,7 @@ function Create({
         <div>
           {/* <label htmlFor="address" className="block text-sm font-semibold text-gray-300 my-2">Dirección de tu tienda</label> */}
           <input
-            placeholder='Dirección de tu tienda'
+            placeholder='Dirección de tu tienda. (Opcional)'
             type="text"
             id="address"
             name='address'
@@ -434,7 +536,7 @@ function Create({
             onChange={handleChange}
             className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
           />
-           {formErrors.address && (
+          {formErrors.address && (
             <p className="text-red-500 text-sm">{formErrors.address}</p>
           )}
         </div>
@@ -506,7 +608,7 @@ function Create({
             onChange={handleChange}
             className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
           />
-            {formErrors.nit && (
+          {formErrors.nit && (
             <p className="text-red-500 text-sm">{formErrors.nit}</p>
           )}
         </div>

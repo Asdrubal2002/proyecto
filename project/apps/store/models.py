@@ -42,6 +42,14 @@ def store_directory_qr(instance, filename):
     # Retornar la ruta completa del archivo
     return os.path.join(store_directory, "qr.jpg")
 
+class StoreLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    store = models.ForeignKey('Store', on_delete=models.CASCADE)
+    liked = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'store')
 
 class Store(models.Model):
     administrator = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -55,7 +63,6 @@ class Store(models.Model):
     logo = models.ImageField(upload_to=store_directory_path_profile)
     banner = models.ImageField(upload_to=store_directory_path_banner)
     schedule = models.CharField(max_length=100, blank=False, null=False)
-    delivery = models.BooleanField(default=False)
     nit = models.CharField(max_length=100, blank=True, null=True)
     verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -63,9 +70,6 @@ class Store(models.Model):
     url_pay = models.URLField(blank=True, null=True)
     account_pay = models.CharField(max_length=20, blank=True, null=True)
     slug =  models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
-    # likes = models.ManyToManyField(User, blank=True, related_name='likes')
-    # dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
-    likes = models.IntegerField(default=0, blank=True)
     complaints = models.IntegerField(default=0, blank=True)
     city = models.ForeignKey(Ciudad, on_delete=models.CASCADE)
     qr_code = models.ImageField(upload_to=store_directory_qr, blank=True)

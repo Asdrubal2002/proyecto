@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Store, StorePolicy
+from .models import Store, StorePolicy, StoreLike
 from apps.store_category.serializers import CategorySerializer
 from apps.locations.serializers import CiudadSerializer
 
@@ -23,7 +23,6 @@ class StoreSerializer(serializers.ModelSerializer):
             "logo",
             "banner",
             "schedule",
-            "delivery",
             "nit",
             "verified",
             "is_active",
@@ -31,7 +30,6 @@ class StoreSerializer(serializers.ModelSerializer):
             "url_pay",
             "account_pay",
             "slug",
-            "likes",
             "complaints",
             "city",
             "get_formatted_created_on",
@@ -48,13 +46,11 @@ class CreateStoreSerializer(serializers.ModelSerializer):
 
         exclude = [
             "is_active",
-            "likes",
             "complaints",
             "verified",
             "created_on",
             "logo",
             "banner",
-            "delivery",
         ]
 
 
@@ -62,3 +58,9 @@ class StorePolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = StorePolicy
         fields = "name", "policy_text"
+
+class WishListStoreSerializer(serializers.ModelSerializer):
+    store = StoreSerializer()
+    class Meta:
+        model = StoreLike
+        fields = ['store',]

@@ -7,8 +7,13 @@ from django.db.models import Q
 from django.core.files.base import ContentFile
 
 
-from apps.store.models import Store,StorePolicy
-from apps.store.serializers import StoreSerializer, CreateStoreSerializer, StorePolicySerializer
+from apps.store.models import Store, StorePolicy, StoreLike
+from apps.store.serializers import (
+    StoreSerializer,
+    CreateStoreSerializer,
+    StorePolicySerializer,
+    WishListStoreSerializer
+)
 from apps.store_category.models import Category
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import default_storage
@@ -93,12 +98,13 @@ class ListSearchView(APIView):
             search = request.query_params.get("s")
 
             if len(search) == 0:
-                search_results = Store.objects.order_by("likes").all()
+                search_results = Store.objects.order_by("created_on").all()
             else:
-                search_results = Store.objects.order_by("-likes").filter(
+                search_results = Store.objects.order_by("-created_on").filter(
                     Q(description__icontains=search)
                     | Q(name__icontains=search)
-                    | Q(location__icontains=search),  is_active=True
+                    | Q(location__icontains=search),
+                    is_active=True,
                 )
 
             if len(slug) == 0:
@@ -116,7 +122,9 @@ class ListSearchView(APIView):
 
             category = Category.objects.get(slug=slug)
 
-            search_results = search_results.order_by("-likes").filter(category=category, is_active=True)
+            search_results = search_results.order_by("-created_on").filter(
+                category=category, is_active=True
+            )
 
             paginator = LargeSetPagination()
             results = paginator.paginate_queryset(search_results, request)
@@ -266,9 +274,7 @@ class UserStoreAPIView(APIView):
             # Buscar la tienda asociada al usuario autenticado
             store = Store.objects.get(administrator=user)
             serializer = StoreSerializer(store)
-            return Response(
-                {"store": serializer.data}, status=status.HTTP_200_OK
-            )
+            return Response({"store": serializer.data}, status=status.HTTP_200_OK)
 
         except Store.DoesNotExist:
             return Response(
@@ -286,8 +292,8 @@ class EditStoreLogoView(APIView):
         data = self.request.data
 
         # Verifica si se ha enviado la imagen del logo
-        if 'logo' in data:
-            logo_file = data['logo']
+        if "logo" in data:
+            logo_file = data["logo"]
 
             # Obtiene el objeto Store del usuario autenticado
             store = user.store
@@ -312,8 +318,8 @@ class EditStoreBannerView(APIView):
         data = self.request.data
 
         # Verifica si se ha enviado la imagen del banner
-        if 'banner' in data:
-            banner_file = data['banner']
+        if "banner" in data:
+            banner_file = data["banner"]
 
             # Obtiene el objeto Store del usuario autenticado
             store = user.store
@@ -329,7 +335,6 @@ class EditStoreBannerView(APIView):
         else:
             return Response({"error": "Banner image is required"})
 
-
 class StorePolicyCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -339,15 +344,17 @@ class StorePolicyCreateAPIView(APIView):
             # Obtener el usuario autenticado
             user = request.user
             # Verificar si el usuario tiene una tienda asociada
-            if not hasattr(user, 'store'):
-                return Response({"error": "El usuario autenticado no tiene una tienda asociada"}, status=status.HTTP_400_BAD_REQUEST)
+            if not hasattr(user, "store"):
+                return Response(
+                    {"error": "El usuario autenticado no tiene una tienda asociada"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             # Obtener la tienda asociada al usuario
             store = user.store
             serializer.save(store=store)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
 class StorePolicyUpdateAPIView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -365,11 +372,14 @@ class StorePolicyUpdateAPIView(APIView):
             # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
             store = request.user.store_set.first()
             if not store or policy.store != store:
-                return Response({"error": "No tienes permiso para actualizar esta política"}, status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {"error": "No tienes permiso para actualizar esta política"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class StorePolicyDeleteAPIView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -385,10 +395,13 @@ class StorePolicyDeleteAPIView(APIView):
         # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
         store = request.user.store_set.first()
         if not store or policy.store != store:
-            return Response({"error": "No tienes permiso para eliminar esta política"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "No tienes permiso para eliminar esta política"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         policy.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 class StorePolicyListByStoreAPIView(APIView):
     def get(self, request, store_slug, format=None):
         # Obtenemos la tienda por su slug
@@ -397,6 +410,75 @@ class StorePolicyListByStoreAPIView(APIView):
             # Filtramos las políticas por la tienda encontrada
             policies = StorePolicy.objects.filter(store=store)
             serializer = StorePolicySerializer(policies, many=True)
-            return Response({"policies":serializer.data}, status=status.HTTP_200_OK)
+            return Response({"policies": serializer.data}, status=status.HTTP_200_OK)
         except StorePolicy.DoesNotExist:
-            return Response({"error": "No se encontraron políticas para esta tienda"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "No se encontraron políticas para esta tienda"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+class EditStoreView(APIView):
+    permission_classes = (CanEditStore,)
+
+    def put(self, request, format=None):
+        user = self.request.user
+        data = self.request.data
+        store = user.store
+
+        # Actualizar campos de texto
+        text_fields = ["description", "address", "location", "phone", "email", "schedule", "nit"]
+        for field in text_fields:
+            if data.get(field) and data[field] != "undefined":
+                setattr(store, field, data[field])
+
+        # Eliminar información si los campos llegan vacíos
+        empty_fields = ["instagram", "facebook", "x_red_social"]
+        for field in empty_fields:
+            setattr(store, field, data.get(field))
+
+        store.save()
+
+        return Response({"success": "Banner uploaded"}, status=status.HTTP_200_OK)
+
+class StoreLikeDislikeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        store_slug = request.data.get('store_slug', None)
+        if store_slug is None:
+            return Response({'error': 'El campo store_slug es requerido en el cuerpo del JSON.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        store = get_object_or_404(Store, slug=store_slug)
+        user = request.user
+
+        try:
+            store_like = StoreLike.objects.get(user=user, store=store)
+            store_like.delete()  # Eliminar el like/dislike si ya existe
+            message = 'Like removido correctamente'
+            user_liked = False
+        except StoreLike.DoesNotExist:
+            StoreLike.objects.create(user=user, store=store, liked=True)  # Agregar el like/dislike
+            message = 'Like agregado correctamente'
+            user_liked = True
+        
+        total_likes = StoreLike.objects.filter(store=store, liked=True).count()  # Recalcular el recuento de likes
+        return Response({'total_likes': total_likes, 'user_liked': user_liked}, status=status.HTTP_200_OK)
+
+class StoreLikesAPIView(APIView):
+    def get(self, request, storeSlug):
+        store = get_object_or_404(Store, slug=storeSlug)
+        total_likes = StoreLike.objects.filter(store=store, liked=True).count()
+
+        return Response({'total_likes': total_likes}, status=status.HTTP_200_OK)
+    
+class LikedStoresAPIView(APIView):
+    def get(self, request, format=None):
+        user = request.user
+        liked_stores = StoreLike.objects.filter(user=user, liked=True, is_active=True)
+        serializer = WishListStoreSerializer(liked_stores, many=True)
+        count = liked_stores.count()
+        response_data = {
+            'count': count,
+            'stores': serializer.data
+        }
+        return Response(response_data, status=status.HTTP_200_OK)

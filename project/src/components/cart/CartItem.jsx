@@ -34,7 +34,7 @@ const CartItem = ({
         <li className="flex py-6 sm:py-10">
             <div className="flex-shrink-0">
                 {/* Carrusel de imágenes */}
-                <Carousel
+                {/* <Carousel
                     showArrows={true}
                     showStatus={false}
                     showThumbs={false}
@@ -49,9 +49,18 @@ const CartItem = ({
                             className="w-full h-full rounded-md object-center object-cover"
                         />
                     ))}
-                </Carousel>
+                </Carousel> */}
+                <>
+                    {item.product_option.product.images.map((image, index) => (
+                        <img
+                            key={index}
+                            src={image.photo}
+                            alt=""
+                            className="w-24 h-24 rounded-md object-center object-cover sm:w-40 sm:h-48"
+                        />
+                    ))}
+                </>
             </div>
-
             <div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
                 <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
                     <div>
@@ -74,7 +83,6 @@ const CartItem = ({
                         <p className="mt-1 text-sm font-medium text-gray-300">$ {item.product_option.product.price * item.quantity}</p>
                         <p className="mt-1 text-sm text-gray-500">impuesto $ {item.product_option.product.tax}</p>
                     </div>
-
                     <div className="mt-4 sm:mt-0 sm:pr-9">
                         <label htmlFor={'item_count'} className="sr-only">
                             Quantity, {item.product_option.product.name}
@@ -84,25 +92,22 @@ const CartItem = ({
                                 <button
                                     type="button"
                                     onClick={handleSubtract}
-                                    className={`px-3 py-1.5 bg-azul_corp text-white rounded-l-md cursor-pointer focus:outline-none`}
+                                    className={`px-3 py-1.5 bg-azul_corp text-white rounded-l-md cursor-pointer focus:outline-none hover:bg-azul_corp_ho`}
                                 >
                                     -
                                 </button>
                             )}
-
                             <span className="mx-2">{item.quantity}</span>
                             {item.product_option.quantity === 0 ? null : (
                                 <button
                                     type="button"
                                     onClick={handleAdd}
-                                    className={`px-3 py-1.5 bg-azul_corp text-white rounded-r-md cursor-pointer focus:outline-none`}
+                                    className={`px-3 py-1.5 bg-azul_corp text-white rounded-r-md cursor-pointer focus:outline-none hover:bg-azul_corp_ho`}
                                 >
                                     +
                                 </button>
                             )}
                         </div>
-
-
                         <div className="absolute top-0 right-0">
                             <button
                                 type="button"
@@ -114,7 +119,6 @@ const CartItem = ({
                         </div>
                     </div>
                 </div>
-
                 <p className="mt-4 flex text-sm text-gray-400 space-x-2">
                     {
                         item.product_option &&

@@ -79,18 +79,15 @@ function CreateOptions({
                 <Rings width={20} height={20} color="#fff" radius="6" />
             ) : (
                 <>
-                    <div className="flex items-center bg-gray-600 rounded-md py-2 px-4 my-2">
-                        <MagnifyingGlassIcon width={20} height={20} color="#fff" radius="6" />
+                    <div className="w-full p-4 bg-gray-50 bg-gray-900 rounded-t-lg">
                         <input
                             type="text"
                             placeholder="Buscar opción..."
-                            className="flex-grow bg-transparent focus:outline-none text-sm placeholder:text-gray-400 text-gray-200 mx-2"
+                            className="block w-full p-2 bg-gray-700 bg-gray-700 rounded-md placeholder-gray-400 text-gray-200 outline-none text-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-
-
                     <table className="min-w-full divide-y divide-gray-700 rounded-md">
                         <thead className="bg-gray-800">
                             <tr>

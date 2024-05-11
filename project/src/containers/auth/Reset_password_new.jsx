@@ -13,6 +13,7 @@ import { reset_password_confirm } from "../../redux/actions/auth";
 
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import ImagesForms from "./components/ImagesForms";
 
 const Reset_password_new = ({ reset_password_confirm, loading }) => {
 
@@ -91,53 +92,45 @@ const Reset_password_new = ({ reset_password_confirm, loading }) => {
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
 
-            <div className="flex items-center justify-center py-4 pt-10">
-                <div className="max-w-md w-full space-y-8 ">
-                <h2 className="text-xl font-bold text-center">Recuperar contraseña</h2> {/* Título agregado */}
-
-                    <ContenedorFormulario>
-                        <ContenedorFormulario2>
-                            <Formulario onSubmit={onSubmit}>
-                                <ComponenteInput
-                                    estado={new_password}
-                                    cambiarEstado={changePassNew}
-                                    placeholder="Nueva Contraseña"
-                                    tipo="password"
-                                    numero="20"
-                                    label=""
-                                    name="new_password"
-                                    leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
-                                    expresionRegular={expresiones.clave}
-                                />
-
-                                <ComponenteInput
-                                    estado={re_new_password}
-                                    cambiarEstado={changePass2New}
-                                    tipo="password"
-                                    numero="20"
-                                    placeholder="Confirma tu contraseña"
-                                    label=""
-                                    name="re_new_password"
-                                    leyendaError="Ambas contraseñas deben ser iguales."
-                                    funcion={validarPassword2}
-                                />
-
-                                <div>
-                                    {loading ? (
-                                        <Boton type="submit">
-                                            <Rings width={20} height={20} color="#fff" radius="6" />
-                                        </Boton>
-                                    ) : (
-                                        <Boton type="submit">Registrar nueva contraseña</Boton>
-                                    )}
-                                </div>
-                            </Formulario>
-
-
-                        </ContenedorFormulario2>
-                    </ContenedorFormulario>
-                </div>
-            </div>
+            <ImagesForms title="Confirma tu contraseña!">
+                <ContenedorFormulario>
+                    <ContenedorFormulario2>
+                        <Formulario onSubmit={onSubmit}>
+                            <ComponenteInput
+                                estado={new_password}
+                                cambiarEstado={changePassNew}
+                                placeholder="Nueva Contraseña"
+                                tipo="password"
+                                numero="20"
+                                label=""
+                                name="new_password"
+                                leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
+                                expresionRegular={expresiones.clave}
+                            />
+                            <ComponenteInput
+                                estado={re_new_password}
+                                cambiarEstado={changePass2New}
+                                tipo="password"
+                                numero="20"
+                                placeholder="Confirma tu contraseña"
+                                label=""
+                                name="re_new_password"
+                                leyendaError="Ambas contraseñas deben ser iguales."
+                                funcion={validarPassword2}
+                            />
+                            <div>
+                                {loading ? (
+                                    <Boton type="submit">
+                                        <Rings width={20} height={20} color="#fff" radius="6" />
+                                    </Boton>
+                                ) : (
+                                    <Boton type="submit">Registrar nueva contraseña</Boton>
+                                )}
+                            </div>
+                        </Formulario>
+                    </ContenedorFormulario2>
+                </ContenedorFormulario>
+            </ImagesForms>
 
 
         </Layout>

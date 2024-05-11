@@ -10,8 +10,7 @@ import Products_By_Category from "./products_by_category";
 import Cart from "./cart";
 import Cities from "./cities";
 import Shipping from "./shipping";
-import WishList from "./wish_list";
-import WishList_Stores from "./wish_list_stores";
+
 import Comments_Store from "./comments_store";
 import Invoice from "./Invoice";
 import Comments_Product from "./comments_product";
@@ -28,8 +27,6 @@ export default combineReducers ({
     Cart,
     Cities,
     Shipping,
-    WishList,
-    WishList_Stores,
     Comments_Store,
     Invoice,
     Comments_Product

@@ -14,7 +14,18 @@ import {
     GET_STORE_LIST_CATEGORIES_SUCCESS,
     GET_STORE_LIST_CATEGORIES_FAIL,
     GET_STORE_POLICIES_SUCCESS,
-    GET_STORE_POLICIES_FAIL
+    GET_STORE_POLICIES_FAIL,
+
+    GET_STORE_LIKES_DISLIKE_SUCCESS,
+    GET_STORE_LIKES_DISLIKE_FAIL,
+    SET_LOADING_STORE_LIKES_DISLIKE,
+    REMOVE_LOADING_STORE_LIKES_DISLIKE,
+    ADD_STORE_LIKES_DISLIKE_SUCCESS,
+    ADD_STORE_LIKES_DISLIKE_FAIL,
+    GET_STORES_LIKED_SUCCESS,
+    GET_STORES_LIKED_FAIL,
+    SET_STORES_LOADING,
+    REMOVE_STORES_LOADING
 } from "../actions/types";
 
 const initialState = {
@@ -28,7 +39,10 @@ const initialState = {
     count: null,
     next: null,
     previous: null,
-    policies: null
+    policies: null,
+    likes: null,
+    loading_likes: null,
+    stores_liked: null
 };
 
 export default function Stores(state = initialState, action) {
@@ -135,6 +149,73 @@ export default function Stores(state = initialState, action) {
                 policies: null
             }
 
+        case SET_LOADING_STORE_LIKES_DISLIKE:
+            return {
+                ...state,
+                loading_likes: true
+            }
+        case REMOVE_LOADING_STORE_LIKES_DISLIKE:
+            return {
+                ...state,
+                loading_likes: false
+            }
+
+        case GET_STORE_LIKES_DISLIKE_SUCCESS:
+            return {
+                ...state,
+                likes: payload
+            }
+
+        case GET_STORE_LIKES_DISLIKE_FAIL:
+            return {
+                ...state,
+                likes: null,
+            }
+
+
+        case ADD_STORE_LIKES_DISLIKE_SUCCESS:
+            return {
+                ...state,
+                likes: {
+                    ...state.likes,
+                    total_likes: payload.total_likes,
+                    user_liked: payload.user_liked,
+                }
+            };
+        case ADD_STORE_LIKES_DISLIKE_FAIL:
+            console.log('Error en fallo:', error);
+            return {
+                ...state,
+                likes: {
+                    ...state.likes,
+                    user_liked: false, // O el valor predeterminado que desees cuando hay un fallo
+                }
+            };
+
+        case GET_STORES_LIKED_SUCCESS:
+            return {
+                ...state,
+                stores_liked: payload
+            };
+
+        case GET_STORES_LIKED_FAIL:
+            return {
+                ...state,
+                stores_liked: null
+            }
+
+        case SET_STORES_LOADING:
+            return {
+                ...state,
+                loading: true
+            }
+        case REMOVE_STORES_LOADING:
+            return {
+                ...state,
+                loading: false
+            }
+                
+                 
         default:
             return state
 

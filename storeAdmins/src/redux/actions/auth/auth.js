@@ -150,7 +150,7 @@ export const login = (email, password) => async (dispatch) => {
         dispatch({
             type: REMOVE_AUTH_LOADING,
         });
-        dispatch(setAlert("Lo sentimos, parece que no tienes privilegios de vendedor o tus credenciales no son válidas. Por favor, verifica que estás utilizando las credenciales correctas.", error));
+        dispatch(setAlert("Lamentablemente, parece que no cuentas con los privilegios de vendedor necesarios o tus credenciales no son válidas. Te recomendamos verificar que estás utilizando las credenciales correctas para acceder.", error));
 
     }
 };

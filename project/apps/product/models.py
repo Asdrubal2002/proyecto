@@ -24,7 +24,11 @@ def product_directory_path_store(instance, filename):
     return f"productos/{store_slug}/{product_slug}/{filename}"
 
 
-
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    liked = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
 class Product(models.Model):
     class Meta:
@@ -44,8 +48,7 @@ class Product(models.Model):
     sold = models.IntegerField(default=0)
     date_created = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
-    likes = models.IntegerField(default=0)
-
+    
     def __str__(self):
         return self.name
 

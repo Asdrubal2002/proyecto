@@ -53,8 +53,6 @@ function Products({
 
   const [showFormLocation, setShowFormLocation] = useState(false);
 
-
-
   const [formData, setFormData] = useState({
     shipping_id: 0,
   });
@@ -63,7 +61,6 @@ function Products({
 
   const onChange = (selectedShippingId) => {
     setFormData({ ...formData, shipping_id: selectedShippingId });
-    console.log(shipping_id)
   };
 
   const toggleContenido = () => {
@@ -115,8 +112,6 @@ function Products({
     )
   }
 
-
-  //10:09:03
   const renderShipping = () => {
 
     const hasShippingOptions = shipping && shipping.length > 0;
@@ -150,13 +145,13 @@ function Products({
                   {shipping.id === shipping_id && <CheckIcon className="h-3 w-3 m-0.5" />}
                 </div>
                 <label htmlFor={`shipping_option_${index}`} className='text-xs text-gray-600'>
-                  <span className="font-semibold">{shipping.name}</span> - ${shipping.price} - ({shipping.time_to_delivery} dias)  - {shipping.additional_notes}
+                  <span className="font-semibold">{shipping.name}</span> - ${shipping.price} - ({shipping.time_to_delivery})  - {shipping.additional_notes}
                 </label>
               </div>
             ))}
           </div>
         ) : (
-          <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded-md mb-4">
+          <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
             <p className="text-base font-semibold">Lo sentimos, no hay opciones de envío disponibles en este momento.</p>
           </div>
         )}
@@ -185,7 +180,7 @@ function Products({
       </Helmet>
       <div>
         <div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-300 sm:text-3xl">productos ({cart && cart.items ? cart.items.length : 0})</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-300 sm:text-3xl">Cantidad de productos ({cart && cart.items ? cart.items.length : 0})</h1>
           <div className="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
 
             <section aria-labelledby="cart-heading" className="lg:col-span-7">
@@ -200,13 +195,11 @@ function Products({
               </ul>
             </section>
 
-            <section
-              aria-labelledby="summary-heading"
-              className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5"
-            >
+            <section aria-labelledby="summary-heading" className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5 sticky top-20">
+
               <Link to={`/store/${cart && cart.store && cart.store.slug}`} className="flex items-center justify-between">
                 <h2 id="summary-heading" className="text-lg font-medium text-gray-900 mr-2">
-                  Detalle de compra
+                  Detalle de compra en {cart && cart.store.name}
                 </h2>
                 <BuildingStorefrontIcon className="h-6 w-6 text-gray-500" />
               </Link>
@@ -376,7 +369,7 @@ function Products({
 
                     </div>
                     {shipping_id === 0 && (
-                      <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded-md my-4">
+                      <div className="bg-red-100 text-red-700 p-3 rounded-md my-4">
                         <p className="text-base font-semibold">Por favor selecciona un método de envío antes de continuar.</p>
                       </div>
                     )}

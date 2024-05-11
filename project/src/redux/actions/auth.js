@@ -18,6 +18,8 @@ import {
     RESET_PASSWORD_FAIL,
     RESET_PASSWORD_CONFIRM_SUCCESS,
     RESET_PASSWORD_CONFIRM_FAIL,
+    CHANGE_PASSWORD_SET_SUCCESS,
+    CHANGE_PASSWORD_SET_FAIL
 } from './types'
 
 import { setAlert } from './alert';
@@ -206,7 +208,7 @@ export const login = (email, password) => async (dispatch) => {
         dispatch({
             type: REMOVE_AUTH_LOADING,
         });
-        dispatch(setAlert("Error al iniciar sesion. Intenta mas tarde", error));
+        dispatch(setAlert("Error al iniciar sesion.", error));
     }
 };
 
@@ -422,4 +424,56 @@ export const logout = () => dispatch => {
     dispatch(setAlert('Cerro sesión existosamente', exito));
 }
 
+
+
+export const change_password_set = (new_password, re_new_password, current_password) => async (dispatch) => {
+    dispatch({
+        type: SET_AUTH_LOADING,
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
+        }
+    };
+
+    const body = JSON.stringify({
+        new_password,
+        re_new_password,
+        current_password,
+    });
+
+    try {
+        const res = await axios.post(`${apiUrl}/auth/users/set_password/`, body, config);
+        if (res.status === 204) {
+            dispatch({
+                type: SIGNUP_SUCCESS,
+                payload: res.data,
+            });
+            dispatch(setAlert("¡Tu contraseña se ha cambiado con éxito! Ahora puedes acceder a tu cuenta con tu nueva contraseña.", exito));
+        } else {
+            dispatch({
+                type: SIGNUP_FAIL,
+            });
+            dispatch(setAlert("Error al crear cuenta", error));
+        }
+        dispatch({
+            type: REMOVE_AUTH_LOADING,
+        });
+    } catch (err) {
+        dispatch({
+            type: SIGNUP_FAIL,
+        });
+        dispatch({
+            type: REMOVE_AUTH_LOADING,
+        });
+        if (err.response && err.response.status === 400) {
+            dispatch(setAlert("Lo sentimos, no se pudo cambiar la contraseña. Por favor, asegúrate de que la contraseña actual sea correcta e inténtalo de nuevo.", error));
+        } else {
+           
+        }
+    }
+};
 

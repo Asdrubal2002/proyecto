@@ -14,6 +14,10 @@ from .views import (
     StorePolicyUpdateAPIView,
     StorePolicyDeleteAPIView,
     StorePolicyListByStoreAPIView,
+    EditStoreView,
+    StoreLikeDislikeAPIView,
+    StoreLikesAPIView,
+    LikedStoresAPIView
 
     
 )
@@ -33,5 +37,12 @@ urlpatterns = [
     path('policies/update/<int:pk>/', StorePolicyUpdateAPIView.as_view(), name='store_policy_update'),
     path('policies/delete/<int:pk>/', StorePolicyDeleteAPIView.as_view(), name='store_policy_delete'),
     path('policies/<store_slug>/', StorePolicyListByStoreAPIView.as_view(), name='store_policy_list_by_store'),
+
+    path("edit-Store/", EditStoreView.as_view()),
+
+    path('store/like_dislike/', StoreLikeDislikeAPIView.as_view(), name='product_like_dislike'),
+    path('store/<storeSlug>/likes/', StoreLikesAPIView.as_view(), name='product-likes'),
+
+    path('liked-stores', LikedStoresAPIView.as_view(), name='liked_stores'),
 
 ]

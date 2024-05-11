@@ -2,17 +2,19 @@ import React, { useEffect, useRef, useState } from 'react'
 import Layout from '../../hocs/Layout'
 import { connect } from "react-redux";
 
-import { get_product, get_options, get_products_by_category } from '../../redux/actions/products'
+import { get_product, get_options, get_products_by_category, get_product_likes, add_like_dislike_product } from '../../redux/actions/products'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
-import { ChatBubbleBottomCenterTextIcon, StarIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { HeartIcon } from '@heroicons/react/24/solid';
+import { ChatBubbleBottomCenterTextIcon, CheckIcon, StarIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+
+import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
+import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
+
 import ImageGallery from './ImageGallery';
 import { add_item } from '../../redux/actions/cart';
 import { Rings } from 'react-loader-spinner';
 import { Helmet } from 'react-helmet';
-import { add_to_wish_list } from '../../redux/actions/wish_list';
 import ProductCard from './ProductCard';
 import LoadingStores from '../home/LoadingStores';
 
@@ -26,7 +28,7 @@ function classNames(...classes) {
 }
 
 function ProductDetail({
-    
+
     get_product,
     get_options,
     product,
@@ -35,7 +37,6 @@ function ProductDetail({
     loading,
     isAuthenticated,
     loadingToCar,
-    add_to_wish_list,
     get_products_by_category,
     related_products,
     loading_products,
@@ -44,7 +45,11 @@ function ProductDetail({
     profile,
     add_comment_product,
     delete_comment_product,
-    edit_comment_prodcut
+    edit_comment_prodcut,
+    get_product_likes,
+    likes,
+    add_like_dislike_product,
+    userLiked
 }) {
 
     const params = useParams()
@@ -57,6 +62,7 @@ function ProductDetail({
 
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('¿Que te parecio el producto?');
+    const [selectedOptionId, setSelectedOptionId] = useState(null);
 
 
     const handleOptionClick = (optionValue) => {
@@ -91,8 +97,7 @@ function ProductDetail({
         get_product_comments(slugProduct)
         window.scrollTo(0, 0);
         product && product.category && get_products_by_category(product.category.store.slug, product.category.slug);
-
-        console.log(product && product.category.store.slug, product && product.category.slug)
+        get_product_likes(slugProduct)
     }, [slugProduct])
 
 
@@ -104,29 +109,43 @@ function ProductDetail({
                 </div>
             );
         }
-
         return (
-            <div>
-                <h2 className="text-lg font-semibold mb-2">Escoge tu opción</h2>
-                {options.filter(option => option.quantity > 0).map((option, index) => (
-                    <button
-                        key={index}
-                        className="inline-block bg-gray-800 text-white rounded-lg px-4 py-2 m-1 hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-400"
-                        onClick={() => handleOptionClick(option)} // Manejador de clic para la opción
-                    >
-                        {option.option.value}
-                    </button>
-                ))}
-            </div>
+            <>
+                <h2 className="text-base font-semibold mb-4">Opciones disponibles</h2>
+                <div className='grid gap-3 grid-cols-1 sm:grid-cols-2'>
+
+                    {options.filter(option => option.quantity > 0).map((option, index) => (
+                        <div
+                            key={index}
+                            className={`inline-block ${option.id === selectedOptionId ? 'ring ring-azul_corp' : 'bg-stone-700'} p-2 rounded-md shadow-md transition-transform transform hover:scale-105 cursor-pointer`}
+                            onClick={() => {
+                                handleOptionClick(option);
+                                setSelectedOptionId(option.id); // Actualizamos selectedOptionId al hacer clic en una opción
+                            }}
+                        >
+                            <div className={`inline-block w-4 h-4 rounded-full border-box mr-3 ${option.id === selectedOptionId ? 'bg-azul_corp text-white' : 'border border-gray-300'}`}>
+                                {option.id === selectedOptionId && <CheckIcon className="h-3 w-3 m-0.5" />}
+                            </div>
+                            <label htmlFor={`option_${index}`} className="text-sm text-gray-200">
+                                <span className="font-semibold">{option.option.value}</span>
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </>
         );
     };
 
-    const handleHeartClick = () => {
-        // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
-
-        add_to_wish_list(slugProduct)
+    const handleHeartClick = async () => {
+        try {
+            // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
+            // Asegúrate de que add_like_dislike_product devuelva una promesa
+            await add_like_dislike_product(slugProduct);
+        } catch (error) {
+            // Maneja cualquier error que pueda ocurrir durante la solicitud
+            console.error('Error al manejar el clic del corazón:', error);
+        }
     };
-
     const handleComment = () => {
         const productId = product && product.id; // Aquí puedes obtener el ID del store de alguna manera
         const commentText = textareaRef.current.value;
@@ -169,11 +188,7 @@ function ProductDetail({
         },
         // More posts...
     ]
-
-
-
     return (
-
         <Layout>
             <Helmet>
                 <title>Ruvlo | {product && product.name ? ` ${product.name}` : 'Ruvlo'}</title>
@@ -251,12 +266,12 @@ function ProductDetail({
 
                                     {renderOptions()}
 
-                                  
+
                                 </div>
                                 {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-4  flex items-center justify-center">
                                     <p className="text-base font-semibold">{errorMessage}</p>
                                 </div>}
-                            
+
                                 {isAuthenticated ? <>
                                     <div className="mt-6">
                                         <div className="mt-10 flex sm:flex-col1">
@@ -272,17 +287,22 @@ function ProductDetail({
                                                     className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
                                                     Agregar al carrito
                                                 </button>
-                                                
+
                                             </>}
                                             <div className="flex items-center">
                                                 <button
                                                     onClick={handleHeartClick}
-                                                    className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-700"
+                                                    className="ml-4 py-2 px-2 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-300 hover:text-gray-900"
                                                 >
-                                                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                                                    <span className="sr-only">Agregar a favoritos</span>
+                                                    {userLiked ? (
+                                                        <div className="animate-ping">
+                                                            <SolidHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                                        </div>
+                                                    ) : (
+                                                        <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
+                                                    )}
+                                                    <span className="ml-2  ">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
                                                 </button>
-                                                <span className="ml-2 text-gray-400">{product && product.likes}</span> {/* Muestra el número de likes al lado del botón */}
                                             </div>
                                         </div>
                                     </div>
@@ -297,8 +317,9 @@ function ProductDetail({
                                                 >
                                                     Iniciar sesión
                                                 </Link>
-                                                <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500 hover:bg-gray-100 hover:text-gray-500">
-                                                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                                                <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500">
+                                                    <span className="ml-2 text-gray-400">{likes}  Me gusta</span> {/* Muestra el número de likes al lado del botón */}
+
                                                     <span className="sr-only">Add to favorites</span>
                                                 </Link>
                                             </div>
@@ -425,17 +446,20 @@ const mapStateToProps = state => ({
     related_products: state.Products_By_Category.products,
     loading_products: state.Products_By_Category.loading_products_by_category,
     comments: state.Comments_Product.comments ? state.Comments_Product.comments.comments : [],
-    profile: state.Profile.profile
+    profile: state.Profile.profile,
+    likes: state.Products.likes ? state.Products.likes.total_likes : 0,
+    userLiked: state.Products.likes ? state.Products.likes.user_liked : false
 })
 
 export default connect(mapStateToProps, {
     get_product,
     get_options,
     add_item,
-    add_to_wish_list,
     get_products_by_category,
     get_product_comments,
     add_comment_product,
     delete_comment_product,
-    edit_comment_prodcut
+    edit_comment_prodcut,
+    get_product_likes,
+    add_like_dislike_product
 })(ProductDetail)

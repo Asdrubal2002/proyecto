@@ -1,8 +1,6 @@
-import React from 'react'
+import React from 'react';
 import { connect } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-
-
 
 function FooterStores({
   storeSlug,
@@ -20,7 +18,6 @@ function FooterStores({
   currencyStore
 }) {
 
-
   const navigation = {
     solutions: [
       { name: 'Politicas', href: `/policies/${storeSlug}` },
@@ -30,11 +27,9 @@ function FooterStores({
       { name: `${CountryStore}, ${cityStore}` },
       { name: locationStore },
       { name: AddresStore },
-
     ],
     company: [
       { name: scheduleStore },
-
     ],
     legal: [
       { name: phoneStore },
@@ -89,10 +84,10 @@ function FooterStores({
           <div className="grid grid-cols-2 gap-8 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
-                <h3 className="text-sm font-semibold text-gray-3  00 tracking-wider uppercase">Reglamentación</h3>
+                <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase">Reglamentación</h3>
                 <ul role="list" className="mt-4 space-y-4">
-                  {navigation.solutions.map((item) => (
-                    <li key={item.name}>
+                  {navigation.solutions.map((item, index) => (
+                    <li key={`solution_${index}`}>
                       <Link to={item.href} className="text-base text-gray-400 hover:text-gray-100">
                         {item.name}
                       </Link>
@@ -103,8 +98,8 @@ function FooterStores({
               <div className="mt-12 md:mt-0">
                 <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase">Localidades disponibles</h3>
                 <ul role="list" className="mt-4 space-y-4">
-                  {navigation.support.map((item) => (
-                    <li key={item.name}>
+                  {navigation.support.map((item, index) => (
+                    <li key={`support_${index}`}>
                       <p href={item.href} className="text-base text-gray-400 ">
                         {item.name}
                       </p>
@@ -117,8 +112,8 @@ function FooterStores({
               <div>
                 <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase">Horario</h3>
                 <ul role="list" className="mt-4 space-y-4">
-                  {navigation.company.map((item) => (
-                    <li key={item.name}>
+                  {navigation.company.map((item, index) => (
+                    <li key={`company_${index}`}>
                       <a href={item.href} className="text-base text-gray-400">
                         {item.name}
                       </a>
@@ -128,16 +123,17 @@ function FooterStores({
               </div>
               <div className="mt-12 md:mt-0">
                 <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase">Contacto</h3>
-                <ul role="list" className="mt-4 space-y-4">
-                  {navigation.legal.map((item) => (
-                    <li key={item.name}>
-                      <a href={item.href} className="text-base text-gray-400 ">
+                <ul role="list" className="mt-4 space-y-4 overflow-hidden">
+                  {navigation.legal.map((item, index) => (
+                    <li key={`legal_${index}`} className="truncate">
+                      <a href={item.href} className="text-base text-gray-400 truncate">
                         {item.name}
                       </a>
                     </li>
                   ))}
                 </ul>
               </div>
+
             </div>
           </div>
           <div className="mt-8 xl:mt-0">
@@ -173,16 +169,16 @@ function FooterStores({
         </div>
         <div className="mt-8 border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between">
           <div className="flex space-x-6 md:order-2">
-            {navigation.social.map((item) => (
+            {navigation.social.map((item, index) => (
               item.href && // Verificar si href está definido
-              <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+              <a key={`social_${index}`} href={item.href} className="text-gray-400 hover:text-gray-500">
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
               </a>
             ))}
           </div>
           <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
-            &copy; 2020 Workflow, Inc. All rights reserved.
+            &copy; 2024 Ruvlo, Inc. All rights reserved.
           </p>
         </div>
       </div>
@@ -196,4 +192,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
 
-})(FooterStores)
+})(FooterStores);

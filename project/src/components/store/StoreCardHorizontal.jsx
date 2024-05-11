@@ -2,60 +2,46 @@ import { CheckBadgeIcon, BuildingStorefrontIcon } from '@heroicons/react/24/soli
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
-import { add_to_wish_list_store } from "../../redux/actions/wish_list_stores";
 
 
-function StoreCardHorizontal({ data, index, add_to_wish_list_store }) {
+function StoreCardHorizontal({ data, index }) {
 
   const handleHeartClick = () => {
     // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
-    add_to_wish_list_store(data.slug)
   };
 
 
   return (
-    <div className="pt-5 bg-stone-900 rounded-md">
-
-      <article key={data.id} className="flex w-full flex-col items-start justify-between shadow-stone-800 transition-shadow duration-300 shadow-md hover:shadow-lg hover:shadow-stone-800 p-4">
-        <div className="w-full flex justify-between items-center text-xs">
-          <div className="text-gray-300">
-            {data.city.nombre} - {data.city.estado_o_departamento.nombre}
+    <div className="bg-stone-900 rounded-md overflow-hidden shadow-stone-800 transition-shadow duration-300 shadow-md hover:shadow-lg hover:shadow-stone-800">
+      <Link to={`/store/${data.slug}`} className="flex flex-col md:flex-row">
+        <img className="object-cover w-full md:w-48 h-64 md:h-auto md:rounded-none md:rounded-l-lg" src={data.banner} alt={data.name} />
+        <div className="p-4 md:p-6 flex flex-col justify-between">
+          <div>
+            <div className="text-gray-400 text-sm">
+              {data.city.nombre} - {data.city.estado_o_departamento.nombre}
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
+            <p className="text-dm md:text-dm text-gray-700 dark:text-gray-400 mb-3">{data.description.length > 200 ? data.description.slice(0, 200) + '...' : data.description}</p>
           </div>
-          <button
-            onClick={handleHeartClick}
-            className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-          >
-            {data.likes} Me gusta
-          </button>
-        </div>
-        <Link to={`/store/${data.slug}`}>
-          <div className="group relative">
-            <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-300 group-hover:text-azul_corp_ho">
-              {data.name}  {data.verified ? <CheckBadgeIcon className="h-5 w-5 inline-block text-blue-500" /> : <></>}
-            </h3>
-            <p className="mt-5 text-sm leading-6 text-gray-300">{data.description.length > 150 ? data.description.slice(0, 300) : data.description}</p>
-          </div>
-          <div className="relative mt-8 flex items-center gap-x-4">
+          <div className="relative mt-2 flex items-center gap-x-4">
             {
               data.logo ? <img src={data.logo} alt="" className="h-10 w-10 rounded-full" />
-                : 
+                :
                 <div className='h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center'>
                   <BuildingStorefrontIcon width={20} height={20} color="#929292" />
                 </div>
             }
             <div className="text-sm leading-6">
-              <p className="font-semibold text-gray-400">
+              <p className="font-semibold text-gray-200">
                 {data.name}
               </p>
-              <p className="text-gray-400"> {data.schedule}</p>
+              <p className="text-gray-300"> {data.schedule}</p>
             </div>
           </div>
-        </Link>
-
-
-      </article>
-
+        </div>
+      </Link>
     </div>
+
 
 
 
@@ -69,5 +55,4 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-  add_to_wish_list_store
 })(StoreCardHorizontal)
