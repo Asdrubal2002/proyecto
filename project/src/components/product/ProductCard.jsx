@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
 import { connect } from "react-redux";
-
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useEffect, useState, Fragment } from 'react';
-import { Dialog, Transition, Disclosure } from '@headlessui/react'
+import { Dialog, Transition, Disclosure } from '@headlessui/react';
 import ProductModal from './ProductModal';
 import { CurrencyDollarIcon, HeartIcon } from '@heroicons/react/24/solid';
-import DOMPurify from 'dompurify'
+import DOMPurify from 'dompurify';
+import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 
 function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
 
@@ -36,12 +36,15 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
           >
             {data.images.map((image, index) => (
               <div className="carousel-image-container" key={index}>
-                <img
-                  className="w-full h-full object-cover"
-                  style={{ aspectRatio: '1/1' }}
-                  src={image.photo}
-                  alt={data.name}
-                />
+                <LazyLoad height={200} offset={100}>
+                  {/* Envuelve cada imagen dentro de LazyLoad */}
+                  <img
+                    className="w-full h-full object-cover"
+                    style={{ aspectRatio: '1/1' }}
+                    src={image.photo}
+                    alt={data.name}
+                  />
+                </LazyLoad>
               </div>
             ))}
           </Carousel>
@@ -65,7 +68,6 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
                   <button className="text-red-600 hover:text-red-300 focus:outline-none">
                     <HeartIcon className="w-8 h-8 " />
                   </button>
-                  {/* <span className="text-gray-400 ml-1">{data.likes}</span> */}
                 </div>
               </div>
             </div>
@@ -98,7 +100,6 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full max-w-4xl sm:p-6">
                   <ProductModal data={data} isAuthenticated={isAuthenticated} />
-                  {/* Contenido del modal */}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -116,4 +117,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   
-})(dataCard)
+})(dataCard);

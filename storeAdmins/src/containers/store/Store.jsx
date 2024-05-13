@@ -11,6 +11,7 @@ import { Dialog, Menu, Transition, Disclosure, Tab } from '@headlessui/react'
 import { get_store_comments } from '../../redux/actions/comments/Comments_store';
 import FormCreatePolicy from '../../components/store/FormCreatePolicy';
 import PoliticsFoundations from '../../components/store/PoliticsFoundations';
+import Compressor from 'compressorjs';
 
 
 
@@ -66,10 +67,6 @@ function Store({
 
   const [addNit, setAddNit] = useState(false)
 
-
-
-
-
   const fileSelectedHandler = (e) => {
     const file = e.target.files[0]
     let reader = new FileReader();
@@ -89,49 +86,77 @@ function Store({
     };
     setPhoto(file)
   }
-
-  const onSubmitPhotos = e => {
-    e.preventDefault()
-
-    const config = {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `JWT ${localStorage.getItem('access')}`
-      }
-    };
-
-    const formData = new FormData()
-    formData.append('logo', logo, logo.name)
-
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-photo/`,
-          formData,
-          config)
-
-        if (res.status === 200) {
-          setLoading(false)
-          setPreviewImage(null);
-          setUpdatePhoto(false)
-          setPhoto(null);
-          get_user_store()
-        } else {
-          setLoading(false)
-        }
-
-      } catch (err) {
-        setLoading(false)
-        alert('Error al enviar', err)
-      }
-
+  // Define la función para comprimir imágenes
+  const compressImage = async (image) => {
+    try {
+      // Comprimir la imagen
+      const compressedImage = await new Promise((resolve, reject) => {
+        new Compressor(image, {
+          quality: 0.6,
+          success(result) {
+            resolve(result);
+          },
+          error(err) {
+            reject(err);
+          },
+        });
+      });
+      return compressedImage;
+    } catch (err) {
+      console.error('Error al comprimir la imagen:', err);
+      throw err;
     }
-    fetchData()
-  }
+  };
 
-  const onSubmitBanner = e => {
-    e.preventDefault()
+
+  const onSubmitPhotos = async (e) => {
+    e.preventDefault();
+
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
+        }
+    };
+
+    const formData = new FormData();
+
+    // Comprime la imagen antes de agregarla al formData
+    if (logo) {
+        const compressedImage = await compressImage(logo);
+        formData.append('logo', compressedImage, logo.name);
+    }
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-photo/`,
+                formData,
+                config);
+
+            if (res.status === 200) {
+                setLoading(false);
+                setPreviewImage(null);
+                setUpdatePhoto(false);
+                setPhoto(null);
+                get_user_store();
+            } else {
+                setLoading(false);
+            }
+
+        } catch (err) {
+            setLoading(false);
+            alert('Error al enviar', err);
+        }
+    };
+
+    fetchData();
+};
+
+
+  const onSubmitBanner = async (e) => {
+    e.preventDefault();
 
     const config = {
       headers: {
@@ -141,34 +166,41 @@ function Store({
       }
     };
 
-    const formData = new FormData()
-    formData.append('banner', banner, banner.name)
+    const formData = new FormData();
 
+    // Comprueba si hay una imagen y comprímela antes de agregarla al formData
+    if (banner) {
+      const compressedImage = await compressImage(banner);
+      formData.append('banner', compressedImage, banner.name);
+    }
+
+    // Envía el formulario con la imagen comprimida al servidor
     const fetchData = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-banner/`,
+        const res = await axios.post(
+          `${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-banner/`,
           formData,
-          config)
+          config
+        );
 
         if (res.status === 200) {
-          setLoading(false)
+          setLoading(false);
           setPreviewImageBanner(null);
-          setUpdateBanner(false)
+          setUpdateBanner(false);
           setBanner(null);
-          get_user_store()
+          get_user_store();
         } else {
-          setLoading(false)
+          setLoading(false);
         }
-
       } catch (err) {
-        setLoading(false)
-        alert('Error al enviar', err)
+        setLoading(false);
+        alert('Error al enviar', err);
       }
+    };
 
-    }
-    fetchData()
-  }
+    fetchData();
+  };
 
   const qrModal = () => {
     setOpen(true);
@@ -361,7 +393,7 @@ function Store({
                                   <>
                                     {bannerImagePath && (
                                       <img src={bannerImagePath} alt="Banner" className="w-full h-32 object-cover" />
-                                    ) }
+                                    )}
                                   </>
                                 )}
 
@@ -403,7 +435,7 @@ function Store({
                                         className="flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                       >
                                         <PhotoIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
-                                       Actualizar el banner de mi tienda
+                                        Actualizar el banner de mi tienda
                                       </button>
                                     </>
                                   )}

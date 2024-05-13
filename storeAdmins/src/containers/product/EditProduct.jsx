@@ -14,6 +14,7 @@ import DOMPurify from 'dompurify'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import OptionDataInput from './OptionDataInput';
+import Compressor from 'compressorjs';
 
 
 
@@ -263,10 +264,9 @@ function EditProduct({
         setPhoto(file)
     }
 
-    const onSubmitPhotos = e => {
-        
-        e.preventDefault()
-
+    const onSubmitPhotos = async e => {
+        e.preventDefault();
+    
         const config = {
             headers: {
                 'Accept': 'application/json',
@@ -274,37 +274,56 @@ function EditProduct({
                 'Authorization': `JWT ${localStorage.getItem('access')}`
             }
         };
-
-        const formData = new FormData()
-        formData.append('slug', slug)
-        formData.append('photo', photo, photo.name)
-
+    
+        const compressedImage = await compressImage(photo); // Comprimir la imagen
+    
+        const formData = new FormData();
+        formData.append('slug', slug);
+        formData.append('photo', compressedImage, compressedImage.name);
+    
         const fetchData = async () => {
-            setLoading(true)
+            setLoading(true);
             try {
-                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/edit-product-photo/`,
+                const res = await axios.post(
+                    `${import.meta.env.VITE_REACT_APP_API_URL}/api/product/edit-product-photo/`,
                     formData,
-                    config)
-
+                    config
+                );
+    
                 if (res.status === 200) {
-                    setLoading(false)
-                    resetStates()
+                    setLoading(false);
+                    resetStates();
                     setPreviewImage(null);
                     setPhoto(null);
-                    get_product(slug)
+                    get_product(slug);
                 } else {
-                    setLoading(false)
-                    resetStates()
+                    setLoading(false);
+                    resetStates();
                 }
             } catch (err) {
-                setLoading(false)
-                resetStates()
-                alert('Error al enviar', err)
+                setLoading(false);
+                resetStates();
+                alert('Error al enviar', err);
             }
-        }
-        fetchData()
+        };
+        fetchData();
         window.scrollTo(0, 670);
-    }
+    };
+    
+    // Función para comprimir la imagen
+    const compressImage = async image => {
+        return new Promise((resolve, reject) => {
+            new Compressor(image, {
+                quality: 0.6, // Calidad de compresión (0 a 1)
+                success(result) {
+                    resolve(result);
+                },
+                error(err) {
+                    reject(err);
+                },
+            });
+        });
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;

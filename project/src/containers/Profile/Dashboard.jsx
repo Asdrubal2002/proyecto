@@ -12,6 +12,7 @@ import Sidebar from '../Home/Sidebar/Sidebar';
 import Searcher from '../../components/searcher/Searcher';
 import { LetrasPerfil } from './styles/Dashboard';
 import axios from "axios"
+import Compressor from 'compressorjs';
 
 
 function Dashboard({
@@ -40,6 +41,27 @@ function Dashboard({
 
     if (!isAuthenticated) return <Navigate to="/" />;
 
+    // Define la función para comprimir imágenes
+    const compressImage = async (image) => {
+        try {
+            // Comprimir la imagen
+            const compressedImage = await new Promise((resolve, reject) => {
+                new Compressor(image, {
+                    quality: 0.6,
+                    success(result) {
+                        resolve(result);
+                    },
+                    error(err) {
+                        reject(err);
+                    },
+                });
+            });
+            return compressedImage;
+        } catch (err) {
+            console.error('Error al comprimir la imagen:', err);
+            throw err;
+        }
+    };
 
     const filePhotoSelectedHandler = (e) => {
         const file = e.target.files[0]
@@ -51,8 +73,8 @@ function Dashboard({
         setPhoto(file)
     }
 
-    const onSubmitPhotos = e => {
-        e.preventDefault()
+    const onSubmitPhotos = async (e) => {
+        e.preventDefault();
 
         const config = {
             headers: {
@@ -62,31 +84,39 @@ function Dashboard({
             }
         };
 
-        const formData = new FormData()
-        formData.append('photo', photo, photo.name)
+        const formData = new FormData();
+        // Comprime la imagen antes de agregarla al formData
+        if (photo) {
+            const compressedImage = await compressImage(photo);
+            formData.append('photo', compressedImage, photo.name);
+        }
 
         const fetchData = async () => {
-            setLoading(true)
+            setLoading(true);
             try {
-                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/user/edit-profile-photo/`,
+                const res = await axios.post(
+                    `${import.meta.env.VITE_REACT_APP_API_URL}/api/user/edit-profile-photo/`,
                     formData,
-                    config)
+                    config
+                );
 
                 if (res.status === 200) {
-                    setLoading(false)
+                    setLoading(false);
                     setPreviewImage(null);
                     setPhoto(null);
+                    setUpdatePhoto(false)
                 } else {
-                    setLoading(false)
+                    setLoading(false);
                 }
             } catch (err) {
-                setLoading(false)
-                alert('Error al enviar', err)
+                setLoading(false);
+                alert('Error al enviar', err);
             }
+        };
 
-        }
-        fetchData()
-    }
+        fetchData();
+    };
+
 
     return (
         <Layout>

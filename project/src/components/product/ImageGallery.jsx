@@ -2,6 +2,7 @@ import { Tab } from '@headlessui/react';
 import { useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -31,12 +32,15 @@ const ImageGallery = ({ data }) => {
                                     <>
                                         <span className="sr-only">{image.name}</span>
                                         <span className="absolute inset-0 rounded-md overflow-hidden">
-                                            <img
-                                                src={image.photo}
-                                                alt=""
-                                                className="w-full h-full object-center object-cover transition-opacity duration-300 ease-in-out"
-                                                style={{ opacity: selectedImage === image.id ? 1 : 0.5 }}
-                                            />
+                                            <LazyLoad height={200} offset={100}>
+                                                {/* Envuelve cada imagen dentro de LazyLoad */}
+                                                <img
+                                                    src={image.photo}
+                                                    alt=""
+                                                    className="w-full h-full object-center object-cover transition-opacity duration-300 ease-in-out"
+                                                    style={{ opacity: selectedImage === image.id ? 1 : 0.5 }}
+                                                />
+                                            </LazyLoad>
                                         </span>
                                         <span
                                             className={classNames(
@@ -57,11 +61,14 @@ const ImageGallery = ({ data }) => {
                     <Carousel showArrows={true} showThumbs={false} showStatus={false} showIndicators={false} className="lg:hidden">
                         {data.map((image) => (
                             <div key={image.id}>
-                                <img
-                                    src={image.photo}
-                                    alt={image.alt}
-                                    className="w-full h-full object-center object-cover sm:rounded-lg"
-                                />
+                                <LazyLoad height={200} offset={100}>
+                                    {/* Envuelve cada imagen dentro de LazyLoad */}
+                                    <img
+                                        src={image.photo}
+                                        alt={image.alt}
+                                        className="w-full h-full object-center object-cover sm:rounded-lg"
+                                    />
+                                </LazyLoad>
                             </div>
                         ))}
                     </Carousel>
@@ -69,11 +76,14 @@ const ImageGallery = ({ data }) => {
                     {/* Imágenes individuales para pantallas grandes */}
                     {data.map((image) => (
                         <Tab.Panel key={image.id} className="hidden lg:block">
-                            <img
-                                src={image.photo}
-                                alt={image.alt}
-                                className="w-full h-full object-center object-cover sm:rounded-lg"
-                            />
+                            <LazyLoad height={200} offset={100}>
+                                {/* Envuelve cada imagen dentro de LazyLoad */}
+                                <img
+                                    src={image.photo}
+                                    alt={image.alt}
+                                    className="w-full h-full object-center object-cover sm:rounded-lg"
+                                />
+                            </LazyLoad>
                         </Tab.Panel>
                     ))}
                 </Tab.Panels>

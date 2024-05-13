@@ -35,6 +35,7 @@ import FooterStores from "../../components/store/FooterStores";
 
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
+import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 
 
 function classNames(...classes) {
