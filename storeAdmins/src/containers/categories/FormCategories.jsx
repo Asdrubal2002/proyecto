@@ -43,17 +43,11 @@ function FormCategories({
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Validar el nombre: no debe contener símbolos ni números
-        if (name === 'name' && !/^[a-zA-Z\s]*$/.test(value)) {
-            setErrorMessage('El nombre solo puede contener letras y espacios.');
-        } else {
-            setErrorMessage('');
-            setFormData((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
-        }
+        setErrorMessage('');
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const onSubmit = async (e) => {
@@ -63,10 +57,16 @@ function FormCategories({
             setErrorMessage('El campo de nombre no puede estar vacío');
             return;
         }
-
+    
         // Crear el slug a partir del nombre
-        const slug = formData.name.trim().toLowerCase().replace(/\s+/g, '-');
-
+        const slug = formData.name
+            .trim()
+            .toLowerCase()
+            // Eliminar tildes y otros símbolos del slug
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, '-');
+    
         // Verificar si se está creando una nueva categoría o editando una existente
         if (editingCategoryId) {
             // Llamar a la función para editar la categoría
@@ -76,11 +76,12 @@ function FormCategories({
             // Llamar a la función para crear una nueva categoría
             await create_category(formData.name, slug, formData.parent)
             get_categories()
-
+    
         }
-
+    
         // Aquí puedes agregar lógica adicional después de enviar el formulario si es necesario
     };
+    
 
     const handleDelete = async (categoryId) => {
         await delete_category(categoryId)

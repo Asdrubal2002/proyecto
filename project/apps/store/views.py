@@ -236,7 +236,6 @@ class CreateStoreAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         # Asignar el usuario autenticado como administrador de la tienda
-
         request.data["administrator"] = request.user.id
 
         serializer = CreateStoreSerializer(data=request.data)
@@ -263,7 +262,21 @@ class CreateStoreAPIView(APIView):
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            errors = serializer.errors
+            response_data = {}
+
+            # Verificar si hay errores para el campo "slug"
+            if 'slug' in errors:
+                response_data['slug_error'] = "Ya existe una tienda registrada con esta dirección. Por favor, intenta con otra."
+                return Response(response_data, status=status.HTTP_409_CONFLICT)  # Código de estado 409: Conflicto
+
+            # Verificar si hay errores para el campo "email"
+            if 'email' in errors:
+                response_data['email_error'] = "Ya existe una tienda registrada con este correo electrónico."
+                return Response(response_data, status=status.HTTP_409_CONFLICT)  # Código de estado 409: Conflicto
+
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserStoreAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -474,7 +487,7 @@ class StoreLikesAPIView(APIView):
 class LikedStoresAPIView(APIView):
     def get(self, request, format=None):
         user = request.user
-        liked_stores = StoreLike.objects.filter(user=user, liked=True, is_active=True)
+        liked_stores = StoreLike.objects.filter(user=user, liked=True, store__is_active=True)
         serializer = WishListStoreSerializer(liked_stores, many=True)
         count = liked_stores.count()
         response_data = {

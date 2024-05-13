@@ -22,7 +22,6 @@ export const get_store_comments = (SlugStore) => async dispatch => {
         }
     };
 
-    console.log("llega")
     try {
         const res = await axios.get(`${apiUrl}/api/coments_store/${SlugStore}`, config);
 

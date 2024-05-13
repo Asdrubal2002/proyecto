@@ -322,7 +322,7 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className="bg-stone-800 px-4 py-2 rounded-md text-sm font-medium ">
+                                            <p className="bg-azul_corp px-4 py-2 rounded-md text-sm font-medium ">
                                                 Categorias disponibles
                                             </p>
 
@@ -379,7 +379,7 @@ const StoreDetail = ({
                                                 </div>
                                                 <div>
                                                     {comments && Array.isArray(comments) && comments.length === 0 ? (
-                                                        <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
+                                                        <div className="flex items-center gap-2 p-3 rounded-md">
                                                             <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
                                                             <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
                                                         </div>

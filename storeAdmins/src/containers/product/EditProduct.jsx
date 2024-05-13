@@ -264,6 +264,7 @@ function EditProduct({
     }
 
     const onSubmitPhotos = e => {
+        
         e.preventDefault()
 
         const config = {
@@ -302,9 +303,7 @@ function EditProduct({
             }
         }
         fetchData()
-
-
-
+        window.scrollTo(0, 670);
     }
 
     const handleChange = (e) => {

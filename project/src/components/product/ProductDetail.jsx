@@ -6,7 +6,7 @@ import { get_product, get_options, get_products_by_category, get_product_likes, 
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
-import { ChatBubbleBottomCenterTextIcon, CheckIcon, StarIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleBottomCenterTextIcon, CheckIcon, ShoppingCartIcon, StarIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
@@ -20,6 +20,8 @@ import LoadingStores from '../home/LoadingStores';
 
 import { get_product_comments, add_comment_product, delete_comment_product, edit_comment_prodcut } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
+import Comments from './Components/Comments';
+import Options from './Components/Options';
 
 
 
@@ -49,7 +51,8 @@ function ProductDetail({
     get_product_likes,
     likes,
     add_like_dislike_product,
-    userLiked
+    userLiked,
+    loading_comments
 }) {
 
     const params = useParams()
@@ -100,42 +103,6 @@ function ProductDetail({
         get_product_likes(slugProduct)
     }, [slugProduct])
 
-
-    const renderOptions = () => {
-        if (!options || options.every(option => option.quantity === 0)) {
-            return (
-                <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded-md mb-4">
-                    <p className="text-base font-semibold">Lo sentimos, no hay opciones en este momento.</p>
-                </div>
-            );
-        }
-        return (
-            <>
-                <h2 className="text-base font-semibold mb-4">Opciones disponibles</h2>
-                <div className='grid gap-3 grid-cols-1 sm:grid-cols-2'>
-
-                    {options.filter(option => option.quantity > 0).map((option, index) => (
-                        <div
-                            key={index}
-                            className={`inline-block ${option.id === selectedOptionId ? 'ring ring-azul_corp' : 'bg-stone-700'} p-2 rounded-md shadow-md transition-transform transform hover:scale-105 cursor-pointer`}
-                            onClick={() => {
-                                handleOptionClick(option);
-                                setSelectedOptionId(option.id); // Actualizamos selectedOptionId al hacer clic en una opción
-                            }}
-                        >
-                            <div className={`inline-block w-4 h-4 rounded-full border-box mr-3 ${option.id === selectedOptionId ? 'bg-azul_corp text-white' : 'border border-gray-300'}`}>
-                                {option.id === selectedOptionId && <CheckIcon className="h-3 w-3 m-0.5" />}
-                            </div>
-                            <label htmlFor={`option_${index}`} className="text-sm text-gray-200">
-                                <span className="font-semibold">{option.option.value}</span>
-                            </label>
-                        </div>
-                    ))}
-                </div>
-            </>
-        );
-    };
-
     const handleHeartClick = async () => {
         try {
             // Aquí puedes llamar a la función deseada al hacer clic en el icono del corazón
@@ -149,45 +116,20 @@ function ProductDetail({
     const handleComment = () => {
         const productId = product && product.id; // Aquí puedes obtener el ID del store de alguna manera
         const commentText = textareaRef.current.value;
-
         // Verificar si el comentario está vacío
         if (!commentText.trim()) {
             // Si el comentario está vacío, no hacer nada
             return;
         }
-
-        console.log(productId, commentText)
-
         // Si el comentario no está vacío, llamar a la función add_comment_product
         add_comment_product(productId, commentText);
 
         // Limpiar el contenido del textarea
         textareaRef.current.value = '';
-
         // Cambiar el texto del botón después de enviar el comentario
         setButtonText('Gracias por comentarnos');
     };
 
-    const posts = [
-        {
-            id: 1,
-            title: 'Boost your conversion rate',
-            href: '#',
-            description:
-                'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
-            date: 'Mar 16, 2020',
-            datetime: '2020-03-16',
-            category: { title: 'Marketing', href: '#' },
-            author: {
-                name: 'Michael Foster',
-                role: 'Co-Founder / CTO',
-                href: '#',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-            },
-        },
-        // More posts...
-    ]
     return (
         <Layout>
             <Helmet>
@@ -238,7 +180,10 @@ function ProductDetail({
                 <div>
                     <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
                         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-                            <ImageGallery data={product?.images} />
+                         <ImageGallery data={product?.images} /> 
+                            {/* <div className="sticky top-10">
+                                <ImageGallery data={product?.images} />
+                            </div> */}
                             {/* Product info */}
                             <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
                                 <div className='my-4 flex'>
@@ -246,16 +191,11 @@ function ProductDetail({
                                     <div className='mx-4 border-r border-gray-300'></div>
                                     <Link to={`/products_by_category/${product && product.category.store.slug}/${product && product.category.slug}`} className='text-azul_corp_ho hover:underline font-semibold'>{product && product.category.name}</Link>
                                 </div>
-
                                 <h1 className="text-3xl font-semibold tracking-tight text-gray-200">{product && product.name}</h1>
-
                                 <div className="mt-3">
                                     <h2 className="sr-only">Product information</h2>
                                     <p className="text-3xl text-gray-300">{product && product.price}</p>
                                 </div>
-
-
-
                                 <div className="mt-6">
                                     <h3 className="sr-only">Description</h3>
                                     <div className="text-base text-gray-300 space-y-6" dangerouslySetInnerHTML={{ __html: product && product.description }} />
@@ -264,7 +204,12 @@ function ProductDetail({
                                 <div className="mt-3">
                                     <h3 className="sr-only">options</h3>
 
-                                    {renderOptions()}
+                                    <Options
+                                        options={options}
+                                        selectedOptionId={selectedOptionId}
+                                        handleOptionClick={handleOptionClick}
+                                        setSelectedOptionId={setSelectedOptionId}
+                                    />
 
 
                                 </div>
@@ -285,6 +230,7 @@ function ProductDetail({
                                                     type="submit"
                                                     disabled={!options || options.every(option => option.quantity === 0)}
                                                     className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
+                                                    <ShoppingCartIcon className="h-6 w-6 text-gray-400 mx-2" />
                                                     Agregar al carrito
                                                 </button>
 
@@ -343,7 +289,6 @@ function ProductDetail({
                                                 </Link>
 
                                             </div>
-
                                         ) : (
                                             <div className="flex items-start pb-5">
                                                 <div className="flex flex-col w-full">
@@ -369,34 +314,17 @@ function ProductDetail({
                                             </div>
                                         )}
                                     </div> : <></>}
-                                    <div className="max-h-96 overflow-y-auto scrollbar-style">
-                                        {comments && Array.isArray(comments) && comments.length === 0 ? (
-                                            <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
-                                                <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
-                                                <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
-                                            </div>
-                                        ) : (
-                                            Array.isArray(comments) && comments.map((comment, index) => (
-                                                <div key={index}>
-                                                    <CommentsProduct
-                                                        comment={comment}
-                                                        profile={profile}
-                                                        isAuthenticated={isAuthenticated}
-                                                        delete_comment_product={delete_comment_product}
-                                                        edit_comment_prodcut={edit_comment_prodcut}
-                                                    />
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-
-
-
+                                    <Comments
+                                    loading={loading_comments}
+                                    comments={comments}
+                                    profile={profile}
+                                    isAuthenticated={isAuthenticated}
+                                    delete_comment_product={delete_comment_product}
+                                    edit_comment_prodcut={edit_comment_prodcut}
+                                />
                                 </section>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
                 <div className="py-6 sm:py-12">
@@ -448,7 +376,8 @@ const mapStateToProps = state => ({
     comments: state.Comments_Product.comments ? state.Comments_Product.comments.comments : [],
     profile: state.Profile.profile,
     likes: state.Products.likes ? state.Products.likes.total_likes : 0,
-    userLiked: state.Products.likes ? state.Products.likes.user_liked : false
+    userLiked: state.Products.likes ? state.Products.likes.user_liked : false,
+    loading_comments: state.Comments_Product.loading_product,
 })
 
 export default connect(mapStateToProps, {

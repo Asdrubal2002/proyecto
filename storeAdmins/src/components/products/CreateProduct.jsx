@@ -44,7 +44,7 @@ function CreateProduct({
         if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
         if (!data.category) errors.category = 'La categoría es obligatoria';
         if (!data.price) errors.price = 'El precio es obligatorio';
-        else if (!/^\d+(\.\d+)?$/.test(data.price)) errors.price = 'El precio debe ser un número con cero o un punto decimal.';
+        else if (!/^\d+(\.\d+)?$/.test(data.price)) errors.price = 'El precio puede ser un número sin puntos o con un punto decimal. No espacios ni comas.';
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
@@ -189,8 +189,8 @@ function CreateProduct({
                                                     const data = editor.getData();
                                                     setDescription(data);
 
-                                                    if (data.length > 600) {
-                                                        setDescriptionError('La descripción no debe exceder los 600 caracteres');
+                                                    if (data.length > 5000) {
+                                                        setDescriptionError('La descripción no debe exceder los 5000 caracteres');
                                                         setFormCanBeSubmitted(false); // Deshabilitar el formulario
                                                     } else {
                                                         setDescriptionError('');

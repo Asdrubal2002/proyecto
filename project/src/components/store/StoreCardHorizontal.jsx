@@ -14,13 +14,18 @@ function StoreCardHorizontal({ data, index }) {
   return (
     <div className="bg-stone-900 rounded-md overflow-hidden shadow-stone-800 transition-shadow duration-300 shadow-md hover:shadow-lg hover:shadow-stone-800">
       <Link to={`/store/${data.slug}`} className="flex flex-col md:flex-row">
-        <img className="object-cover w-full md:w-48 h-64 md:h-auto md:rounded-none md:rounded-l-lg" src={data.banner} alt={data.name} />
+        {
+          data.banner && (
+            <img className="object-cover w-full md:w-48 h-64 md:h-auto md:rounded-none md:rounded-l-lg" src={data.banner} alt={data.name} />
+          )
+        }
+
         <div className="p-4 md:p-6 flex flex-col justify-between">
           <div>
             <div className="text-gray-400 text-sm">
               {data.city.nombre} - {data.city.estado_o_departamento.nombre}
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
+            <h2 className="text-2xl font-normal	text-gray-900 dark:text-white mb-2 ">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
             <p className="text-dm md:text-dm text-gray-700 dark:text-gray-400 mb-3">{data.description.length > 200 ? data.description.slice(0, 200) + '...' : data.description}</p>
           </div>
           <div className="relative mt-2 flex items-center gap-x-4">

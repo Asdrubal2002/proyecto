@@ -35,9 +35,10 @@ const navigation = {
                     name: 'Perfil',
                     items: [
                         { name: 'Datos personales', to: '/dashboard' },
+                        { name: 'Datos de la cuenta', to: '/dashboardAccount' },
                         { name: 'Facturas', to: '/invoices' },
 
-
+                        
                     ],
                 },
 

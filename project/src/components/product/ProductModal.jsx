@@ -13,7 +13,9 @@ import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_
 import { CommentsProduct } from './CommentsProduct';
 import DOMPurify from 'dompurify'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
-import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import Comments from './Components/Comments';
+import Options from './Components/Options';
 
 
 
@@ -61,44 +63,7 @@ function ProductModal({
         setErrorMessage(''); // Limpiar cualquier mensaje de error cuando se selecciona una opción
 
     };
-    const renderOptions = () => {
-        if (!options || options.every(option => option.quantity === 0)) {
-            return (
-                <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded-md mb-4">
-                    <p className="text-base font-semibold">Lo sentimos, no hay opciones en este momento.</p>
-                </div>
-            );
-        }
-
-        return (
-            <>
-
-                <h2 className="text-base font-semibold mb-4">Opciones disponibles</h2>
-                <div className='grid gap-3 grid-cols-1 sm:grid-cols-2'>
-
-                    {options.filter(option => option.quantity > 0).map((option, index) => (
-                        <div
-                            key={index}
-                            className={`inline-block ${option.id === selectedOptionId ? 'ring ring-azul_corp' : 'bg-stone-700'} p-2 rounded-md shadow-md transition-transform transform hover:scale-105 cursor-pointer`}
-                            onClick={() => {
-                                handleOptionClick(option);
-                                setSelectedOptionId(option.id); // Actualizamos selectedOptionId al hacer clic en una opción
-                            }}
-                        >
-                            <div className={`inline-block w-4 h-4 rounded-full border-box mr-3 ${option.id === selectedOptionId ? 'bg-azul_corp text-white' : 'border border-gray-300'}`}>
-                                {option.id === selectedOptionId && <CheckIcon className="h-3 w-3 m-0.5" />}
-                            </div>
-                            <label htmlFor={`option_${index}`} className="text-sm text-gray-200">
-                                <span className="font-semibold">{option.option.value}</span>
-                            </label>
-                        </div>
-                    ))}
-                </div>
-            </>
-
-
-        );
-    };
+    
     const addItemToCart = async () => {
         if (!options || options.length === 0) {
             // Si el producto no tiene opciones, llamar directamente a addItemToCart sin seleccionar una opción
@@ -176,14 +141,18 @@ function ProductModal({
                             {/* <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3> */}
                             <p className="text-base text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
                         </div>
-
-
                         <div className="mt-6">
                             <h3 className="sr-only">options</h3>
                             {loading ?
                                 <Rings width={20} height={20} color="#fff" radius="6" />
-                                : <>{renderOptions()}</>}
-
+                                : <>
+                                    <Options
+                                        options={options}
+                                        selectedOptionId={selectedOptionId}
+                                        handleOptionClick={handleOptionClick}
+                                        setSelectedOptionId={setSelectedOptionId}
+                                    />
+                                </>}
                         </div>
                         {errorMessage && <div className="bg-red-200 text-red-700 p-3 rounded-md my-2  flex items-center justify-center">
                             <p className="text-base font-semibold">{errorMessage}</p>
@@ -201,6 +170,8 @@ function ProductModal({
                                             type="submit"
                                             disabled={!options || options.every(option => option.quantity === 0)}
                                             className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-2 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
+                                            <ShoppingCartIcon className="h-6 w-6 text-gray-400 mx-2" />
+
                                             Agregar al carrito
                                         </button>
 
@@ -283,33 +254,22 @@ function ProductModal({
                                                     </button>
                                                 </div>
                                             </div>
-
                                         )
                                     }
-                                </div> : <></>}
-                                {
-                                    loading_comments ? <>
-                                    </> : <div className="max-h-96 overflow-y-auto scrollbar-style">
-                                        {comments && Array.isArray(comments) && comments.length === 0 ? (
-                                            <div className="flex items-center gap-2 bg-gray-700 p-3 rounded-md">
-                                                <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
-                                                <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
-                                            </div>
-                                        ) : (
-                                            Array.isArray(comments) && comments.map((comment, index) => (
-                                                <div key={index}>
-                                                    <CommentsProduct
-                                                        comment={comment}
-                                                        profile={profile}
-                                                        isAuthenticated={isAuthenticated}
-                                                        delete_comment_product={delete_comment_product}
-                                                        edit_comment_prodcut={edit_comment_prodcut}
-                                                    />
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
+                                </div> :
+                                    <>
+                                    </>
                                 }
+                                {/* Otras partes de tu componente */}
+                                <Comments
+                                    loading={loading_comments}
+                                    comments={comments}
+                                    profile={profile}
+                                    isAuthenticated={isAuthenticated}
+                                    delete_comment_product={delete_comment_product}
+                                    edit_comment_prodcut={edit_comment_prodcut}
+                                />
+                                {/* Otras partes de tu componente */}
                             </Disclosure.Panel>
                         </Disclosure>
                     </section>

@@ -354,21 +354,62 @@ function Store({
                           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                             <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden">
                               {/* Banner */}
-                              <div className="overflow-hidden w-full h-32">
-                                {previewImageBanner ?
+                              <div className="relative overflow-hidden w-full h-32">
+                                {previewImageBanner ? (
                                   <img src={previewImageBanner} className="w-full h-32 object-cover" alt="Preview" />
-                                  :
+                                ) : (
                                   <>
-                                    {
-                                      bannerImagePath ? <img src={bannerImagePath} alt="Banner" className="w-full h-32 object-cover" />
-                                        :
-                                        <div className="flex items-center justify-center w-full h-full bg-gray-600">
-                                          <PhotoIcon width={40} height={40} color="#929292" />
-                                        </div>
-                                    }
+                                    {bannerImagePath && (
+                                      <img src={bannerImagePath} alt="Banner" className="w-full h-32 object-cover" />
+                                    ) }
                                   </>
-                                }
+                                )}
+
+                                {/* Botón centrado */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  {updateBanner ? (
+                                    <>
+                                      <form onSubmit={onSubmitBanner} className="flex items-center bg-gray-800 p-2 rounded-lg">
+                                        <input
+                                          type="file"
+                                          name="banner"
+                                          onChange={fileSelectedHandler}
+                                          className="w-full py-3 px-2 border border-gray-300 rounded-lg"
+                                        />
+                                        <div className="flex items-center space-x-2 ml-4">
+                                          <button
+                                            type="submit"
+                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                          >
+                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setUpdateBanner(false);
+                                              setPreviewImageBanner(null);
+                                              setBanner(null);
+                                            }}
+                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                          >
+                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                          </button>
+                                        </div>
+                                      </form>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button
+                                        onClick={() => setUpdateBanner(true)}
+                                        className="flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                      >
+                                        <PhotoIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
+                                       Actualizar el banner de mi tienda
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
                               </div>
+
 
                               {/* Contenido del perfil */}
                               <div className="p-4 flex items-center justify-between">
@@ -490,15 +531,13 @@ function Store({
                                                     leaveTo="transform scale-95 opacity-0"
                                                   >
                                                     <Disclosure.Panel className="rounded-md p-2 text-yellow-400 text-sm">
-                                                    Tu tienda será revisada por ruvlo para asegurarse de que todo esté en orden. 
-                                                    Esto es para garantizar que tu negocio sea legítimo y confiable, lo que te da seguridad a ti y 
-                                                    a tus clientes.                                                    
+                                                      Tu tienda será revisada por ruvlo para asegurarse de que todo esté en orden.
+                                                      Esto es para garantizar que tu negocio sea legítimo y confiable, lo que te da seguridad a ti y
+                                                      a tus clientes.
                                                     </Disclosure.Panel>
                                                   </Transition>
                                                 </Disclosure>
                                               </p>
-
-
                                             </>)
                                         }
                                       </>
@@ -513,7 +552,7 @@ function Store({
                               {/* Información adicional de la tienda */}
                               <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                                 <dl className="sm:divide-y sm:divide-gray-200">
-                                <div className="py-3 flex justify-between sm:px-4 sm:py-5">
+                                  <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Dirección</dt>
                                     {/* Validación sin repetir estilos */}
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -531,27 +570,27 @@ function Store({
                                               placeholder='Nueva Dirección'
                                             />
                                             <div className="flex items-center space-x-2 ml-4">
-                                            <button
-                                              type="submit"
-                                              disabled={address.length > 90} // Deshabilitar el botón si el boton si pasa de 90
-                                              className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
-                                            >
-                                              <CheckIcon width={20} height={20} color="#fff" radius="6" />
-                                            </button>
-                                            <button
-                                              onClick={() => setUpdateAddress(false)}
-                                              className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
-                                            >
-                                              <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                            </button>
+                                              <button
+                                                type="submit"
+                                                disabled={address.length > 90} // Deshabilitar el botón si el boton si pasa de 90
+                                                className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                              >
+                                                <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
+                                              <button
+                                                onClick={() => setUpdateAddress(false)}
+                                                className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                              >
+                                                <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                              </button>
                                             </div>
                                           </form>
                                         </>) : (<>
                                           {userStore.address ? (
-                                          userStore.address
-                                        ) : (
-                                          "No hay dirección disponible"
-                                        )}
+                                            userStore.address
+                                          ) : (
+                                            "No hay dirección disponible"
+                                          )}
                                           <button
                                             onClick={() => setUpdateAddress(true)}
                                             className="px-4 py-2 rounded-md  text-azul_corp font-medium  focus:outline-none  ">
@@ -745,7 +784,6 @@ function Store({
                                       }
                                     </dd>
                                   </div>
-
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Instagram</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -792,7 +830,6 @@ function Store({
                                       }
                                     </dd>
                                   </div>
-
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Facebook</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -839,7 +876,6 @@ function Store({
                                       }
                                     </dd>
                                   </div>
-
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Otra red social</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -886,17 +922,15 @@ function Store({
                                       }
                                     </dd>
                                   </div>
-
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200">{userStore.likes} Me gusta</dt>
+                                    <dt className="text-sm font-medium text-gray-200"> Me gusta</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">Se inauguró el {userStore.get_formatted_created_on}</dd>
                                   </div>
-
                                   {/* Agrega más información de la tienda según sea necesario */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">
 
-                                      <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
+                                      {/* <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
                                         <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
                                           {updateBanner ? (
                                             <>
@@ -940,7 +974,7 @@ function Store({
                                             </>
                                           )}
                                         </div>
-                                      </div>
+                                      </div> */}
 
 
                                     </dt>

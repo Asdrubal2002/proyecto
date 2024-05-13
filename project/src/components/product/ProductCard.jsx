@@ -27,26 +27,14 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
     <>
       <div className="group relative overflow-hidden transition-transform transform hover:scale-105 rounded-sm">
         {hasImages ? (
-          // <Carousel
-          //   showArrows={true}
-          //   showThumbs={false}
-          //   showStatus={false}
-          //   showIndicators={false}
-          //   className="carousel-container"
-          // >
-          //   {data.images.map((image, index) => (
-          //     <div className="carousel-image-container" key={index}>
-          //       <img
-          //         className="w-full h-full object-cover"
-          //         style={{ aspectRatio: '1/1' }}
-          //         src={image.photo}
-          //         alt={data.name}
-          //       />
-          //     </div>
-          //   ))}
-          // </Carousel>
-          <>
-           {data.images.map((image, index) => (
+          <Carousel
+            showArrows={true}
+            showThumbs={false}
+            showStatus={false}
+            showIndicators={false}
+            className="carousel-container"
+          >
+            {data.images.map((image, index) => (
               <div className="carousel-image-container" key={index}>
                 <img
                   className="w-full h-full object-cover"
@@ -56,7 +44,8 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
                 />
               </div>
             ))}
-          </>
+          </Carousel>
+        
         ) : (
           <div className="no-images-message">No hay imágenes disponibles</div>
         )}

@@ -346,7 +346,7 @@ class CreateProductView(APIView):
         )
 
         # Retornar una respuesta exitosa
-        return Response({"success": "Producto creado exitosamente"})
+        return Response(status=status.HTTP_200_OK)
 
 class ProductOptionsView(APIView):
     permission_classes = (CanEditProduct,)

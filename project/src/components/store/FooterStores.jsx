@@ -125,14 +125,15 @@ function FooterStores({
                 <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase">Contacto</h3>
                 <ul role="list" className="mt-4 space-y-4 overflow-hidden">
                   {navigation.legal.map((item, index) => (
-                    <li key={`legal_${index}`} className="truncate">
-                      <a href={item.href} className="text-base text-gray-400 truncate">
+                    <li key={`legal_${index}`}>
+                      <a href={item.href} className="text-base text-gray-400" style={{ overflowWrap: 'break-word' }}>
                         {item.name}
                       </a>
                     </li>
                   ))}
                 </ul>
               </div>
+
 
             </div>
           </div>

@@ -29,6 +29,8 @@ import CreateStore from './containers/Store/CreateStore.jsx';
 import ProductDetail from './components/product/ProductDetail.jsx';
 import StorePolicies from './containers/Store/StorePolicies.jsx';
 import PoliciesUser from './containers/Home/PoliciesUser.jsx';
+import DashboardAccount from './containers/Profile/DashboardAccount.jsx';
+
 
 
 
@@ -51,6 +53,8 @@ function AnimatedRoutes() {
         <Route exact path='/conditions' element={<Conditions />} />
         <Route exact path='/company' element={<About />} />
         <Route exact path='/dashboard' element={<Dashboard />} />
+        <Route exact path='/dashboardAccount' element={<DashboardAccount />} />
+
         <Route path="/search/:slug/:search/" element={<Mall />}/>
         <Route exact path='/store/:storeSlug' element={<StoreDetail />} />
         <Route exact path='/products_by_category/:storeSlug/:categorySlug' element={<ProductsByCategory />} />

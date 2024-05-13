@@ -187,19 +187,20 @@ function Products({
               <h2 id="cart-heading" className="sr-only">
                 Items in your shopping cart
               </h2>
-
               <ul role="list" className="border-t  border-gray-200 divide-y divide-gray-200">
                 {/*  Verifica que cart y cart.items existan antes de llamar a showItems() */}
                 {showItems()}
-
               </ul>
             </section>
-
             <section aria-labelledby="summary-heading" className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5 sticky top-20">
-
-              <Link to={`/store/${cart && cart.store && cart.store.slug}`} className="flex items-center justify-between">
+              <Link to={cart && cart.store ? `/store/${cart.store.slug}` : "/"} className="flex items-center justify-between">
                 <h2 id="summary-heading" className="text-lg font-medium text-gray-900 mr-2">
-                  Detalle de compra en {cart && cart.store.name}
+                  {cart && cart.store ? (
+                    <p>Detalle de compra en {cart.store.name}</p>
+                  ) : (
+
+                    <p>Volver a navegar</p>
+                  )}
                 </h2>
                 <BuildingStorefrontIcon className="h-6 w-6 text-gray-500" />
               </Link>
