@@ -19,8 +19,8 @@ import {
 } from '../../redux/actions/cart';
 import CartItem from '../../components/cart/CartItem';
 import { Rings } from 'react-loader-spinner';
-import LocationForm from '../Profile/LocationForm';
-import ProfileForm from '../Profile/ProfileForm';
+import LocationForm from '../Profile/forms/LocationForm';
+import ProfileForm from '../Profile/forms/ProfileForm';
 import { get_shippings } from '../../redux/actions/shipping';
 import { add_invoice } from '../../redux/actions/Invoice';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { update_user_profile } from '../../redux/actions/profile';
+import { update_user_profile } from '../../../redux/actions/profile';
 import { connect } from 'react-redux';
 
 const ProfileForm = ({

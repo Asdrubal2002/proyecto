@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
-import { get_cities } from '../../redux/actions/cities';
+import { get_cities } from '../../../redux/actions/cities';
 import { connect } from 'react-redux';
-import { update_user_location } from '../../redux/actions/profile';
+import { update_user_location } from '../../../redux/actions/profile';
 
 function LocationForm({ get_cities, cities, update_user_location }) {
     useEffect(() => {
@@ -61,8 +61,6 @@ function LocationForm({ get_cities, cities, update_user_location }) {
 
         // Solo enviar el formulario si no hay errores
         if (Object.values(errors).every(error => error === '')) {
-            console.log('Formulario válido, enviando datos:', formData);
-            console.log(formData.address_line_1,formData.address_line_2, formData.city_id, formData.postal_zip_code,formData.delivery_notes )
             // Aquí puedes enviar los datos del formulario
             await update_user_location(formData.address_line_1,formData.address_line_2, formData.city_id, formData.postal_zip_code,formData.delivery_notes );
 
@@ -129,7 +127,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
     const getSuggestionValue = (suggestion) => suggestion.nombre;
 
     const renderSuggestion = (suggestion) => (
-        <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white'>
+        <div className='mt-1 p-2 rounded-md w-full bg-azul_corp text-sm text-white cursor-pointer'>
             {suggestion.nombre} - {suggestion.estado_o_departamento.nombre} - {suggestion.estado_o_departamento.pais.nombre}
         </div>
     );
@@ -194,7 +192,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
                     name="address_line_2"
                     value={formData.address_line_2}
                     onChange={handleChange}
-                    placeholder='Dirección secundaria'
+                    placeholder='Dirección secundaria (OPCIONAL)'
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.address_line_2 && (
@@ -209,7 +207,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
                     name="postal_zip_code"
                     value={formData.postal_zip_code}
                     onChange={handleChange}
-                    placeholder='Código postal'
+                    placeholder='Código postal (OPCIONAL)'
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.postal_zip_code && (
@@ -224,7 +222,7 @@ function LocationForm({ get_cities, cities, update_user_location }) {
                     name="delivery_notes"
                     value={formData.delivery_notes}
                     onChange={handleChange}
-                    placeholder='Notas que quieras agregar'
+                    placeholder='Notas que quieras agregar (OPCIONAL)'
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.delivery_notes && (

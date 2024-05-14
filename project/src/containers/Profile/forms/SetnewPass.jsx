@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { change_password_set } from '../../redux/actions/auth';
+import { change_password_set } from '../../../redux/actions/auth';
 import { Rings } from 'react-loader-spinner';
 
 function SetnewPass({ change_password_set, loading }) {

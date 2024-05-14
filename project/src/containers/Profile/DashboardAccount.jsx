@@ -3,11 +3,12 @@ import Layout from '../../hocs/Layout'
 import { Helmet } from 'react-helmet'
 import Searcher from '../../components/searcher/Searcher'
 import Sidebar from '../Home/Sidebar/Sidebar'
-import SetnewPass from './SetnewPass';
+import SetnewPass from './forms/SetnewPass';
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import SetNewEmail from './forms/SetNewEmail'
 
 
 function DashboardAccount({
@@ -18,8 +19,8 @@ function DashboardAccount({
 
     return (
         <Layout>
-            <Helmet>
-                {/* Metadatos */}
+           <Helmet>
+                <title>Ruvlo | Cambios de cuenta</title>
             </Helmet>
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -59,14 +60,14 @@ function DashboardAccount({
                                         {({ open }) => (
                                             <>
                                                 <Disclosure.Button className="flex w-full justify-between rounded-lg bg-gray-800 px-4 py-2 text-left text-sm font-medium text-gray-200 hover:bg-gray-700">
-                                                    <span>Do you offer technical support?</span>
+                                                    <span>Cambiar correo electrónico</span>
                                                     <ChevronUpIcon
                                                         className={`${open ? 'rotate-180 transform' : ''
                                                             } h-5 w-5 text-gray-500`}
                                                     />
                                                 </Disclosure.Button>
                                                 <Disclosure.Panel className="px-4 pb-2 pt-4 text-sm text-gray-500">
-                                                    No.
+                                                    <SetNewEmail/>
                                                 </Disclosure.Panel>
                                             </>
                                         )}

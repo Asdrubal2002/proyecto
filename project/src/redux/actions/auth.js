@@ -472,7 +472,62 @@ export const change_password_set = (new_password, re_new_password, current_passw
         if (err.response && err.response.status === 400) {
             dispatch(setAlert("Lo sentimos, no se pudo cambiar la contraseña. Por favor, asegúrate de que la contraseña actual sea correcta e inténtalo de nuevo.", error));
         } else {
-           
+
+        }
+    }
+};
+
+export const change_email_set = (
+    current_password,
+    new_email,
+    re_new_email
+) => async (dispatch) => {
+    dispatch({
+        type: SET_AUTH_LOADING,
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
+        }
+    };
+
+    const body = JSON.stringify({
+        current_password,
+        new_email,
+        re_new_email
+    });
+
+    try {
+        const res = await axios.post(`${apiUrl}/auth/users/set_email/`, body, config);
+        if (res.status === 204) {
+            dispatch({
+                type: SIGNUP_SUCCESS,
+                payload: res.data,
+            });
+            dispatch(setAlert("¡Tu Correo electrónico se ha cambiado con éxito! Ahora puedes acceder a tu cuenta con tu nuevo correo electrónico.", exito));
+        } else {
+            dispatch({
+                type: SIGNUP_FAIL,
+            });
+            dispatch(setAlert("Error al crear cuenta", error));
+        }
+        dispatch({
+            type: REMOVE_AUTH_LOADING,
+        });
+    } catch (err) {
+        dispatch({
+            type: SIGNUP_FAIL,
+        });
+        dispatch({
+            type: REMOVE_AUTH_LOADING,
+        });
+        if (err.response && err.response.status === 400) {
+            dispatch(setAlert("Lo sentimos, no se pudo cambiar el correo. Por favor, asegúrate de que el correo actual sea correcto e inténtalo de nuevo.", error));
+        } else {
+
         }
     }
 };

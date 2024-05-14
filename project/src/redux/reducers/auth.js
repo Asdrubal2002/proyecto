@@ -94,7 +94,6 @@ export default function Auth(state = initialState, action) {
                 access: localStorage.getItem("access"),
             };
 
-
         case SIGNUP_SUCCESS:
         case SIGNUP_FAIL:
         case LOGIN_FAIL:

@@ -35,8 +35,7 @@ const navigation = {
                     name: 'Perfil',
                     items: [
                         { name: 'Datos personales', to: '/dashboard' },
-                        { name: 'Datos de la cuenta', to: '/dashboardAccount' },
-                        { name: 'Facturas', to: '/invoices' },
+                        { name: 'Cambia datos de tu cuenta', to: '/dashboardAccount' },
 
                         
                     ],
@@ -48,6 +47,7 @@ const navigation = {
                     items: [
                         { name: 'Centro de compras', to: '/carts' },
                         { name: 'Productos guardados', to: '/wish_list' },
+                        { name: 'Facturas', to: '/invoices' },
                     ],
                 },
                 {

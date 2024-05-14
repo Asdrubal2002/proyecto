@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../hocs/Layout';
-import LocationForm from './LocationForm';
-import ProfileForm from './ProfileForm';
+import LocationForm from './forms/LocationForm';
+import ProfileForm from './forms/ProfileForm';
 import { connect } from 'react-redux';
 import { PencilIcon, PhotoIcon, XMarkIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Helmet } from 'react-helmet';
@@ -14,13 +14,12 @@ import { LetrasPerfil } from './styles/Dashboard';
 import axios from "axios"
 import Compressor from 'compressorjs';
 
-
 function Dashboard({
     isAuthenticated,
     profile,
     get_user_location,
     location,
-    user
+    user,
 }) {
     const [showFormLocation, setShowFormLocation] = useState(false);
     const [showForm, setShowForm] = useState(false);
@@ -37,7 +36,7 @@ function Dashboard({
         if (isAuthenticated) {
             get_user_location().then(() => setIsLoading(false));
         }
-    }, [isAuthenticated]); // Dependencia añadida al useEffect
+    }, [isAuthenticated, user.photo]); // Dependencia añadida al useEffect
 
     if (!isAuthenticated) return <Navigate to="/" />;
 
@@ -113,7 +112,6 @@ function Dashboard({
                 alert('Error al enviar', err);
             }
         };
-
         fetchData();
     };
 
@@ -121,7 +119,7 @@ function Dashboard({
     return (
         <Layout>
             <Helmet>
-                {/* Metadatos */}
+                <title>Ruvlo | Cuenta</title>
             </Helmet>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
@@ -218,9 +216,7 @@ function Dashboard({
                                                     <LetrasPerfil>{user && user.get_first_letters}</LetrasPerfil>
                                                 )}
                                             </>}
-
                                         </div>
-
                                         <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
                                             <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
                                                 {updatePhoto ? (
@@ -263,6 +259,7 @@ function Dashboard({
                                                             Actualizar mi foto de perfil
                                                         </button>
                                                     </>
+                                                  
                                                 )}
                                             </div>
                                         </div>
@@ -282,7 +279,8 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
     profile: state.Profile.profile,
     location: state.Profile.profile_location,
-    user: state.Auth.user
+    user: state.Auth.user,
+
 });
 
 export default connect(mapStateToProps, {
