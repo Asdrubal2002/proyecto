@@ -9,6 +9,8 @@ class Currency(models.Model):
 
     typecurrency = models.CharField(max_length=3)
     name = models.CharField(max_length=50)
+    decimal_places = models.IntegerField(default=3)  # Nuevo campo para almacenar la cantidad de decimales
+
 
     def __str__(self):
         return self.typecurrency

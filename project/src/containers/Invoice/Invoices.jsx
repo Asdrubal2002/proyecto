@@ -80,7 +80,7 @@ function Invoices({
                                         </li>
                                         <li className="flex gap-x-3">
                                             <MapPinIcon className="h-6 w-5 flex-none text-azul_corp_ho" aria-hidden="true" />
-                                            <p>{invoice.shipping_location.address_line_1},  {invoice.shipping_location.city.nombre}</p>
+                                            <p>{invoice.shipping_location.address_line_1},  {invoice.shipping_location.city.nombre} - {invoice.shipping_location.delivery_notes}</p>                                          
                                         </li>
                                     </ul>
                                     <div class="inline-block mt-4 p-4">

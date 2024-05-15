@@ -190,7 +190,7 @@ const StoreDetail = ({
                                     <ConetenedorProfile2>
                                         <ConetenedorProfile3>
                                             {/* profile picture */}
-                                            <div className="flex">
+                                            <div className="flex ">
                                                 {
                                                     store && store.logo ? <StoreProfile src={store && store.logo} alt="Store Photo" />
                                                         :
@@ -202,10 +202,10 @@ const StoreDetail = ({
                                             <ConetenedorInfo>
                                                 <ConetenedorInfo1>
                                                     {/* <BotonesMeGustaNOMegusta onClick={handleHeartClick}>{likes} Me gusta</BotonesMeGustaNOMegusta> */}
-                                                    <div className="flex items-center">
+                                                    <div className="flex items-center justify-end md:justify-start ">
                                                         <button
                                                             onClick={handleHeartClick}
-                                                            className="ml-4 py-2 px-2 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-300 hover:text-gray-900"
+                                                            className="ml-4 py-2 px-2 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-300 hover:text-gray-900 md:ml-0 md:order-last"
                                                         >
                                                             {userLiked ? (
                                                                 <>
@@ -216,9 +216,10 @@ const StoreDetail = ({
                                                             ) : (
                                                                 <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
                                                             )}
-                                                            <span className="ml-2  ">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
+                                                            <span className="ml-2">{likes} Me gusta</span>
                                                         </button>
                                                     </div>
+
                                                 </ConetenedorInfo1>
                                             </ConetenedorInfo>
                                         </ConetenedorProfile3>
@@ -298,9 +299,11 @@ const StoreDetail = ({
                                 </Dialog>
                             </Transition.Root>
                             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                                <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
-                                    <Searcher className="flex-1" />
-                                    <div className="flex items-center mt-4 sm:mt-0">
+                                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 pb-6 pt-10">
+                                    <div className="hidden sm:block">
+                                        <Searcher className="flex-1" />
+                                    </div>
+                                    <div className="flex items-center mt-2 sm:mt-0">
                                         <h2 className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
                                             <BuildingStorefrontIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" /> {/* Agrega el icono de búsqueda */}
                                             {count} Productos
@@ -316,14 +319,11 @@ const StoreDetail = ({
                                     </div>
                                 </div>
                                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
-                                    <h2 id="products-heading" className="sr-only">
-                                        Products
-                                    </h2>
                                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className="bg-azul_corp px-4 py-2 rounded-md text-sm font-medium ">
+                                            <p className=" px-4 py-2 rounded-md text-sm font-medium hidden sm:block ">
                                                 Categorias disponibles
                                             </p>
 

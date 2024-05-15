@@ -24,11 +24,10 @@ class Invoice(models.Model):
     shipping_method = models.ForeignKey(Shipping, on_delete=models.SET_NULL, null=True, blank=True)
     shipping_location = models.ForeignKey(UserLocation, on_delete=models.SET_NULL, null=True, blank=True)
     cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, blank=True)  # o SET_DEFAULT dependiendo de tu caso
-    total_amount = models.CharField(max_length=20) # Ahora puede ser nulo
+    total_amount = models.CharField(max_length=50) # Ahora puede ser nulo
     status = models.ForeignKey(InvoiceStatus, on_delete=models.SET_NULL, null=True, blank=True, default=1)
     transaction_number = models.CharField(max_length=20, unique=True, blank=True)  # Permitimos que sea nulo
     created_at = models.DateTimeField(default=timezone.now)  # Campo para almacenar la fecha de creación
-    pdf_path = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f'Factura #{self.id} - {self.buyer.firs_name}'

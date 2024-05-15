@@ -36,7 +36,7 @@ function Dashboard({
         if (isAuthenticated) {
             get_user_location().then(() => setIsLoading(false));
         }
-    }, [isAuthenticated, user.photo]); // Dependencia añadida al useEffect
+    }, [isAuthenticated]); // Dependencia añadida al useEffect
 
     if (!isAuthenticated) return <Navigate to="/" />;
 

@@ -19,6 +19,7 @@ function CategoriesStoreMobile({ categories, loading_categories, storeSlug }) {
 
     return (
         <div className="lg:block">
+            <h2>Categorias disponibles</h2>
             <ul role="list" className="space-y-4 text-sm font-medium text-gray-200">
                 {loading_categories ? (
                     <LoadingCategoriesStores />

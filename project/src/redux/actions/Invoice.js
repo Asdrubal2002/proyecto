@@ -121,8 +121,6 @@ export const get_user_invoices = () => async dispatch => {
             type: REMOVE_LOADER_INVOICE,
         });
     } catch (error) {
-        console.error("Error al agregar el producto al carrito:", error);
-
         // Manejar el error de autorización específicamente
         if (error.response && error.response.status === 401) {
             // Puedes realizar acciones específicas para manejar la falta de autorización aquí
@@ -132,7 +130,6 @@ export const get_user_invoices = () => async dispatch => {
         }
     } finally {
         // Cerrar la conexión de manera controlada si es necesario
-        console.log("Proceso finalizado, conexión cerrada");
     }
 }
 

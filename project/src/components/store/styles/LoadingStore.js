@@ -69,7 +69,7 @@ export const ConetenedorProfile3 = tw.div`
 `;
 
 export const ConetenedorInfo = tw.div`
-    mt-6 
+    mt-0
     sm:flex-1 
     sm:min-w-0 
     sm:flex 
@@ -80,14 +80,14 @@ export const ConetenedorInfo = tw.div`
 `;
 
 export const ConetenedorInfo1 = tw.div`
-    mt-6 
+    mt-0 
     flex 
     flex-col 
     justify-stretch 
-    space-y-3 
+    space-y-0 
     sm:flex-row 
     sm:space-y-0 
-    sm:space-x-4
+    sm:space-x-0
 `;
 
 export const ConetenedorMegusta = tw.div`

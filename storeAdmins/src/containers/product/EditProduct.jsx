@@ -266,7 +266,7 @@ function EditProduct({
 
     const onSubmitPhotos = async e => {
         e.preventDefault();
-    
+
         const config = {
             headers: {
                 'Accept': 'application/json',
@@ -274,13 +274,13 @@ function EditProduct({
                 'Authorization': `JWT ${localStorage.getItem('access')}`
             }
         };
-    
+
         const compressedImage = await compressImage(photo); // Comprimir la imagen
-    
+
         const formData = new FormData();
         formData.append('slug', slug);
         formData.append('photo', compressedImage, compressedImage.name);
-    
+
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -289,7 +289,7 @@ function EditProduct({
                     formData,
                     config
                 );
-    
+
                 if (res.status === 200) {
                     setLoading(false);
                     resetStates();
@@ -309,7 +309,7 @@ function EditProduct({
         fetchData();
         window.scrollTo(0, 670);
     };
-    
+
     // Función para comprimir la imagen
     const compressImage = async image => {
         return new Promise((resolve, reject) => {
@@ -460,7 +460,7 @@ function EditProduct({
                                                         onChange={e => onChange(e)}
                                                         name='name'
                                                         type='text'
-                                                        maxLength={50} // Máximo de 50 caracteres permitidos
+                                                        maxLength={100} // Máximo de 50 caracteres permitidos
                                                         className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                                         required
                                                         placeholder='Nuevo nombre'
@@ -543,17 +543,12 @@ function EditProduct({
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-
                                                         <button
-
                                                             onClick={() => setOpenAddCategory(true)}
                                                             className="px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700  focus:outline-none"
                                                         >
                                                             <BarsArrowUpIcon width={20} height={20} color="#fff" radius="6" />
                                                         </button>
-
-
-
                                                         <button
                                                             onClick={() => setUpdateCategory(false)}
                                                             className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
@@ -562,10 +557,6 @@ function EditProduct({
                                                         </button>
                                                     </div>
                                                 </form>
-
-
-
-
                                             </>
                                         ) : (
                                             <>
@@ -617,16 +608,16 @@ function EditProduct({
                                                         placeholder='Nueva descripción'
                                                     />  */}
                                                     {/* Mensaje de error si el campo de descripción está vacío */}
-                                                    {description === '' && (
+                                                    {/* {description === '' && (
                                                         <span className="text-red-500 text-sm mt-1 ml-4">La descripción es obligatoria</span>
-                                                    )}
-                                                    {description.length > 900 && (
-                                                        <span className="text-red-500 text-sm mt-1 ml-4">La descripción excede 500 caracteres</span>
+                                                    )} */}
+                                                    {description.length > 5000 && (
+                                                        <span className="text-red-500 text-sm mt-1 ml-4">La descripción excede 5000 caracteres</span>
                                                     )}
                                                     <div className="flex items-center space-x-2 ml-4">
                                                         <button
                                                             type="submit"
-                                                            disabled={description === '' || description.length > 900} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
+                                                            disabled={description.length > 5000} // Deshabilitar el botón si la descripción está vacía o excede los 400 caracteres
                                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                                         >
                                                             <CheckIcon width={20} height={20} color="#fff" radius="6" />
@@ -694,11 +685,8 @@ function EditProduct({
                                                         value={price}
                                                         onChange={e => {
                                                             const { value } = e.target;
-                                                            // Mantener solo los números y un punto decimal
-                                                            const cleanedValue = value.replace(/[^\d.]/g, match => {
-                                                                // Solo permitir un punto decimal si no hay otro presente
-                                                                return match === '.' && value.indexOf('.') === -1 ? '.' : '';
-                                                            }).replace(/(\..*)\./g, '$1'); // Eliminar puntos decimales adicionales
+                                                            // Mantener solo los números
+                                                            const cleanedValue = value.replace(/[^\d]/g, ''); // Eliminar todo excepto los números
                                                             onChange({ target: { name: 'price', value: cleanedValue } }); // Llamar a la función onChange con el valor limpio
                                                         }}
                                                         name='price'
@@ -848,9 +836,9 @@ function EditProduct({
                                                     className="flex-grow  flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-700 focus:outline-none  "
                                                 >
                                                     <p className='m-2 text-gray-300'>
-                                                    Agrega imágenes a tu producto
+                                                        Agrega imágenes a tu producto
                                                     </p>
-                                                   <PhotoIcon width={20} height={20} color="#fff" radius="6" />
+                                                    <PhotoIcon width={20} height={20} color="#fff" radius="6" />
                                                 </button>
                                             </>
                                         )}
@@ -942,7 +930,7 @@ function EditProduct({
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 {
-                                                    product && product.name && product.description && product.price ?
+                                                    product && product.name  && product.price ?
                                                         <></>
                                                         :
                                                         <p className="text-sm text-gray-500">
@@ -955,7 +943,7 @@ function EditProduct({
                                         </div>
                                     </div>
                                     {
-                                        (product && product.name && product.description && product.price) &&
+                                        (product && product.name  && product.price) &&
                                         <>
                                             {
                                                 product && product.is_active ?

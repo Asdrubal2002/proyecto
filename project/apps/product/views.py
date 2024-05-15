@@ -29,6 +29,11 @@ from django.utils import timezone
 from django.db.models import Q
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, BasePermission
+from decimal import Decimal
+from django.core.exceptions import ValidationError
+import os
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -288,21 +293,50 @@ class StatusProductView(APIView):
     
 class DeleteProductView(APIView):
     permission_classes = (CanEditProduct,)
+
     def delete(self, request, slug, format=None):
-        product = Product.objects.get(slugProduct=slug)
-        product.delete()
-        return Response({'success': 'Post delete'})
-
+        try:
+            product = Product.objects.get(slugProduct=slug)
+            # Obtener las imágenes asociadas al producto
+            product_images = ProductImage.objects.filter(product=product)
+            # Eliminar las imágenes
+            for image in product_images:
+                # Borrar la imagen del sistema de archivos
+                if os.path.exists(image.photo.path):
+                    os.remove(image.photo.path)
+                # Eliminar la instancia de la imagen
+                image.delete()
+            # Eliminar la carpeta asociada al producto (si existe)
+            product_folder = os.path.join(settings.MEDIA_ROOT, 'product_images', slug)
+            if os.path.exists(product_folder):
+                os.rmdir(product_folder)
+            # Finalmente, eliminar el producto
+            product.delete()
+            return Response({'success': 'Product and associated images deleted'})
+        except ObjectDoesNotExist:
+            return Response({'error': 'Product not found'})
+        
 class DeletePhotoProductView(APIView):
-        permission_classes = (CanEditProduct,)
+    permission_classes = (CanEditProduct,)
 
-        def delete(self, request, id, format=None):
-            print(id)
-
+    def delete(self, request, id, format=None):
+        try:
+            # Obtén la instancia de ProductImage que se va a eliminar
             imagen = ProductImage.objects.get(id=id)
+            
+            # Obtén la ruta del archivo de la imagen
+            file_path = os.path.join(settings.MEDIA_ROOT, str(imagen.photo))
+            
+            # Elimina la instancia de ProductImage
             imagen.delete()
 
+            # Elimina el archivo de imagen asociado
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                
             return Response({'success': 'Post delete'})
+        except ProductImage.DoesNotExist:
+            return Response({'error': 'La imagen no existe'}, status=status.HTTP_404_NOT_FOUND)
 
 class EditProductPhotosView(APIView):
     permission_classes = (CanEditProduct,)

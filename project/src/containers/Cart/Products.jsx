@@ -53,14 +53,24 @@ function Products({
 
   const [showFormLocation, setShowFormLocation] = useState(false);
 
+  const [suma, setSuma] = useState(0);
+
   const [formData, setFormData] = useState({
     shipping_id: 0,
   });
 
   const { shipping_id } = formData;
 
-  const onChange = (selectedShippingId) => {
+  const onChange = (selectedShippingId, formatted_price_shipping) => {
     setFormData({ ...formData, shipping_id: selectedShippingId });
+    // Eliminar los caracteres no numéricos y convertir las cadenas a números decimales
+    const priceNumber = parseFloat(formatted_price_shipping.replace(/[^\d.]/g, ''));
+    const totalNumber = parseFloat((cart && cart.total_con_impuestos_formateado).replace(/[^\d.]/g, ''));
+    // Sumar los números
+    const totalPrice = priceNumber + totalNumber;
+    // Formatear el resultado con el formato deseado
+    const formattedTotalPrice = totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    setSuma(formattedTotalPrice)
   };
 
   const toggleContenido = () => {
@@ -71,7 +81,6 @@ function Products({
   const cart_slug = params.cart_slug
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     get_user_cart(cart_slug);
@@ -113,12 +122,9 @@ function Products({
   }
 
   const renderShipping = () => {
-
     const hasShippingOptions = shipping && shipping.length > 0;
-
     return (
       <div>
-
         {hasShippingOptions ? (
           // Renderizar opciones de envío si hay
           <div className='mb-5 grid gap-6 grid-cols-1 sm:grid-cols-2'>
@@ -126,11 +132,11 @@ function Products({
               <div
                 key={index}
                 className={`${shipping.id === shipping_id
-                  ? 'border-blue-500 ring ring-blue-200'
-                  : ''
+                  ? 'border-blue-500 ring ring-azul_corp'
+                  : 'ring ring-red-100'
                   } bg-white p-4 rounded-md shadow-md transition-transform transform hover:scale-105 cursor-pointer`}
                 onClick={() => {
-                  onChange(shipping.id);
+                  onChange(shipping.id, shipping.formatted_price);
                   const radioElement = document.getElementById(`shipping_option_${index}`);
                   if (radioElement) {
                     radioElement.click();
@@ -145,7 +151,7 @@ function Products({
                   {shipping.id === shipping_id && <CheckIcon className="h-3 w-3 m-0.5" />}
                 </div>
                 <label htmlFor={`shipping_option_${index}`} className='text-xs text-gray-600'>
-                  <span className="font-semibold">{shipping.name}</span> - ${shipping.price} - ({shipping.time_to_delivery})  - {shipping.additional_notes}
+                  <span className="font-semibold">{shipping.name}</span> - ${shipping.formatted_price} - ({shipping.time_to_delivery})  - {shipping.additional_notes}
                 </label>
               </div>
             ))}
@@ -198,7 +204,6 @@ function Products({
                   {cart && cart.store ? (
                     <p>Detalle de compra en {cart.store.name}</p>
                   ) : (
-
                     <p>Volver a navegar</p>
                   )}
                 </h2>
@@ -209,7 +214,6 @@ function Products({
                   <dl className="mt-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <dt className="text-sm text-gray-600">Total productos</dt>
-
                       {loading ? <>
                         <Rings width={30} height={30} color="#0C4896" radius="6" />
                       </> : <>
@@ -217,7 +221,6 @@ function Products({
                         <dd className="text-sm font-medium text-gray-900">$ {cart && cart.total_sin_impuestos}</dd>
                       </>
                       }
-
                     </div>
                     <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
                       <dt className="flex text-sm text-gray-600">
@@ -241,7 +244,7 @@ function Products({
                         <Rings width={30} height={30} color="#0C4896" radius="6" />
                       </> : <>
                         {/* <dd className="text-base font-medium text-gray-900">$ {cart && cart.total.toFixed(2)}</dd> */}
-                        <dd className="text-base font-medium text-gray-900">$ {cart && cart.total}</dd>
+                        <dd className="text-base font-medium text-gray-900">$ {cart && cart.total_con_impuestos_formateado}</dd>
                       </>
                       }
                     </div>
@@ -258,10 +261,6 @@ function Products({
                 <div>
                   <>
                     <dl className="mt-6 space-y-4">
-                      <dt className="text-sm text-gray-600">Selecciona tu método de entrega</dt>
-                      <div className="flex items-center justify-between">
-                        {renderShipping()}
-                      </div>
                       <div className="bg-gray-100 p-6 rounded-md shadow-md text-black">
                         <div className="flex justify-between items-center mb-4">
                           <h2 className="text-lg font-medium text-gray-900">Dirección</h2>
@@ -270,9 +269,7 @@ function Products({
                               <PencilIcon className="h-6 w-6 mr-1" />
                             </span>
                           </button>
-
                         </div>
-
                         {showFormLocation ? (
                           <LocationForm />
                         ) : (
@@ -293,7 +290,6 @@ function Products({
                             )}
                           </>
                         )}
-
                       </div>
                       <div className="bg-gray-100 p-6 rounded-md shadow-md text-black">
                         <div className="flex justify-between items-center mb-4">
@@ -322,14 +318,22 @@ function Products({
                           </>
                         )}
                       </div>
-
+                      {shipping_id === 0 && (
+                      <div className="bg-red-100 text-red-700 p-3 rounded-md my-4">
+                        <p className="text-base font-semibold">Por favor selecciona un método de envío antes de continuar.</p>
+                      </div>
+                    )}
+                      <dt className="text-sm text-gray-600 font-semibold">Selecciona tu método de entrega</dt>
+                      <div className="flex items-center justify-between">
+                        {renderShipping()}
+                      </div>
                       <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
                         <dt className="text-base font-medium text-gray-900">Total compra</dt>
                         {loading ? <>
                           <Rings width={30} height={30} color="#0C4896" radius="6" />
                         </> : <>
-                          {/* <dd className="text-base font-medium text-gray-900">$ {cart && cart.total.toFixed(2)}</dd> */}
-                          <dd className="text-base font-medium text-gray-900">$ {cart && cart.total}</dd>
+                          {/* <dd className="text-base font-medium text-gray-900">$ {cart && cart.total_con_impuestos_formateado}</dd> */}
+                          <dd className="text-base font-medium text-gray-900">$ {suma}</dd>
                         </>
                         }
                       </div>
@@ -342,13 +346,11 @@ function Products({
                         Volver
                       </button>
                       {profile.firs_name == null ? (<>
-
                         <Link to={'/dashboard'}
                           className="flex items-center justify-center ml-3 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                         >
                           <UserCircleIcon className="h-6 w-6" />
                         </Link>
-
                       </>) : (
                         <>{loading_invoice ? (<>
                           <button
@@ -367,35 +369,18 @@ function Products({
                             </button>
                           </>
                         )}</>)}
-
                     </div>
-                    {shipping_id === 0 && (
-                      <div className="bg-red-100 text-red-700 p-3 rounded-md my-4">
-                        <p className="text-base font-semibold">Por favor selecciona un método de envío antes de continuar.</p>
-                      </div>
-                    )}
+                    
                   </>
-
                 </div>
               )}
             </section>
           </div>
-
         </div>
-
       </div>
-
-
-
-
     </Layout >
   );
 }
-
-// ... Conexión a Redux y exportación
-
-
-
 const mapStateToProps = state => ({
   isAuthenticated: state.Auth.isAuthenticated,
   cart: state.Cart.cart,
@@ -405,7 +390,6 @@ const mapStateToProps = state => ({
   shipping: state.Shipping.shipping_options,
   loading_invoice: state.Invoice.loading
 })
-
 export default connect(mapStateToProps, {
   get_user_cart,
   increment_item,

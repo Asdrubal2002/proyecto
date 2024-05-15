@@ -17,15 +17,15 @@ const navigation = {
             name: 'Cuenta',
             featured: [
                 {
-                    name: 'Tiendas',
-                    to: '#',
-                    imageSrc: 'https://hips.hearstapps.com/hmg-prod/images/tiendas-ropa-mujer-madrid-645e038123d62.jpg',
+                    name: 'Centro de compras',
+                    to: '/carts',
+                    imageSrc: '/tiendas.png',
                     imageAlt: 'Models sitting back to back, wearing Basic Tee in black and bone.',
                 },
                 {
-                    name: 'Compras',
-                    to: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg',
+                    name: 'Facturas',
+                    to: '/invoices',
+                    imageSrc: '/facturas.png',
                     imageAlt: 'Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.',
                 },
             ],
@@ -45,9 +45,7 @@ const navigation = {
                     id: 'product',
                     name: 'Productos',
                     items: [
-                        { name: 'Centro de compras', to: '/carts' },
                         { name: 'Productos guardados', to: '/wish_list' },
-                        { name: 'Facturas', to: '/invoices' },
                     ],
                 },
                 {
@@ -59,62 +57,62 @@ const navigation = {
                 },
             ],
         },
-        {
-            id: 'compras',
-            name: 'Compras',
-            featured: [
-                {
-                    name: 'New Arrivs',
-                    to: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
-                    imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
-                },
-                {
-                    name: 'Artwork Tees',
-                    to: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg',
-                    imageAlt:
-                        'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
-                },
-            ],
-            sections: [
-                {
-                    id: 'clothing',
-                    name: 'Clothing',
-                    items: [
-                        { name: 'Tops', to: '#' },
-                        { name: 'Pants', to: '#' },
-                        { name: 'Sweaters', to: '#' },
-                        { name: 'T-Shirts', to: '#' },
-                        { name: 'Jackets', to: '#' },
-                        { name: 'Activewear', to: '#' },
-                        { name: 'Browse All', to: '#' },
-                    ],
-                },
-                {
-                    id: 'accessories',
-                    name: 'Accessories',
-                    items: [
-                        { name: 'Watches', to: '#' },
-                        { name: 'Wallets', to: '#' },
-                        { name: 'Bags', to: '#' },
-                        { name: 'Sunglasses', to: '#' },
-                        { name: 'Hats', to: '#' },
-                        { name: 'Belts', to: '#' },
-                    ],
-                },
-                {
-                    id: 'brands',
-                    name: 'Brands',
-                    items: [
-                        { name: 'Re-Arranged', to: '#' },
-                        { name: 'Counterfeit', to: '#' },
-                        { name: 'Full Nelson', to: '#' },
-                        { name: 'My Way', to: '#' },
-                    ],
-                },
-            ],
-        },
+        // {
+        //     id: 'compras',
+        //     name: 'Compras',
+        //     featured: [
+        //         {
+        //             name: 'New Arrivs',
+        //             to: '#',
+        //             imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
+        //             imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
+        //         },
+        //         {
+        //             name: 'Artwork Tees',
+        //             to: '#',
+        //             imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg',
+        //             imageAlt:
+        //                 'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
+        //         },
+        //     ],
+        //     sections: [
+        //         {
+        //             id: 'clothing',
+        //             name: 'Clothing',
+        //             items: [
+        //                 { name: 'Tops', to: '#' },
+        //                 { name: 'Pants', to: '#' },
+        //                 { name: 'Sweaters', to: '#' },
+        //                 { name: 'T-Shirts', to: '#' },
+        //                 { name: 'Jackets', to: '#' },
+        //                 { name: 'Activewear', to: '#' },
+        //                 { name: 'Browse All', to: '#' },
+        //             ],
+        //         },
+        //         {
+        //             id: 'accessories',
+        //             name: 'Accessories',
+        //             items: [
+        //                 { name: 'Watches', to: '#' },
+        //                 { name: 'Wallets', to: '#' },
+        //                 { name: 'Bags', to: '#' },
+        //                 { name: 'Sunglasses', to: '#' },
+        //                 { name: 'Hats', to: '#' },
+        //                 { name: 'Belts', to: '#' },
+        //             ],
+        //         },
+        //         {
+        //             id: 'brands',
+        //             name: 'Brands',
+        //             items: [
+        //                 { name: 'Re-Arranged', to: '#' },
+        //                 { name: 'Counterfeit', to: '#' },
+        //                 { name: 'Full Nelson', to: '#' },
+        //                 { name: 'My Way', to: '#' },
+        //             ],
+        //         },
+        //     ],
+        // },
     ],
     pages: [
         { name: 'Compañia', to: '/' },
@@ -211,7 +209,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                         {item.name}
                                                                     </Link>
                                                                     <p aria-hidden="true" className="mt-1">
-                                                                        Shop now
+                                                                       de
                                                                     </p>
                                                                 </div>
                                                             ))}
@@ -251,7 +249,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             </Link>
                                         </div>
                                         <div className="flow-root">
-                                            <Link to={'/'} className="-m-2 block p-2 font-medium text-gray-900">
+                                            <Link to={'/company'} className="-m-2 block p-2 font-medium text-gray-900">
                                                 Compañia
                                             </Link>
                                         </div>
@@ -265,9 +263,9 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             </Link>
                                         </div>
                                         <div className="flow-root">
-                                            <a to="#" className="-m-2 block p-2 font-medium text-gray-900">
-                                                Unirse
-                                            </a>
+                                            <Link to="/signup" className="-m-2 block p-2 font-medium text-gray-900">
+                                                Registrarse
+                                            </Link>
                                         </div>
                                     </div>
 
@@ -276,10 +274,9 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             <img
                                                 src="/LogoRuvlo.png"
                                                 alt=""
-                                                className="block h-auto w-5 flex-shrink-0"
+                                                className="block h-auto w-20 flex-shrink-0"
                                             />
-                                            <span className="ml-3 block text-base font-medium text-gray-900">CAD</span>
-                                            <span className="sr-only">, change currency</span>
+                                            
                                         </Link>
                                     </div>
                                 </Dialog.Panel>
@@ -298,7 +295,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                             <Contenedor2>
                                 <button
                                     type="button"
-                                    className="relative rounded-md bg-white p-2 text-gray-400 lg:hidden"
+                                    className="relative rounded-md bg-stone-800 p-2 text-gray-100 lg:hidden"
                                     onClick={() => setOpen(true)}
                                 >
                                     <span className="absolute -inset-0.5" />
@@ -369,7 +366,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                                             {item.name}
                                                                                         </Link>
                                                                                         <p aria-hidden="true" className="mt-1">
-                                                                                            Shop now
+                                                                                           Dentro de tu cuenta
                                                                                         </p>
                                                                                     </div>
                                                                                 ))}

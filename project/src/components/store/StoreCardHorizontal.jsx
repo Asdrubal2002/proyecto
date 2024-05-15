@@ -25,7 +25,7 @@ function StoreCardHorizontal({ data, index }) {
             <div className="text-gray-400 text-sm">
               {data.city.nombre} - {data.city.estado_o_departamento.nombre}
             </div>
-            <h2 className="text-2xl font-normal	text-gray-900 dark:text-white mb-2 ">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
+            <h2 className="text-2xl font-normal	text-gray-900 dark:text-white mb-2 font-semibold">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
             <p className="text-dm md:text-dm text-gray-700 dark:text-gray-400 mb-3">{data.description.length > 200 ? data.description.slice(0, 200) + '...' : data.description}</p>
           </div>
           <div className="relative mt-2 flex items-center gap-x-4">

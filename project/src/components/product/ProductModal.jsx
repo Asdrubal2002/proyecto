@@ -134,7 +134,7 @@ function ProductModal({
 
                         <div className="mt-3 ">
                             <h2 className="sr-only">data information</h2>
-                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.price}</p>
+                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.formatted_price}</p>
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">

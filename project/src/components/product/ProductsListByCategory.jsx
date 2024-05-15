@@ -36,7 +36,7 @@ function ProductListByCategory({ products, get_products_list_page, categorySlug,
                 <p className="text-gray-400 mt-4">No se encontraron productos que coincidan con la búsqueda.</p>
             )}
             {filteredProducts.length > 0 && (
-                <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+                <div className="mt-6 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 ">
                     {filteredProducts.map((product, index) => (
                         <ProductCard data={product} key={index} index={index} />
                     ))}

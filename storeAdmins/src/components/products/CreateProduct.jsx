@@ -12,23 +12,13 @@ function CreateProduct({
     categories,
     get_products
 }) {
-
     const [errors, setErrors] = useState({});
-
     const [open, setOpen] = useState(false)
-
     const [selectedCategory, setSelectedCategory] = useState('');
     const [descriptionError, setDescriptionError] = useState('');
     const [formCanBeSubmitted, setFormCanBeSubmitted] = useState(true);
     const [loading, setLoading] = useState(false)
     const [description, setDescription] = useState('');
-
-
-
-    useEffect(() => {
-
-    }, []);
-
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -41,16 +31,15 @@ function CreateProduct({
         // Validar campos requeridos
         const errors = {};
         if (!data.name) errors.name = 'El nombre es obligatorio';
-        if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
+        // if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
         if (!data.category) errors.category = 'La categoría es obligatoria';
         if (!data.price) errors.price = 'El precio es obligatorio';
-        else if (!/^\d+(\.\d+)?$/.test(data.price)) errors.price = 'El precio puede ser un número sin puntos o con un punto decimal. No espacios ni comas.';
+        else if (!/^\d+$/.test(data.price)) errors.price = 'El precio debe ser un número entero sin puntos decimales. No se permiten espacios ni comas.';
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
             return;
         }
-
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data', // Agregamos el Content-Type adecuado
@@ -84,12 +73,9 @@ function CreateProduct({
         fetchData();
         setOpen(false)
     }
-
     const handleCategoryChange = e => {
         setSelectedCategory(e.target.value);
     };
-
-
     return (
         <>
             <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
@@ -107,7 +93,6 @@ function CreateProduct({
                     </div>
                 </div>
             </div>
-
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={setOpen}>
                     <Transition.Child
@@ -121,7 +106,6 @@ function CreateProduct({
                     >
                         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                     </Transition.Child>
-
                     <div className="fixed inset-0 z-10 overflow-y-auto">
                         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <Transition.Child
@@ -134,7 +118,6 @@ function CreateProduct({
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
-
                                     <div className='py-4'>
                                         <Disclosure>
                                             <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-azul_corp rounded-lg text-sm p-4 mb-2">
@@ -147,14 +130,12 @@ function CreateProduct({
                                             </Disclosure.Panel>
                                         </Disclosure>
                                     </div>
-
                                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                                         <input
                                             name='name'
                                             type='text'
                                             placeholder='Nuevo nombre'
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-
                                         />
                                         {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                                         <select
@@ -177,18 +158,14 @@ function CreateProduct({
                                                 </optgroup>
                                             ))}
                                         </select>
-
                                         {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
-
                                         <div className='text-gray-900 text-sm '>
                                             <CKEditor
-
                                                 editor={ClassicEditor}
                                                 data={description}
                                                 onChange={(event, editor) => {
                                                     const data = editor.getData();
                                                     setDescription(data);
-
                                                     if (data.length > 5000) {
                                                         setDescriptionError('La descripción no debe exceder los 5000 caracteres');
                                                         setFormCanBeSubmitted(false); // Deshabilitar el formulario
@@ -199,20 +176,14 @@ function CreateProduct({
                                                 }}
                                                 config={{
                                                     toolbar: {
-                                                        items: [
-                                                          
-                                                            'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado
-                                                           
+                                                        items: [ 'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado 
                                                         ]
                                                     },
-                                                   
                                                 }}
                                             />
                                         </div>
-
                                         {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
                                         {descriptionError && <span className="text-red-500 text-sm">{descriptionError}</span>}
-
                                         <input
                                             name='price'
                                             type='text'
@@ -220,19 +191,11 @@ function CreateProduct({
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                         />
                                         {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
-                                        <div className='bg-sky-100 text-gray-900 p-4 rounded-md text-sm'>
-                                            <p className=' text-gray-900'><strong className='text-azul_corp'>Importante:</strong> En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.</p>
-
-
-                                        </div>
-
                                         <button
                                             type="submit"
                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                             disabled={!formCanBeSubmitted}
                                         >Crear producto</button>
-
-
                                     </form>
                                 </Dialog.Panel>
                             </Transition.Child>
@@ -241,16 +204,11 @@ function CreateProduct({
                 </Dialog>
             </Transition.Root>
         </>
-
-
     )
 }
-
 const mapStateToProps = state => ({
     categories: state.Product_category.categories
-
 })
-
 export default connect(mapStateToProps, {
     get_products
 })(CreateProduct)

@@ -32,9 +32,9 @@ function StorePolicies({
                             <div className="lg:max-w-lg">
                                 <p className="text-base font-semibold leading-7 text-azul_corp_ho">Ten en cuenta:</p>
                                 <h1 className="mt-2 text-3xl text-gray-200 sm:text-4xl">
-                                    Las políticas de <strong>{storeSlug}.com</strong></h1>
+                                    Las políticas de <strong>{storeSlug}</strong></h1>
                                 <p className="mt-6 text-xl leading-8 text-gray-300 text-sm">
-                                Estas políticas son las garantías establecidas para los compradores en caso de cualquier problema con la tienda. Si surge algún problema, el cliente puede confiar en que se seguirán estas políticas para resolverlo de manera justa y adecuada                                </p>                            </div>
+                                    Estas políticas son las garantías establecidas para los compradores en caso de cualquier problema con la tienda. Si surge algún problema, el cliente puede confiar en que se seguirán estas políticas para resolverlo de manera justa y adecuada                                </p>                            </div>
                         </div>
                     </div>
                     <div className="-ml-12 -mt-12 p-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
@@ -54,32 +54,25 @@ function StorePolicies({
                                         {policy !== null && policy.length > 0 ? (
                                             <ul role="list" className="space-y-8 text-gray-400">
                                                 {policy.map((policyItem, index) => (
-                                                    <>
-                                                        <li className="flex gap-x-3">
-                                                            {/* <LockClosedIcon className="mt-1 h-5 w-5 flex-none text-azul_corp_ho" aria-hidden="true" /> */}
-                                                            <span>
-                                                                <strong className="font-semibold text-azul_corp_ho">{policyItem.name}</strong>
-                                                                <p className="text-base text-gray-400 " >{policyItem.policy_text}</p>
-                                                            </span>
-                                                        </li>
-                                                    </>
+                                                    <li key={index} className="flex gap-x-3">
+                                                        {/* <LockClosedIcon className="mt-1 h-5 w-5 flex-none text-azul_corp_ho" aria-hidden="true" /> */}
+                                                        <span>
+                                                            <strong className="font-semibold text-azul_corp_ho">{policyItem.name}</strong>
+                                                            <p className="text-base text-gray-400">{policyItem.policy_text}</p>
+                                                        </span>
+                                                    </li>
                                                 ))}
                                             </ul>
                                         ) : (
                                             <p>No hay políticas disponibles para esta tienda.</p>
                                         )}
-
-                                      
                                     </div>
+
                                 </div>
                             </div>
                     }
-
                 </div>
             </div>
-
-            <FooterStores storeSlug={storeSlug} />
-
         </Layout>
     )
 }

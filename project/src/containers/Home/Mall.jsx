@@ -30,25 +30,17 @@ const Mall = ({
     next,
     previous,
     loading,
-    
-
 }) => {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-
-
     const params = useParams()
     const search = params.search
     const slug = params.slug
-
-
     useEffect(() => {
         window.scrollTo(0, 0)
         const modifiedSlug = slug === 'categories' ? '' : slug;
 
         get_search_stores(modifiedSlug, search)
     }, [slug, search])
-
-
     return (
         <Layout>
             <Helmet>
@@ -59,13 +51,11 @@ const Mall = ({
                 <link rel="canonical" href="https://www.ruvlo.com/" />
                 <meta name="author" content='Ruvlo' />
                 <meta name="publisher" content='Ruvlo' />
-
                 {/* Social Media Tags */}
                 <meta property="og:title" content='Ruvlo |  Busqueda tiendas' />
                 <meta property="og:description" content='descripcion.' />
                 <meta property="og:url" content="https://www.ruvlo.com/" />
                 <meta property="og:image" content='https://bafybeicwrhxloesdlojn3bxyjqnxgsagtd4sl53a7t4cn4vfe2abmybzua.ipfs.w3s.link/lightbnuilbg.jpg' />
-
                 <meta name="twitter:title" content='Ruvlo |  Busqueda tiendas' />
                 <meta
                     name="twitter:description"
@@ -77,7 +67,7 @@ const Mall = ({
             <div>
                 <div>
                     {/* Mobile filter dialog */}
-                    <Transition.Root show={mobileFiltersOpen} as={Fragment}>
+                    {/* <Transition.Root show={mobileFiltersOpen} as={Fragment}>
                         <Dialog as="div" className="relative z-[100] lg:hidden" onClose={setMobileFiltersOpen}>
                             <Transition.Child
                                 as={Fragment}
@@ -113,10 +103,6 @@ const Mall = ({
                                                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                             </button>
                                         </div>
-
-
-
-
                                         <LoadingStores />
                                         <LoadingStores />
                                         <LoadingStores />
@@ -124,7 +110,7 @@ const Mall = ({
                                 </Transition.Child>
                             </div>
                         </Dialog>
-                    </Transition.Root>
+                    </Transition.Root> */}
                     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
                             <Searcher className="flex-1" />
@@ -132,13 +118,13 @@ const Mall = ({
                                 <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
                                     Resultados de búsqueda: {count}
                                 </h2>
-                                <button
+                                {/* <button
                                     type="button"
                                     className="ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
                                     onClick={() => setMobileFiltersOpen(true)}>
                                     <span className="sr-only">Filters</span>
                                     <FunnelIcon className="h-5 w-5" aria-hidden="true" />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <section aria-labelledby="products-heading" className="pb-24 pt-6">
@@ -167,16 +153,13 @@ const Mall = ({
         </Layout >
     )
 }
-
 const mapStateToProps = state => ({
     stores: state.Stores.search_stores,
     count: state.Stores.count,
     next: state.Stores.next,
     previous: state.Stores.previous,
     loading: state.Stores.loading,
-
 })
-
 export default connect(mapStateToProps, {
     get_search_stores,
     get_search_stores_page

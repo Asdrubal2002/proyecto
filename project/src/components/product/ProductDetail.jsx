@@ -194,7 +194,7 @@ function ProductDetail({
                                 <h1 className="text-3xl font-semibold tracking-tight text-gray-200">{product && product.name}</h1>
                                 <div className="mt-3">
                                     <h2 className="sr-only">Product information</h2>
-                                    <p className="text-3xl text-gray-300">{product && product.price}</p>
+                                    <p className="text-3xl text-gray-300">{product && product.formatted_price}</p>
                                 </div>
                                 <div className="mt-6">
                                     <h3 className="sr-only">Description</h3>

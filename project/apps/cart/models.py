@@ -6,7 +6,6 @@ import uuid
 from decimal import Decimal
 
 User = settings.AUTH_USER_MODEL
-# Create your models here.
 
 class Cart(models.Model):
     slug =  models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
@@ -14,7 +13,6 @@ class Cart(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-
 
     @property
     def total_impuestos(self):
@@ -26,6 +24,10 @@ class Cart(models.Model):
         # Calcula la suma total sin impuestos de todos los elementos en el carrito
         return sum(Decimal(item.product_option.product.price) * item.quantity for item in self.items.all())
 
+    @property
+    def total_con_impuestos_formateado(self):
+        # Devuelve el total con impuestos formateado con separador de miles
+        return "{:,.2f}".format(self.total_sin_impuestos + self.total_impuestos)
 
 class ItemCarrito(models.Model):
     product_option = models.ForeignKey(ProductOption, on_delete=models.CASCADE)
@@ -43,3 +45,8 @@ class ItemCarrito(models.Model):
         # Calcula el subtotal sumando el impuesto por la cantidad
         subtotal_con_impuesto = (price + tax) * self.quantity
         return subtotal_con_impuesto
+
+    @property
+    def subtotal_formateado(self):
+        # Devuelve el subtotal formateado con separador de miles
+        return "{:,.2f}".format(self.subtotal)

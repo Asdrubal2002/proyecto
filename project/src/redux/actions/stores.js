@@ -423,8 +423,6 @@ export const add_like_dislike_store = (storeSlug) => async dispatch => {
             });
         }
     } catch (error) {
-        console.error("Error al agregar el likes:", error);
-
         // Manejar el error de autorización específicamente
         if (error.response && error.response.status === 401) {
             // Puedes realizar acciones específicas para manejar la falta de autorización aquí
@@ -434,7 +432,6 @@ export const add_like_dislike_store = (storeSlug) => async dispatch => {
         }
     } finally {
         // Cerrar la conexión de manera controlada si es necesario
-        console.log("Proceso finalizado, conexión cerrada");
     }
 
 

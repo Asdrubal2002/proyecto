@@ -19,6 +19,7 @@ class ProductSerializerPhotos(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category=CategoriesStoreSerializer()
     images = ProductSerializerPhotos(many=True, read_only=True)
+    formatted_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -34,7 +35,14 @@ class ProductSerializer(serializers.ModelSerializer):
             'date_created',
             'is_active',
             'images',
+            'formatted_price',  # Incluir el campo del precio formateado
+
         ]
+
+    def get_formatted_price(self, obj):
+        # Formatear el precio como una cadena con separador de miles y decimales
+        formatted_price = "{:,.2f}".format(obj.price)
+        return formatted_price
 
 class ProductOptionSerializer(serializers.ModelSerializer):
     option = OptionSerializer()  
