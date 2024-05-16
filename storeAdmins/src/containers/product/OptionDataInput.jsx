@@ -56,10 +56,7 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
 
             setLoading(true);
             setError(null);
-            console.log("ID de la opción seleccionada:", optionId !== null ? optionId : "Ninguna opción seleccionada");
-            console.log("Valor de la opción:", value);
-            console.log("Cantidad:", quantity);
-
+            
             const config = {
                 headers: {
                     'Accept': 'application/json',

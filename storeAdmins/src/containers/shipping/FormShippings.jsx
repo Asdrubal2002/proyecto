@@ -59,8 +59,8 @@ function FormShippings({
       errors.time_to_delivery = 'El tiempo de entrega no puede exceder los 40 caracteres';
     }
     // Validar el precio
-    if (formData.price && !/^\d+(\.\d+)?$/.test(formData.price)) {
-      errors.price = 'El precio debe ser un número válido';
+    if (formData.price && !/^\d+$/.test(formData.price)) {
+      errors.price = 'El precio debe ser un número sin puntos ni comas';
     } else if (formData.price && parseFloat(formData.price) > 1000000) {
       errors.price = 'El precio no puede ser mayor a 1000000';
     }
@@ -75,7 +75,7 @@ function FormShippings({
 
       if (editingShippingId) {
         // Llamar a la función para editar la categoría
-        update_shipping(editingShippingId, formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
+        await update_shipping(editingShippingId, formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
         get_shippings()
 
       } else {
@@ -96,23 +96,16 @@ function FormShippings({
     let newValue = value;
 
     // Validar el nombre: no debe contener símbolos ni números
-    if (name === 'name' && !/^[a-zA-Z\s]*$/.test(value)) {
-      setErrorMessage('El nombre solo puede contener letras y espacios.');
-    } else {
-      setErrorMessage('');
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+    setErrorMessage('');
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
 
     if (name === 'price') {
       // Eliminar puntos y comas del valor
       newValue = value.replace(/[.,]/g, '');
     }
-
-
-
   };
 
   const handleOpenModal = (shippingId) => {

@@ -21,7 +21,8 @@ from .views import (
     OptionListAdminAPIView,
     ProductLikeDislikeAPIView,
     ProductLikesAPIView,
-    LikedProductsAPIView
+    LikedProductsAPIView,
+    DeleteOptionAPIView
 )
 
 urlpatterns = [
@@ -49,6 +50,7 @@ urlpatterns = [
 
     path('liked-products', LikedProductsAPIView.as_view(), name='liked-products'),
 
+    path('option-delete/<int:option_id>', DeleteOptionAPIView.as_view(), name='delete_option'),
 
 
 ]

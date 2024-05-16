@@ -320,7 +320,7 @@ function Products({
                       </div>
                       {shipping_id === 0 && (
                       <div className="bg-red-100 text-red-700 p-3 rounded-md my-4">
-                        <p className="text-base font-semibold">Por favor selecciona un método de envío antes de continuar.</p>
+                        <p className="text-base font-semibold">Por favor selecciona un método de envío o entrega antes de continuar.</p>
                       </div>
                     )}
                       <dt className="text-sm text-gray-600 font-semibold">Selecciona tu método de entrega</dt>

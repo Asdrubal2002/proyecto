@@ -3,11 +3,18 @@ import { connect } from 'react-redux';
 import { get_options_admin } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
 import { CheckIcon, GlobeAltIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import axios from "axios"
+
+
 
 function CreateOptions({
     options,
-    loading_options
+    loading_options,
+    get_options_admin
 }) {
+    const [loading, setLoading] = useState(false);
+    const [editingOptionId, setEditingOptiongId] = useState(null);
+
     useEffect(() => {
     }, []);
 
@@ -18,6 +25,67 @@ function CreateOptions({
     };
     const [formData, setFormData] = useState(initialFormData);
     const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+
+
+
+
+    const handleDeleteOption = (option) => {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const res = await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/option-delete/${option.id}`, config);
+                if (res.status === 204) {
+                    setLoading(false);
+                    get_options_admin();
+                    setMessage(
+                    <div>
+                          <p className='m-4 bg-green-600 p-4 rounded-lg'>Se ha eliminado exitosamente esta opción: <strong> {option.value}</strong></p>
+
+                    </div>
+                    )
+                } else if (res.status === 200 && res.data.related_products) {
+                    // Si hay productos relacionados, puedes acceder a ellos aquí
+                    const relatedProducts = res.data.related_products;
+                    console.log('Productos relacionados:', relatedProducts);
+
+                    // Mostrar los productos relacionados en una lista
+                    const productList = relatedProducts.map((product, index) => (
+                        <li key={product.id}>
+                          <span>{index + 1}. </span> {/* Mostrar el índice enumerado */}
+                          {product.product.name} - {product.product.price}
+                        </li>
+                      ));
+                      // Establecer el mensaje con la lista de productos
+                      setMessage(
+                        <div>
+                          <p className='m-4 bg-red-700 p-4 rounded-lg font-semibold'>No se puede eliminar esta opción <strong> {option.value}</strong> porque está asociada a los siguientes productos:</p>
+                          <ul className='m-4 font-semibold'>
+                            {productList}
+                          </ul>
+                        </div>
+                      );
+
+                }
+            } catch (err) {
+                // Manejar errores aquí
+                setLoading(false);
+                console.error('Error al eliminar la opción:', err);
+            }
+        };
+
+        fetchData();
+        window.scrollTo(0, 0);
+        
+
+    };
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -28,9 +96,46 @@ function CreateOptions({
         const formDataToSend = new FormData();
         formDataToSend.append('value', formData.valueOption);
         console.log(formDataToSend);
+
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        };
+
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-options-admin/`,
+                    formDataToSend,
+                    config);
+
+                if (res.status === 201) {
+                    setLoading(false);
+                    get_options_admin();
+                } else {
+                    setLoading(false);
+                }
+            } catch (err) {
+                setLoading(false);
+            }
+        };
+        fetchData();
+
         setFormData(initialFormData);
         setError('');
     };
+
+    const handleEditOption = (option) => {
+        setMessage('')
+        console.log(option)
+        setFormData({
+            valueOption: option.value,
+        });
+        setEditingOptiongId(option.id);
+        console.log(editingOptionId)
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,7 +148,7 @@ function CreateOptions({
     const filteredOptions = options ? options.filter(option =>
         option.value.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     return (
         <>
@@ -75,6 +180,8 @@ function CreateOptions({
                 </div>
             </form>
 
+            {message && <p>{message}</p>}
+
             {loading_options ? (
                 <Rings width={20} height={20} color="#fff" radius="6" />
             ) : (
@@ -101,10 +208,10 @@ function CreateOptions({
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{option.value}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button className="ml-2 focus:outline-none">
-                                            <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option.id)} />
+                                            <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option)} />
                                         </button>
                                         <button className="ml-2 focus:outline-none">
-                                            <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option.id)} />
+                                            <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option)} />
                                         </button>
                                     </td>
                                 </tr>
@@ -119,9 +226,10 @@ function CreateOptions({
 
 const mapStateToProps = state => ({
     options: state.Products.list_admin_options,
-    loading_options: state.Products.loading_options
+    loading_options: state.Products.loading_options,
+
 });
 
 export default connect(mapStateToProps, {
-
+    get_options_admin
 })(CreateOptions);

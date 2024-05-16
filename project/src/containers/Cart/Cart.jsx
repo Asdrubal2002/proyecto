@@ -9,11 +9,14 @@ import { InfinitySpin, Rings } from "react-loader-spinner";
 import { remove_cart } from '../../redux/actions/cart';
 
 function Cart({ isAuthenticated, carts, loading, remove_cart }) {
+  if (!isAuthenticated) 
+    return <Navigate to="/" />;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (!isAuthenticated) return <Navigate to="/" />;
+  
 
   const [isRemovingCart, setIsRemovingCart] = useState(false);
   const navigate = useNavigate();

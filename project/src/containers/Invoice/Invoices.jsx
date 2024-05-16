@@ -56,7 +56,7 @@ function Invoices({
                                 <div className="p-8 sm:p-10 lg:flex-auto">
                                     <div className="flex items-center">
                                         <Link to={`/store/${invoice.store.slug}`} className="flex items-center flex-grow">
-                                            <h3 className="text-2xl font-bold tracking-tight text-gray-300">{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
+                                            <h3 className="text-2xl font-bold tracking-tight text-gray-300">#{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
                                         </Link>
                                         <button onClick={() => handleDelteInvoice(invoice.id)} className="ml-2 text-gray-400" >
                                             <TrashIcon className="w-6 h-6" />

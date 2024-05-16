@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseBadRequest
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
@@ -34,6 +36,7 @@ from django.core.exceptions import ValidationError
 import os
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseNotFound
 
 # Create your views here.
 
@@ -459,7 +462,7 @@ class OptionListAdminAPIView(APIView):
             # Obtener la tienda del usuario autenticado
             store = get_object_or_404(Store, administrator=request.user)
             # Obtener todas las opciones asociadas con la tienda del usuario autenticado
-            options = Option.objects.filter(store=store)
+            options = Option.objects.filter(store=store).order_by('-created_at')
             # Serializar las opciones
             serializer = OptionSerializer(options, many=True)
             # Devolver la respuesta con las opciones serializadas
@@ -532,3 +535,39 @@ class LikedProductsAPIView(APIView):
 
 
 
+# class DeleteOptionAPIView(APIView):
+#     def delete(self, request, option_id, format=None):
+#         # Buscar la opción por su ID
+#         option = get_object_or_404(Option, id=option_id)
+        
+#         # Verificar si la opción está asociada a algún producto
+#         if ProductOption.objects.filter(option=option).exists():
+#             # Si la opción está asociada a algún producto, devolver un mensaje indicando que no se puede eliminar
+#             return JsonResponse({'message': 'No se puede eliminar esta opción porque está asociada a uno o más productos.'}, status=200)
+        
+#         # Si la opción no está asociada a ningún producto, eliminarla
+#         option.delete()
+        
+#         # Devolver una respuesta de éxito
+#         return JsonResponse({'message': 'La opción se eliminó correctamente.'}, status=204)
+
+class DeleteOptionAPIView(APIView):
+    def delete(self, request, option_id, format=None):
+        # Buscar la opción por su ID
+        option = get_object_or_404(Option, id=option_id)
+        
+        # Obtener los productos relacionados con la opción
+        related_products = ProductOption.objects.filter(option=option)
+        
+        # Verificar si la opción está asociada a algún producto
+        if related_products.exists():
+            # Serializar los productos relacionados
+            serializer = ProductOptionSerializer(related_products, many=True)
+            # Devolver una respuesta con los productos relacionados y un mensaje indicando que no se puede eliminar
+            return Response({'related_products': serializer.data, 'message': 'No se puede eliminar esta opción porque está asociada a uno o más productos.'}, status=status.HTTP_200_OK)
+        
+        # Si la opción no está asociada a ningún producto, eliminarla
+        option.delete()
+        
+        # Devolver una respuesta de éxito
+        return Response({'message': 'La opción se eliminó correctamente.'}, status=status.HTTP_204_NO_CONTENT)

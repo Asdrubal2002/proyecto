@@ -85,6 +85,8 @@ class Option(models.Model):
         Store, on_delete=models.CASCADE, related_name="options_store"
     )
     value = models.CharField(max_length=255, blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now)  # Campo para la fecha de creación
+
 
     def __str__(self):
         return self.value
