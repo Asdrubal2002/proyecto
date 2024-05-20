@@ -63,22 +63,20 @@ const WishList = ({
                 <meta name="twitter:image" content='https://bafybeicwrhxloesdlojn3bxyjqnxgsagtd4sl53a7t4cn4vfe2abmybzua.ipfs.w3s.link/lightbnuilbg.jpg' />
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
-
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
-
-                    <Searcher className="flex-1" />
-
+                    <div className="hidden md:block">
+                        <Searcher />
+                    </div>
                     <div className="flex items-center mt-4 sm:mt-0">
                         <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                            {count&&count} Productos favoritos
+                            {count && count} Productos favoritos
                         </h2>
                     </div>
                 </div>
                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                         <Sidebar />
-
                         <div className="lg:col-span-3">
                             {loading ? (
                                 <InfinitySpin width={200} height={200} color="#fff" radius="6" />

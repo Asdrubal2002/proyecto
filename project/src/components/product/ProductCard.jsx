@@ -9,10 +9,12 @@ import ProductModal from './ProductModal';
 import { CurrencyDollarIcon, HeartIcon } from '@heroicons/react/24/solid';
 import DOMPurify from 'dompurify';
 import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
+import { add_like_dislike_product } from '../../redux/actions/products';
 
 function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
 
   const [open, setOpen] = useState(false)
+  const [showBubble, setShowBubble] = useState(false);
 
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
@@ -20,6 +22,18 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
     } else {
       return text;
     }
+  };
+
+  const handleButtonClick = (slug, e) => {
+    e.stopPropagation();
+    console.log(`Selected product slug: ${slug}`);
+    add_like_dislike_product(slug)
+    // Aquí puedes agregar la lógica adicional que desees
+
+    setShowBubble(true);
+    setTimeout(() => {
+      setShowBubble(false);
+    }, 2000);
   };
 
   const hasImages = data && data.images && data.images.length > 0;
@@ -48,7 +62,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
               </div>
             ))}
           </Carousel>
-        
+
         ) : (
           <div className="no-images-message">No hay imágenes disponibles</div>
         )}
@@ -65,12 +79,26 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
               <div className="flex justify-between items-center w-full mt-1">
                 <span className="text-md font-semibold text-gray-200 flex"> <CurrencyDollarIcon className="w-6 h-6 text-green-500" />{data.formatted_price}</span>
                 <div className="flex items-center">
-                  <button className="text-red-600 hover:text-red-300 focus:outline-none">
-                    <HeartIcon className="w-8 h-8 " />
+                  <button
+                    onClick={(e) => handleButtonClick(data.slugProduct, e)}
+                    className="text-red-600 hover:text-red-300 focus:outline-none"
+                  >
+                    <HeartIcon className="w-8 h-8" />
                   </button>
                 </div>
               </div>
             </div>
+            {showBubble && (
+              <div className="absolute bottom-16 right-4 bg-azul_corp text-white p-2 rounded-lg font-medium">
+                {
+                  isAuthenticated ? <>
+                    Se agregado a favoritos
+                  </> : <>
+                    Tienes que ingresar a tu cuenta
+                  </>
+                }
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -99,7 +127,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full max-w-4xl sm:p-6">
-                  <ProductModal data={data} isAuthenticated={isAuthenticated} />
+                  <ProductModal data={data} isAuthenticated={isAuthenticated} closeModal={() => setOpen(false)} />
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -116,5 +144,5 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-  
+  add_like_dislike_product
 })(dataCard);

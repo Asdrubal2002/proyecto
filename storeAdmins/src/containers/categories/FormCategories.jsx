@@ -72,6 +72,8 @@ function FormCategories({
             // Llamar a la función para editar la categoría
             await update_category(editingCategoryId, formData.name, slug, formData.parent);
             get_categories()
+            clearFormData()
+            setParentEnabled(true)
         } else {
             // Llamar a la función para crear una nueva categoría
             await create_category(formData.name, slug, formData.parent)
@@ -121,6 +123,7 @@ function FormCategories({
         setFormData(initialFormData);
         setEditingCategoryId(null)
         setMessageEdit(false)
+        setParentEnabled(true)
     };
 
     const toggleCategory = (categoryId) => {
@@ -230,7 +233,7 @@ function FormCategories({
                     </button>
                     {
                         messageEdit ? <>
-                            <button onClick={() => clearFormData()} className="m-2 text-red-600 dark:text-red-500 text-sm">Cancelar la edición.</button>
+                            <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
 
                         </> : <></>
                     }

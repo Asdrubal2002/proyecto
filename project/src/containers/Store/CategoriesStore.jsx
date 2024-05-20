@@ -26,24 +26,24 @@ function CategoriesStore({ categories, loading_categories, storeSlug }) {
                     categories.map(category => (
                         <div key={category.id} className="mt-2 space-y-2 border-b border-gray-200 pb-4 text-sm font-medium text-gray-200 ">
                             <h3
-                                className="flex w-full items-center justify-between py-3 text-md text-gray-200 hover:text-gray-400 cursor-pointer"
+                                className="flex w-full items-center justify-between py-3 text-md text-gray-200 cursor-pointer hover:bg-azul_corp rounded-t-xl pl-4	"
                                 onClick={() => toggleCategory(category.id)}
                             >
                                 <span>{category.name}</span>
                                 {expandedCategories.includes(category.id) ? (
-                                    <MinusIcon className="h-6 w-6 text-gray-500" />
+                                    <MinusIcon className="h-6 w-6 text-gray-100" />
                                 ) : (
-                                    <PlusIcon className="h-6 w-6 text-gray-500" />
+                                    <PlusIcon className="h-6 w-6 text-gray-100" />
                                 )}
                             </h3>
 
                             {expandedCategories.includes(category.id) && (
-                                <ul className="space-y-2">
+                                <ul className="bg-stone-700 p-2 rounded-b-xl">
                                     {category.sub_categories.map(subCategory => (
                                         <li key={subCategory.id} className="mb-2">
                                             <Link
                                                 to={`/products_by_category/${storeSlug}/${subCategory.slug}`}
-                                                className="block rounded-md py-2 px-6 bg-stone-900 text-center text-gray-200 hover:bg-azul_corp"
+                                                className="block rounded-md py-2 px-6 bg-gray-200 text-center text-gray-900 "
                                             >
                                                 {subCategory.name}
                                             </Link>

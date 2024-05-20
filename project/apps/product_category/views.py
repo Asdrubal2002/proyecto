@@ -27,7 +27,7 @@ class ListCategoriesStoreView(APIView):
         try:
             # Obtener la tienda por slug
             store = Store.objects.get(slug=storeSlug)
-            categories = Category.objects.filter(store=store, is_active=True)
+            categories = Category.objects.filter(store=store, is_active=True).order_by('name')
             result = []
             for category in categories:
                 if not category.parent:
@@ -64,7 +64,7 @@ class CategoryListViewAdmin(APIView):
         store = user.store
 
         # Obtener las categorías asociadas a la tienda del usuario autenticado
-        categories = Category.objects.filter(store=store).order_by('created_at')
+        categories = Category.objects.filter(store=store).order_by('name')
 
         result = []
         for category in categories:
@@ -147,7 +147,6 @@ class CreateCategoryAPIView(APIView):
                 {"categories": serializer.data}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class CategoryDeleteAPIView(APIView):
     permission_classes = (IsAuthenticated,)

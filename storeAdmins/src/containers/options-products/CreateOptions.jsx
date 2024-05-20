@@ -27,9 +27,6 @@ function CreateOptions({
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
 
-
-
-
     const handleDeleteOption = (option) => {
         const config = {
             headers: {
@@ -129,7 +126,7 @@ function CreateOptions({
 
     const handleEditOption = (option) => {
         setMessage('')
-        console.log(option)
+        window.scrollTo(0, 0);
         setFormData({
             valueOption: option.value,
         });

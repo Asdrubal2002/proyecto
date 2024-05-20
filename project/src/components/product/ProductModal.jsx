@@ -7,7 +7,7 @@ import { add_like_dislike_product, get_options, get_product_likes } from '../../
 import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
 import { add_item, get_user_carts } from '../../redux/actions/cart';
-import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { Disclosure } from '@headlessui/react'
 import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
@@ -40,7 +40,8 @@ function ProductModal({
     add_like_dislike_product,
     userLiked,
     cart_count,
-    get_user_carts
+    get_user_carts,
+    closeModal
 
 }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -63,7 +64,7 @@ function ProductModal({
         setErrorMessage(''); // Limpiar cualquier mensaje de error cuando se selecciona una opción
 
     };
-    
+
     const addItemToCart = async () => {
         if (!options || options.length === 0) {
             // Si el producto no tiene opciones, llamar directamente a addItemToCart sin seleccionar una opción
@@ -79,6 +80,7 @@ function ProductModal({
         await add_item(selectedOption.id)
         //navigate(`/store/${product.category.store.slug}`);
         get_user_carts()
+        closeModal();
     };
     const handleHeartClick = async () => {
         try {
@@ -273,8 +275,13 @@ function ProductModal({
                             </Disclosure.Panel>
                         </Disclosure>
                     </section>
+
                 </div>
             </div>
+            <button onClick={closeModal} className="flex w-full py-2 px-4 text-white items-center justify-center font-semibold rounded-md shadow-md shadow-stone-700 hover:bg-stone-800 focus:outline-none">
+                <ArrowDownIcon className="h-6 w-6 " aria-hidden="true" />
+            </button>
+
         </div>
     )
 }

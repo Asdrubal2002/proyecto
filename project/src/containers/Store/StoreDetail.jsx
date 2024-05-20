@@ -10,7 +10,7 @@ import { useEffect, useState, Fragment } from "react";
 //import { get_products } from "../../redux/actions/products";
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 
-import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon } from "@heroicons/react/24/outline";
 import LoadingStore from "../../components/store/LoadingStore";
 import { ConetenedorBanner, ConetenedorBanner1, ConetenedorInfo, ConetenedorInfo1, ConetenedorInfo2, ConetenedorProfile, ConetenedorProfile1, ConetenedorProfile2, ConetenedorProfile3, EspacioContenedor, Principal } from "../../components/store/styles/LoadingStore";
 import { BotonesMeGustaNOMegusta, ContenedorInfoUbication, ContenedorInfoUbication1, DescriptionStore, EspacioPhotos, Photo, StoreProfile, SeparadorVertical } from "./styles/StoreDetail";
@@ -76,7 +76,7 @@ const StoreDetail = ({
 
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const textareaRef = useRef(null);
-    const [buttonText, setButtonText] = useState('Compartir');
+    const [buttonText, setButtonText] = useState('Comentar');
     const [activeTab, setActiveTab] = useState(0);
 
     const instagram = store && store.instagram
@@ -268,7 +268,6 @@ const StoreDetail = ({
                                         >
                                             <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-stone-600 py-4 pb-12 shadow-xl">
                                                 <div className="flex items-center justify-between px-4">
-                                                    <h2 className="text-lg font-medium text-gray-900">Categorias</h2>
                                                     <div className="fixed inset-0 z-40 flex">
                                                         <Transition.Child
                                                             as={Fragment}
@@ -303,20 +302,22 @@ const StoreDetail = ({
                                     <div className="hidden sm:block">
                                         <Searcher className="flex-1" />
                                     </div>
-                                    <div className="flex items-center mt-2 sm:mt-0">
+                                    <div className="flex justify-between items-center mt-2 sm:mt-0">
                                         <h2 className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                                            <BuildingStorefrontIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" /> {/* Agrega el icono de búsqueda */}
+                                            <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
+                                            {/* Agrega el icono de búsqueda */}
                                             {count} Productos
                                         </h2>
                                         <button
                                             type="button"
-                                            className="ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                                            className="p-2 text-gray-200 sm:ml-6 lg:hidden bg-gray-600 rounded-md"
                                             onClick={() => setMobileFiltersOpen(true)}
                                         >
                                             <span className="sr-only">Filters</span>
                                             <FunnelIcon className="h-5 w-5" aria-hidden="true" />
                                         </button>
                                     </div>
+
                                 </div>
                                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
                                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
@@ -337,7 +338,7 @@ const StoreDetail = ({
                                                 {isAuthenticated ?
                                                     <div>
                                                         {profile && profile.firs_name == null ? (
-                                                            <div className="bg-stone-800 text-gray-100 rounded-md mb-8">
+                                                            <div className="bg-stone-800 text-gray-100 rounded-md mb-4">
                                                                 <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
                                                                 <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
                                                                     <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
@@ -347,38 +348,42 @@ const StoreDetail = ({
 
                                                             </div>
                                                         ) : (
-                                                            <div className="flex items-start pb-5">
-                                                                <div className="flex flex-col w-full">
-                                                                    <textarea
-                                                                        ref={textareaRef}
-                                                                        id="commentTextArea"
-                                                                        className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm"
-                                                                        placeholder="Cuentanos tu experiencia...."
-                                                                        maxLength={200} // Aquí estableces el límite de caracteres
-                                                                    ></textarea>
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            handleComment();
-                                                                        }}
-                                                                        disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
+                                                            <div>
+                                                                <div className="flex pb-4 items-center">
+                                                                    <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-azul_corp_ho" />
+                                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
+                                                                </div>
+                                                                <div className="flex items-start pb-5">
+                                                                    <div className="flex flex-col w-full">
+                                                                        <textarea
+                                                                            ref={textareaRef}
+                                                                            id="commentTextArea"
+                                                                            className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm"
+                                                                            placeholder="Cuentanos tu experiencia...."
+                                                                            maxLength={200} // Aquí estableces el límite de caracteres
+                                                                        ></textarea>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                handleComment();
+                                                                            }}
+                                                                            disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
 
-                                                                        className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
-                                                                    >
-                                                                        {buttonText}
-                                                                    </button>
+                                                                            className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
+                                                                        >
+                                                                            {buttonText}
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+
                                                         )}
                                                     </div>
                                                     : <></>}
                                             </div>
                                             <div className="my-4">
                                                 {/* Segunda fila */}
-                                                <div className="flex pb-4 items-center">
-                                                    <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-azul_corp_ho" />
-                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
-                                                </div>
-                                                <div>
+
+                                                <div style={{ maxHeight: '800px', overflowY: 'scroll', scrollbarWidth: 'none', padding: '10px' }}>
                                                     {comments && Array.isArray(comments) && comments.length === 0 ? (
                                                         <div className="flex items-center gap-2 p-3 rounded-md">
                                                             <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
@@ -387,14 +392,21 @@ const StoreDetail = ({
                                                     ) : (
                                                         Array.isArray(comments) && comments.map((comment, index) => (
                                                             <div key={index}>
-                                                                <CommentStore comment={comment} profile={profile} isAuthenticated={isAuthenticated} delete_comment_store={delete_comment_store} edit_comment_store={edit_comment_store} />
-
+                                                                <CommentStore
+                                                                    comment={comment}
+                                                                    profile={profile}
+                                                                    isAuthenticated={isAuthenticated}
+                                                                    delete_comment_store={delete_comment_store}
+                                                                    edit_comment_store={edit_comment_store}
+                                                                />
                                                             </div>
                                                         ))
                                                     )}
                                                 </div>
-                                            </div>
 
+
+
+                                            </div>
                                         </div>
                                         {/* Segunda columna */}
                                         <div className="lg:col-span-3">

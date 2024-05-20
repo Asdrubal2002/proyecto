@@ -14,11 +14,13 @@ const CommentStore = ({ comment, profile, isAuthenticated, delete_comment_store,
         // Aquí puedes implementar la lógica para guardar el comentario editado
         edit_comment_store(editedContent, comment.id)
         setIsEditing(false);
+        
     };
 
     const handleCancel = () => {
         setEditedContent(comment.content);
         setIsEditing(false);
+        
     };
 
     const handleDelete = () => {

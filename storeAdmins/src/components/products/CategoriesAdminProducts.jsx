@@ -15,8 +15,6 @@ function CategoriesAdminProducts({
 
     const [expandedCategories, setExpandedCategories] = useState([]);
 
-
-
     const toggleCategory = categoryId => {
         if (expandedCategories.includes(categoryId)) {
             setExpandedCategories(expandedCategories.filter(id => id !== categoryId));
@@ -24,9 +22,6 @@ function CategoriesAdminProducts({
             setExpandedCategories([...expandedCategories, categoryId]);
         }
     };
-
-
-
 
     return (
         <div className="flex flex-wrap gap-4 mt-2">
@@ -66,8 +61,6 @@ function CategoriesAdminProducts({
                 </div>
             ))}
         </div>
-
-
     )
 }
 

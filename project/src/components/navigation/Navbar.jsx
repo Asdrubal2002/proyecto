@@ -37,7 +37,7 @@ const navigation = {
                         { name: 'Datos personales', to: '/dashboard' },
                         { name: 'Cambia datos de tu cuenta', to: '/dashboardAccount' },
 
-                        
+
                     ],
                 },
 
@@ -45,14 +45,14 @@ const navigation = {
                     id: 'product',
                     name: 'Productos',
                     items: [
-                        { name: 'Productos guardados', to: '/wish_list' },
+                        { name: 'Productos favoritos', to: '/wish_list' },
                     ],
                 },
                 {
                     id: 'store',
                     name: 'Tiendas',
                     items: [
-                        { name: 'Tiendas guardadas', to: '/wish_list_stores' },
+                        { name: 'Tiendas favoritas', to: '/wish_list_stores' },
                     ],
                 },
             ],
@@ -131,6 +131,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
     const logoutHandler = () => {
         logout();
         setRedirect(true);
+        setOpen(false)
     };
 
     return (
@@ -209,7 +210,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                         {item.name}
                                                                     </Link>
                                                                     <p aria-hidden="true" className="mt-1">
-                                                                       de
+                                                                        de
                                                                     </p>
                                                                 </div>
                                                             ))}
@@ -237,10 +238,25 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                     </Tab.Panel>
                                                 ))}
                                             </Tab.Panels>
-                                        </Tab.Group></> : <>Holi</>}
-
+                                        </Tab.Group>
+                                        <button className="space-y-6 px-4 py-6 text-gray-600 bg-gray-200" onClick={logoutHandler} >
+                                            Salir
+                                        </button >
+                                    </> : <>
+                                        <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                                            <div className="flow-root">
+                                                <Link to="/login" className="-m-2 block p-2 font-medium text-gray-900">
+                                                    Ingresar
+                                                </Link>
+                                            </div>
+                                            <div className="flow-root">
+                                                <Link to="/signup" className="-m-2 block p-2 font-medium text-gray-900">
+                                                    Registrarse
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </>}
                                     {/* Links */}
-
                                     <div className="space-y-6 border-t border-gray-200 px-4 py-6">
 
                                         <div className="flow-root">
@@ -253,31 +269,6 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                 Compañia
                                             </Link>
                                         </div>
-
-                                    </div>
-
-                                    <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                                        <div className="flow-root">
-                                            <Link to="/login" className="-m-2 block p-2 font-medium text-gray-900">
-                                                Ingresar
-                                            </Link>
-                                        </div>
-                                        <div className="flow-root">
-                                            <Link to="/signup" className="-m-2 block p-2 font-medium text-gray-900">
-                                                Registrarse
-                                            </Link>
-                                        </div>
-                                    </div>
-
-                                    <div className="border-t border-gray-200 px-4 py-6">
-                                        <Link to="/" className="-m-2 flex items-center p-2">
-                                            <img
-                                                src="/LogoRuvlo.png"
-                                                alt=""
-                                                className="block h-auto w-20 flex-shrink-0"
-                                            />
-                                            
-                                        </Link>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>
@@ -366,7 +357,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                                             {item.name}
                                                                                         </Link>
                                                                                         <p aria-hidden="true" className="mt-1">
-                                                                                           Dentro de tu cuenta
+                                                                                            Dentro de tu cuenta
                                                                                         </p>
                                                                                     </div>
                                                                                 ))}
@@ -406,15 +397,15 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                         <Link
 
                                             to={'/company'}
-                                            className={window.location.pathname === '/company' ? 'flex items-center text-sm font-medium text-gray-400 hover:text-gray-400' : 'flex items-center text-sm font-medium text-gray-200 hover:text-gray-400'}
-                                        >
+                                            className={`flex items-center text-sm font-medium ${window.location.pathname === '/company' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
+                                            >
                                             Compañia
                                         </Link>
 
                                         <NavLink
                                             to={'/'}
-                                            className={window.location.pathname === '/' ? 'flex items-center text-sm font-medium text-gray-400 hover:text-gray-200  ' : '  flex items-center text-sm font-medium text-gray-100 hover:text-gray-400'}
-                                        >
+                                            className={`flex items-center text-sm font-medium ${window.location.pathname === '/' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
+                                            >
                                             Centro comercial
                                         </NavLink>
                                     </div>
@@ -426,7 +417,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/carts'} className="group -m-2 flex items-center p-2">
                                                     <BuildingStorefrontIcon
-                                                        className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/carts' ? 'text-azul_corp_ho' : 'text-gray-400'}`}
                                                         aria-hidden="true"
                                                     />
                                                     <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{cart_count}</span>
@@ -436,7 +427,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/invoices'} className="group -m-2 flex items-center p-2">
                                                     <ClipboardDocumentCheckIcon
-                                                        className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/invoices' ? 'text-azul_corp_ho' : 'text-gray-400'}`}
                                                         aria-hidden="true"
                                                     />
                                                     <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>
@@ -476,7 +467,6 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                             <NombreModal>
                                                                 <span>{user && user.get_full_name}</span>
                                                             </NombreModal>
-
                                                             <Menu.Item>
                                                                 {({ active }) => (
                                                                     <Link
@@ -488,36 +478,74 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             "block px-4 py-2 text-sm font-estilo_letra"
                                                                         )}
                                                                     >
-                                                                        Perfil
+                                                                        Datos personales
                                                                     </Link>
                                                                 )}
                                                             </Menu.Item>
-
-                                                            <form>
-                                                                <Menu.Item>
-                                                                    {({ active }) => (
-                                                                        <button
-                                                                            onClick={logoutHandler}
-                                                                            className={classNames(
-                                                                                active
-                                                                                    ? "bg-gray-800 text-gray-300"
-                                                                                    : "text-gray-300",
-                                                                                "block w-full text-left px-4 py-2 text-sm font-estilo_letra"
-                                                                            )}
-                                                                        >
-                                                                            Salir
-                                                                        </button>
-                                                                    )}
-                                                                </Menu.Item>
-                                                            </form>
+                                                            <Menu.Item>
+                                                                {({ active }) => (
+                                                                    <Link
+                                                                        to="/dashboardAccount"
+                                                                        className={classNames(
+                                                                            active
+                                                                                ? "bg-gray-800 text-gray-300"
+                                                                                : "text-gray-300",
+                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                        )}
+                                                                    >
+                                                                        Datos de tu cuenta
+                                                                    </Link>
+                                                                )}
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                {({ active }) => (
+                                                                    <Link
+                                                                        to="/carts"
+                                                                        className={classNames(
+                                                                            active
+                                                                                ? "bg-gray-800 text-gray-300"
+                                                                                : "text-gray-300",
+                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                        )}
+                                                                    >
+                                                                        Tiendas seleccionadas
+                                                                    </Link>
+                                                                )}
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                {({ active }) => (
+                                                                    <Link
+                                                                        to="/invoices"
+                                                                        className={classNames(
+                                                                            active
+                                                                                ? "bg-gray-800 text-gray-300"
+                                                                                : "text-gray-300",
+                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                        )}
+                                                                    >
+                                                                        Pedidos realizados
+                                                                    </Link>
+                                                                )}
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                {({ active }) => (
+                                                                    <button
+                                                                        onClick={logoutHandler}
+                                                                        className={classNames(
+                                                                            active
+                                                                                ? "bg-gray-800 text-gray-300"
+                                                                                : "text-gray-300",
+                                                                            "block w-full text-left px-4 py-2 text-sm font-estilo_letra"
+                                                                        )}
+                                                                    >
+                                                                        Salir de tu cuenta
+                                                                    </button>
+                                                                )}
+                                                            </Menu.Item>
                                                         </div>
-
-
                                                     </Menu.Items>
                                                 </Transition>
                                             </Menu>
-
-
                                         </> : <>
                                             <Links to="/signup">
                                                 Registrarse

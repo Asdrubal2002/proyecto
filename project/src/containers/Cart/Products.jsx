@@ -7,7 +7,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 
-import { BuildingStorefrontIcon, CheckIcon, ClockIcon, PencilIcon, QuestionMarkCircleIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, BuildingStorefrontIcon, CheckIcon, ClockIcon, PencilIcon, QuestionMarkCircleIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { get_user_location } from '../../redux/actions/profile';
 
@@ -172,7 +172,6 @@ function Products({
     }
 
     // Si shippingme no es 0, continuar con el proceso de compra
-    console.log("Se presionó el botón Comprar con los parámetros:", profileF, storeF, shippingme, locationShi, cartF);
     await add_invoice(profileF, storeF, shippingme, locationShi, cartF);
     navigate('/invoices');
 
@@ -204,10 +203,10 @@ function Products({
                   {cart && cart.store ? (
                     <p>Detalle de compra en {cart.store.name}</p>
                   ) : (
-                    <p>Volver a navegar</p>
+                  <p>Volver a navegar</p>
                   )}
                 </h2>
-                <BuildingStorefrontIcon className="h-6 w-6 text-gray-500" />
+                <ArrowLeftIcon className="h-6 w-6 text-gray-500" />
               </Link>
               {mostrarContenido ? (
                 <>

@@ -7,7 +7,6 @@ class OptionSerializer(serializers.ModelSerializer):
         model = Option
         fields = ['id', 'value']
 
-        
 class ProductSerializerPhotos(serializers.ModelSerializer):
     class Meta:
         model = ProductImage

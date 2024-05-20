@@ -62,10 +62,12 @@ const WishListStore = ({
             </Helmet>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
-                    <Searcher className="flex-1" />
+                    <div className="hidden md:block">
+                        <Searcher />
+                    </div>
                     <div className="flex items-center mt-4 sm:mt-0">
                         <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                           {count_likes} tiendas favoritas
+                            {count_likes} tiendas favoritas
                         </h2>
                     </div>
                 </div>
@@ -106,7 +108,7 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
     wishlist: state.Stores.stores_liked ? state.Stores.stores_liked.stores : [],
     loading: state.Stores.loading,
-    count_likes:state.Stores.likes.total_likes
+    count_likes: state.Stores.stores_liked ? state.Stores.stores_liked.count || 0 : 0,
 
 });
 export default connect(mapStateToProps, {

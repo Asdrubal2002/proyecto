@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from "react-redux"
-import { CheckCircleIcon, ChevronRightIcon, ClipboardDocumentCheckIcon, CurrencyDollarIcon, EnvelopeIcon, FlagIcon, PhotoIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ClipboardDocumentCheckIcon, CurrencyDollarIcon, EnvelopeIcon, FlagIcon, PhotoIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
 function ProductCard({
@@ -16,7 +16,7 @@ function ProductCard({
 
   return (
     <>
-      <div className="overflow-hidden bg-white shadow sm:rounded-md">
+      <Link to={`/product/${data.slugProduct}`} className="overflow-hidden bg-white shadow sm:rounded-md">
         <ul role="list" className="divide-y divide-gray-200">
           <li key={data.id}>
             <a href={data.href} className="block hover:bg-gray-50">
@@ -58,15 +58,11 @@ function ProductCard({
                     </div>
                   </div>
                 </div>
-                <Link to={`/product/${data.slugProduct}`} className="ml-auto">
-                  <ChevronRightIcon className="h-5 w-5 text-gray-400 inline-block relative overflow-hidden transition-transform duration-300 ease-in-out hover:translate-x-2" aria-hidden="true" />
-                </Link>
               </div>
-
             </a>
           </li>
         </ul>
-      </div>
+      </Link>
     </>
 
   )

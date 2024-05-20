@@ -5,19 +5,4 @@
 :root {
     @apply h-full bg-stone-950 text-slate-100
 }
-
-/* index.css */
-
-.scrollbar-style::-webkit-scrollbar {
-    width: 12px;
-}
-
-.scrollbar-style::-webkit-scrollbar-track {
-    background: #090909;
-}
-
-.scrollbar-style::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 6px;
-    border: 3px solid #f1f1f1;
-}
+  

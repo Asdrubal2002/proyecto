@@ -73,7 +73,7 @@ class ProductsByStore(APIView):
         products = Product.objects.filter(
             category__in=active_categories,
             is_active=True,
-        ).order_by("date_created")
+        ).order_by("-date_created")
 
         # Filtrar los productos para excluir aquellos que pertenecen a
         # categorías padres que estén desactivadas

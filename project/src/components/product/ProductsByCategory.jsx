@@ -5,7 +5,9 @@ import Layout from '../../hocs/Layout';
 import { Link, useParams } from 'react-router-dom';
 import ProductList from './ProductList';
 import LoadingStores from '../home/LoadingStores';
-import { BuildingStorefrontIcon, FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { BuildingStorefrontIcon, GiftIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { FunnelIcon } from '@heroicons/react/24/solid'
+
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { get_categories_products_store } from "../../redux/actions/product_categories";
 import CategoriesStore from '../../containers/Store/CategoriesStore';
@@ -13,6 +15,7 @@ import CategoriesStoreMobile from '../../containers/Store/CategoriesStoreMobile'
 import LoadingCategoriesStores from '../store/LoadingCategoriesStores';
 import Searcher from '../searcher/Searcher';
 import ProductListByCategory from './ProductsListByCategory';
+import { GifIcon } from '@heroicons/react/24/solid';
 
 
 
@@ -71,7 +74,6 @@ const ProductsByCategory = ({
                 >
                   <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-stone-600 py-4 pb-12 shadow-xl">
                     <div className="flex items-center justify-between px-4">
-                      <h2 className="text-lg font-medium text-gray-900">Categorias</h2>
                       <div className="fixed inset-0 z-40 flex">
                         <Transition.Child
                           as={Fragment}
@@ -88,7 +90,7 @@ const ProductsByCategory = ({
                                 {loading_categories ? (
                                   <LoadingCategoriesStores />
                                 ) : (
-                                  <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
+                                  <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} closeCategories={() => setMobileFiltersOpen(false)}/>
                                 )}
                               </ul>
                             </div>
@@ -106,18 +108,30 @@ const ProductsByCategory = ({
               <div className="hidden sm:block">
                 <Searcher className="flex-1" />
               </div>
-              <div className="flex items-center mt-4 sm:mt-0">
-                <Link to={`/store/${storeSlug}`} className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                  <BuildingStorefrontIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" /> {/* Agrega el icono de búsqueda */}
-                  {count} Productos
+              <div className="flex flex-col sm:flex-row items-center mt-4 sm:mt-0">
+                <Link
+                  to={`/store/${storeSlug}`}
+                  className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
+                >
+                  <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
+                  {/* Agrega el icono de búsqueda */}
+                  {count} Productos -
+                  <strong>
+                    {' '}
+                    {categorySlug
+                      .split('-')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ')}
+                  </strong>
                 </Link>
-                <button
-                  type="button"
-                  className="ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
-                  onClick={() => setMobileFiltersOpen(true)}>
-                  <span className="sr-only">Filters</span>
-                  <FunnelIcon className="h-5 w-5" aria-hidden="true" />
-                </button>
+                  <button
+                    type="button"
+                    className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
+                    onClick={() => setMobileFiltersOpen(true)}
+                  >
+                    <span className="sr-only">Filters</span>
+                    <FunnelIcon className="h-5 w-5 " aria-hidden="true"  />
+                  </button>
               </div>
             </div>
             <section aria-labelledby="products-heading" className="pb-24 pt-6">

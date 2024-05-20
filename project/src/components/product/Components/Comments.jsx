@@ -4,7 +4,7 @@ import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
 
 const Comments = ({ loading, comments, profile, isAuthenticated, delete_comment_product, edit_comment_prodcut }) => {
   return (
-    <div className="max-h-96 overflow-y-auto scrollbar-style">
+    <div style={{ maxHeight: '400px',  overflowY: 'scroll', scrollbarWidth: 'none', }}>
       {loading ? (
         // Si está cargando, muestra un indicador de carga
         <div>Cargando comentarios...</div>

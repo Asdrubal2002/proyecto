@@ -5,7 +5,7 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 
 
-function CategoriesStoreMobile({ categories, loading_categories, storeSlug }) {
+function CategoriesStoreMobile({ categories, loading_categories, storeSlug, closeCategories }) {
 
     const [expandedCategories, setExpandedCategories] = useState([]);
 
@@ -19,7 +19,7 @@ function CategoriesStoreMobile({ categories, loading_categories, storeSlug }) {
 
     return (
         <div className="lg:block">
-            <h2>Categorias disponibles</h2>
+            <h2 className='p-2 text-lg'>Categorias disponibles</h2>
             <ul role="list" className="space-y-4 text-sm font-medium text-gray-200">
                 {loading_categories ? (
                     <LoadingCategoriesStores />
@@ -27,7 +27,7 @@ function CategoriesStoreMobile({ categories, loading_categories, storeSlug }) {
                     categories.map(category => (
                         <div key={category.id} className="mt-4 space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-200">
                             <h3
-                                className="flex w-full items-center justify-between py-3 text-md text-gray-200 hover:text-gray-400 cursor-pointer"
+                                className="flex w-full items-center justify-between py-3 text-md text-gray-200 hover:text-gray-400 cursor-pointer rounded-t-xl pl-4 text-base"
                                 onClick={() => toggleCategory(category.id)}
                             >
                                 <span>{category.name}</span>
@@ -39,12 +39,13 @@ function CategoriesStoreMobile({ categories, loading_categories, storeSlug }) {
                             </h3>
 
                             {expandedCategories.includes(category.id) && (
-                                <ul className="space-y-2">
+                                <ul className="bg-stone-600 p-2 rounded-b-xl">
                                     {category.sub_categories.map(subCategory => (
                                         <li key={subCategory.id} className="mb-2">
                                             <Link
                                                 to={`/products_by_category/${storeSlug}/${subCategory.slug}`}
-                                                className="block rounded-md py-2 px-9 bg-stone-900 text-center text-gray-200 pt-4"
+                                                className="block rounded-md py-2 px-9 bg-gray-200 text-center text-gray-900 text-base"
+                                                onClick={closeCategories} // Llama a closeCategories() al hacer clic en la subcategoría
                                             >
                                                 {subCategory.name}
                                             </Link>
