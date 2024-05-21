@@ -65,7 +65,7 @@ function ProductListByCategory({ products, get_products_list_page,categorySlug, 
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-        window.scrollTo(0, 600);
+        window.scrollTo(0, 150);
         get_products_list_page(storeSlug,categorySlug, newPage);
     };
 

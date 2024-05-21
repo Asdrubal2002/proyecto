@@ -38,6 +38,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 
+
 # Create your views here.
 
 
@@ -571,3 +572,38 @@ class DeleteOptionAPIView(APIView):
         
         # Devolver una respuesta de éxito
         return Response({'message': 'La opción se eliminó correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class ProductListViewFiltered(APIView):
+    def get(self, request, storeSlug, categorySlug=None, format=None):
+        queryset = Product.objects.all()
+        store_slug = self.kwargs.get('storeSlug')
+        if store_slug:
+            queryset = queryset.filter(category__store__slug=store_slug)
+
+        # Aplicar filtros adicionales según sea necesario
+        filtered_queryset = self.filter_queryset(queryset)
+
+        paginator = LargeSetPagination()
+        results = paginator.paginate_queryset(filtered_queryset, request)
+        products_serialized = ProductSerializer(results, many=True)
+        return paginator.get_paginated_response(products_serialized.data)
+
+    def filter_queryset(self, queryset):
+        # Obtener el filtro de la solicitud
+        name_filter = self.request.query_params.get('name', None)
+        category_slug_filter = self.kwargs.get('categorySlug', None)
+        price_min_filter = self.request.query_params.get('price_min', '')
+        price_max_filter = self.request.query_params.get('price_max', '').strip()  # Eliminar espacios en blanco
+        
+        # Aplicar filtros si se proporcionan en la solicitud
+        if name_filter:
+            queryset = queryset.filter(name__icontains=name_filter)
+        if category_slug_filter:
+            queryset = queryset.filter(category__slug=category_slug_filter)
+        if price_min_filter:
+            queryset = queryset.filter(price__gte=price_min_filter)
+        if price_max_filter and price_max_filter != '':  # Verificar si price_max_filter no está vacío
+            queryset = queryset.filter(price__lte=price_max_filter)
+        
+        return queryset
+

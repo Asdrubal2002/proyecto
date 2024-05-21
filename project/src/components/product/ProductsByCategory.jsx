@@ -16,10 +16,12 @@ import LoadingCategoriesStores from '../store/LoadingCategoriesStores';
 import Searcher from '../searcher/Searcher';
 import ProductListByCategory from './ProductsListByCategory';
 import { GifIcon } from '@heroicons/react/24/solid';
+import SearchFormByCategory from '../searcher/SearchFormByCategory';
 
 
 
 const ProductsByCategory = ({
+  store,
   get_products_by_category,
   get_products_by_category_page,
   products,
@@ -146,7 +148,7 @@ const ProductsByCategory = ({
                     </div>
                   </div>
                   <div className='pt-5 hidden lg:block'>
-                    sad
+                  <SearchFormByCategory storeSlug={storeSlug} categorySlug={categorySlug}/>
                   </div>
                 </div>
                 <div className="lg:col-span-3">
@@ -174,8 +176,6 @@ const ProductsByCategory = ({
               </div>
             </section>
           </main>
-
-
         </>
       </div>
     </Layout>
@@ -183,6 +183,8 @@ const ProductsByCategory = ({
 };
 
 const mapStateToProps = state => ({
+  store: state.Stores.store,
+
   products: state.Products_By_Category.products,
   count: state.Products_By_Category.count,
   next: state.Products_By_Category.next,

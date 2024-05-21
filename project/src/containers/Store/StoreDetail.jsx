@@ -36,6 +36,7 @@ import FooterStores from "../../components/store/FooterStores";
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
 import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
+import SearchForm from "../../components/searcher/SearchForm";
 
 
 function classNames(...classes) {
@@ -306,7 +307,7 @@ const StoreDetail = ({
                                         <h2 className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
                                             <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
                                             {/* Agrega el icono de búsqueda */}
-                                            {count} Productos
+                                            {count} Productos Registrados
                                         </h2>
                                         <button
                                             type="button"
@@ -324,7 +325,7 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className=" px-4 py-2 rounded-md text-sm font-medium hidden sm:block ">
+                                            <p className=" px-4 py-2 rounded-md text-xl font-medium hidden sm:block ">
                                                 Categorias disponibles
                                             </p>
 
@@ -333,8 +334,9 @@ const StoreDetail = ({
                                                 <div className="container mx-auto px-2 py-2">
                                                     <CategoriesStore categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
                                                 </div>
-                                                {/* <div>
-                                                </div> */}
+                                                 <div>
+                                                    <SearchForm storeSlug={storeSlug}/>
+                                                </div> 
                                                 {isAuthenticated ?
                                                     <div>
                                                         {profile && profile.firs_name == null ? (
@@ -350,7 +352,6 @@ const StoreDetail = ({
                                                         ) : (
                                                             <div>
                                                                 <div className="flex pb-4 items-center">
-                                                                    <ChatBubbleBottomCenterTextIcon className="h-4 w-4 text-azul_corp_ho" />
                                                                     <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
                                                                 </div>
                                                                 <div className="flex items-start pb-5">
@@ -368,7 +369,7 @@ const StoreDetail = ({
                                                                             }}
                                                                             disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
 
-                                                                            className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
+                                                                            className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold text-sm"
                                                                         >
                                                                             {buttonText}
                                                                         </button>
@@ -383,7 +384,7 @@ const StoreDetail = ({
                                             <div className="my-4">
                                                 {/* Segunda fila */}
 
-                                                <div style={{ maxHeight: '800px', overflowY: 'scroll', scrollbarWidth: 'none', padding: '10px' }}>
+                                                <div style={{ maxHeight: '900px', overflowY: 'scroll', scrollbarWidth: 'none', padding: '10px' }}>
                                                     {comments && Array.isArray(comments) && comments.length === 0 ? (
                                                         <div className="flex items-center gap-2 p-3 rounded-md">
                                                             <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
@@ -403,9 +404,6 @@ const StoreDetail = ({
                                                         ))
                                                     )}
                                                 </div>
-
-
-
                                             </div>
                                         </div>
                                         {/* Segunda columna */}
@@ -429,20 +427,7 @@ const StoreDetail = ({
                             </main>
                         </div>
                     </div>
-                    <FooterStores
-                        storeSlug={storeSlug}
-                        instagram={instagram}
-                        facebook={facebook}
-                        x_red_social={x_red_social}
-                        locationStore={store && store.location}
-                        scheduleStore={store && store.schedule}
-                        phoneStore={store && store.phone}
-                        emailStore={store && store.email}
-                        AddresStore={store && store.address}
-                        CountryStore={store && store.city.estado_o_departamento.pais.nombre}
-                        cityStore={store && store.city.nombre}
-                        nameCurrencyStore={store && store.city.estado_o_departamento.pais.currency.name}
-                        currencyStore={store && store.city.estado_o_departamento.pais.currency.typecurrency}
+                    <FooterStores store={store}
                     />
                 </>
             }

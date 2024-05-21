@@ -11,7 +11,8 @@ import FooterStores from '../../components/store/FooterStores';
 function StorePolicies({
     get_store_policies,
     policy,
-    loading
+    loading,
+    store
 }) {
 
     const params = useParams()
@@ -73,11 +74,15 @@ function StorePolicies({
                     }
                 </div>
             </div>
+            <FooterStores store={store}/>
+
         </Layout>
     )
 }
 
 const mapStateToProps = state => ({
+    store: state.Stores.store,
+
     policy: state.Stores.policies,
     loading: state.Stores.loading,
 

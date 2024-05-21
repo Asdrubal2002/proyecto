@@ -22,7 +22,8 @@ from .views import (
     ProductLikeDislikeAPIView,
     ProductLikesAPIView,
     LikedProductsAPIView,
-    DeleteOptionAPIView
+    DeleteOptionAPIView,
+    ProductListViewFiltered
 )
 
 urlpatterns = [
@@ -47,10 +48,11 @@ urlpatterns = [
     path("user-admin-options-view/", OptionListAdminAPIView.as_view(), name="user_admin_products"),
     path('product/like_dislike/', ProductLikeDislikeAPIView.as_view(), name='product_like_dislike'),
     path('product/<slugProduct>/likes/', ProductLikesAPIView.as_view(), name='product-likes'),
-
     path('liked-products', LikedProductsAPIView.as_view(), name='liked-products'),
-
     path('option-delete/<int:option_id>', DeleteOptionAPIView.as_view(), name='delete_option'),
-
+    # URL con categorySlug opcional 
+    path("products-filtered/<storeSlug>/<categorySlug>/", ProductListViewFiltered.as_view(), name="product-list-filtered"),
+    # URL sin categorySlug
+    path("products-filtered/<storeSlug>/", ProductListViewFiltered.as_view(), name="product-list-filtered-no-category"),
 
 ]

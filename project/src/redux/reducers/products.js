@@ -17,6 +17,10 @@ import {
     ADD_PRODUCT_LIKES_DISLIKE_FAIL,
     GET_PRDUCTS_LIKED_SUCCESS,
     GET_PRDUCTS_LIKED_FAIL,
+    GET_FILTERED_PRODUCTS_SUCCESS,
+    GET_FILTERED_PRODUCTS_FAIL,
+    GET_FILTERED_PRODUCTS_BY_CATEGORIES_SUCCESS,
+    GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -30,7 +34,7 @@ const initialState = {
     previous: null,
     loading_likes: null,
     likes: null,
-    products_liked:null
+    products_liked: null
 };
 
 export default function Products(state = initialState, action) {
@@ -154,7 +158,46 @@ export default function Products(state = initialState, action) {
                 products_liked: null
             }
 
+
+        case GET_FILTERED_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                products: payload.results,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous
+            }
+        case GET_FILTERED_PRODUCTS_FAIL:
+            return {
+                ...state,
+                products: null,
+                count: null,
+                next: null,
+                previous: null
+            }
+
+        case GET_FILTERED_PRODUCTS_BY_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                products: payload.results,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous
+            }
+        case GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL:
+            return {
+                ...state,
+                products: null,
+                count: null,
+                next: null,
+                previous: null
+            }
+
         default:
             return state
     }
 }
+
+
+
+

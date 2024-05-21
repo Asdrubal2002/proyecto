@@ -36,14 +36,11 @@ function Searcher({
 
     const onSubmit = e => {
         e.preventDefault();
-
         if (!search) {
           setError("Por favor, escribe un término de búsqueda.");
             return;
         }
-
         let filledSlug = slug || 'categories'; // Verifica si slug está vacío y llénalo con 'default_value' si es así
-
         navigate(`/search/${filledSlug}/${search}`);
     };
 

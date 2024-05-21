@@ -187,7 +187,7 @@ function FormCategories({
                 </div>
                 <div className="mb-4">
                     <div className="flex items-center">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Principal:</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Padre:</label>
                         <Disclosure>
                             <Disclosure.Button className="focus:outline-none">
                                 <InformationCircleIcon className="w-6 h-6 text-gray-400" />
