@@ -127,7 +127,7 @@ function FormShippings({
   // Función para establecer los valores predefinidos
   const handleEditModal = (shipping) => {
     // Establecer los valores predefinidos en el estado formData
-
+    window.scrollTo(0, 0);
     setFormData({
       name: shipping.name,
       time_to_delivery: shipping.time_to_delivery,
@@ -218,7 +218,7 @@ function FormShippings({
           </button>
           {
             messageEdit ? <>
-              <button onClick={() => clearFormData()} className="m-2 text-red-600 dark:text-red-500 text-sm">Cancelar la edición.</button>
+              <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
 
             </> : <></>
           }

@@ -23,7 +23,8 @@ from .views import (
     ProductLikesAPIView,
     LikedProductsAPIView,
     DeleteOptionAPIView,
-    ProductListViewFiltered
+    ProductListViewFiltered,
+    UpdateOptionAPIView
 )
 
 urlpatterns = [
@@ -54,5 +55,6 @@ urlpatterns = [
     path("products-filtered/<storeSlug>/<categorySlug>/", ProductListViewFiltered.as_view(), name="product-list-filtered"),
     # URL sin categorySlug
     path("products-filtered/<storeSlug>/", ProductListViewFiltered.as_view(), name="product-list-filtered-no-category"),
+    path('options/update/', UpdateOptionAPIView.as_view(), name='update-option'),
 
 ]

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SearchFormByCategory = ({
-  storeSlug,categorySlug
-}) => {
+const SearchFormByCategory = ({ storeSlug, categorySlug }) => {
   const [name, setName] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-
 
   const navigate = useNavigate();
 
@@ -17,13 +14,17 @@ const SearchFormByCategory = ({
       return;
     }
 
-    const query = `?name=${encodeURIComponent(name || '')}&minPrice=${minPrice || ''}&maxPrice=${maxPrice || ''}`;
+    // Eliminar puntos y comas de los precios si fueron ingresados con ellos
+    const normalizedMinPrice = minPrice ? minPrice.replace(/[.,]/g, '') : '';
+    const normalizedMaxPrice = maxPrice ? maxPrice.replace(/[.,]/g, '') : '';
+
+    const query = `?name=${encodeURIComponent(name || '')}&minPrice=${normalizedMinPrice || ''}&maxPrice=${normalizedMaxPrice || ''}`;
     navigate(`/products_filtered_by_category/${storeSlug}/${categorySlug}${query}`);
   };
 
   return (
     <div className="max-w-md mx-auto rounded-lg overflow-hidden">
-      <h2 className="text-xl font-semibold mb-4">Filtrar Productos</h2>
+      <h2 className="text-xl font-semibold mb-4">Filtrar Productos </h2>
       <div className="mb-4">
         <input
           type="text"

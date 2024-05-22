@@ -92,9 +92,12 @@ const ProductsByCategory = ({
                                 {loading_categories ? (
                                   <LoadingCategoriesStores />
                                 ) : (
-                                  <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} closeCategories={() => setMobileFiltersOpen(false)}/>
+                                  <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} closeCategories={() => setMobileFiltersOpen(false)} />
                                 )}
                               </ul>
+                            </div>
+                            <div className='m-4'>
+                              <SearchFormByCategory storeSlug={storeSlug} categorySlug={categorySlug} />
                             </div>
                           </Dialog.Panel>
                         </Transition.Child>
@@ -126,14 +129,14 @@ const ProductsByCategory = ({
                       .join(' ')}
                   </strong>
                 </Link>
-                  <button
-                    type="button"
-                    className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
-                    onClick={() => setMobileFiltersOpen(true)}
-                  >
-                    <span className="sr-only">Filters</span>
-                    <FunnelIcon className="h-5 w-5 " aria-hidden="true"  />
-                  </button>
+                <button
+                  type="button"
+                  className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
+                  onClick={() => setMobileFiltersOpen(true)}
+                >
+                  <span className="sr-only">Filters</span>
+                  <FunnelIcon className="h-5 w-5 " aria-hidden="true" />
+                </button>
               </div>
             </div>
             <section aria-labelledby="products-heading" className="pb-24 pt-6">
@@ -148,7 +151,7 @@ const ProductsByCategory = ({
                     </div>
                   </div>
                   <div className='pt-5 hidden lg:block'>
-                  <SearchFormByCategory storeSlug={storeSlug} categorySlug={categorySlug}/>
+                    <SearchFormByCategory storeSlug={storeSlug} categorySlug={categorySlug} />
                   </div>
                 </div>
                 <div className="lg:col-span-3">

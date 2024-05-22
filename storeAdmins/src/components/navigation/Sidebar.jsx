@@ -136,7 +136,7 @@ export default function Sidebar({ children, logout, profile, user }) {
               <ItemsSidebar />
             </div>
             <div className='mt-5 space-y-1 px-2'>
-              <Link to="/help" className='group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600'>
+              <Link to="/help" className='group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-900'>
                 <QuestionMarkCircleIcon className='mr-4 flex-shrink-0 h-6 w-6' />
                 ¿Necesitas ayuda con tu tienda?
 

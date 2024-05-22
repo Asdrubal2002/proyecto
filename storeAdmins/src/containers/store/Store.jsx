@@ -1050,7 +1050,7 @@ function Store({
                                                 className="flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                               >
                                                 <UserCircleIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
-                                                Agregar el perfil a tu tienda
+                                                Agregar el perfil a mi tienda
                                               </button>
                                             </>
                                           )}

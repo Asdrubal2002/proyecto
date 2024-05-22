@@ -16,7 +16,7 @@ const faqs = [
         answer: (
             <>
                 <p>
-                    Ahora que has creado tu tienda, encontrarás dos botones en la parte inferior: <strong className="text-yellow-400">'Agregar banner a tu tienda'</strong> y <strong className="text-yellow-400">'Agregar perfil a tu tienda'</strong>.
+                    Ahora que has creado tu tienda, encontrarás dos botones uno en la parte superior <strong className="text-yellow-400">'Actualizar el banner de mi tienda'</strong> y en la parte inferior <strong className="text-yellow-400">'Agregar perfil a mi tienda'</strong>.
                     Al presionarlos, se abrirá un selector de archivos donde podrás cargar tus imágenes.
                     Podrás previsualizarlas y verificar si se ajustan al tema de tu tienda.
                 </p>
@@ -43,9 +43,9 @@ const faqs = [
         question: "¿Como crear categorias?",
         answer: (
             <>
-                <p>El formulario consta de dos campos: <strong className="text-yellow-400">Nombre y Categoría Principal.</strong></p><br />
-                <p>Puedes nombrar tu categoría como desees. Por ejemplo, para una tienda de ropa, podrías nombrarla como <strong className="text-yellow-400">'Infantil'</strong> y seleccionarla como 'Categoría Principal', ya que puede haber otras subcategorías dentro de 'Infantil', como jeans, camisas, medias, etc.</p><br />
-                <p>Una vez que tengas una categoría principal, puedes guardar otras dentro de ella desplegando el selector de categorías principales y eligiendo a cuál pertenece la que quieras crear.</p>
+                <p>El formulario consta de dos campos:  <strong className="text-yellow-400">Nombre de la categoría y Categoría Padre.</strong></p><br />
+                <p>Puedes nombrar tu categoría como desees. Por ejemplo, para una tienda de ropa, podrías llamarla <strong className="text-yellow-400">'Infantil'</strong> y seleccionarla como <strong className="text-yellow-400">'Categoría Padre'</strong>, ya que puede haber otras categorías hijas dentro de 'Infantil', como jeans, camisas, medias, etc.</p><br />
+                <p>Una vez que tengas una categoría padre, puedes guardar otras subcategorías dentro de ella seleccionando la opción correspondiente en el campo Categoría Padre.</p>
 
             </>
         ), href: [
@@ -64,7 +64,7 @@ const faqs = [
                 <ul>
                     <li><strong className="text-yellow-400">* Nombre de tu entrega</strong>: Se debe asignar un nombre al método de entrega  <strong>Ejemplo</strong>: Punto de ventas, envio nacional, envio internacional, domicilio.</li>
                     <li><strong className="text-yellow-400">* Tiempo estimado de entrega</strong>: Se debe asignar el tiempo estimado que tomará la entrega. <strong>Ejemplo</strong>: 2 horas, 5 dias, al instante, etc</li>
-                    <li><strong className="text-yellow-400">* Precio de la entrega</strong>: Se debe asignar el precio de la entrega, utilizando solo números <strong>Ejemplo</strong>: 0, 3000, 20, 2,500, 15,000</li>
+                    <li><strong className="text-yellow-400">* Precio de la entrega</strong>: Se debe asignar el precio de la entrega, utilizando solo números <strong>Ejemplo</strong>: 0, 3000, 20, 2500, 15000</li>
                     <li><strong className="text-yellow-400">* Notas adicionales que tengas sobre el envió o entrega.</strong>: Se pueden agregar notas adicionales sobre el envío, pero es opcional.</li>
                 </ul>
                 <br />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import LoadingCategoriesStores from '../../components/store/LoadingCategoriesStores'
 import { Link } from 'react-router-dom'
-import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { MinusIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -19,7 +19,13 @@ function CategoriesStoreMobile({ categories, loading_categories, storeSlug, clos
 
     return (
         <div className="lg:block">
-            <h2 className='p-2 text-lg'>Categorias disponibles</h2>
+            <button
+                className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                onClick={closeCategories}
+            >
+                <XMarkIcon className="h-8 w-8" aria-hidden="true" />
+            </button>
+
             <ul role="list" className="space-y-4 text-sm font-medium text-gray-200">
                 {loading_categories ? (
                     <LoadingCategoriesStores />

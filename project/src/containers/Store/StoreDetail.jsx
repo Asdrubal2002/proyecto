@@ -10,7 +10,7 @@ import { useEffect, useState, Fragment } from "react";
 //import { get_products } from "../../redux/actions/products";
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 
-import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import LoadingStore from "../../components/store/LoadingStore";
 import { ConetenedorBanner, ConetenedorBanner1, ConetenedorInfo, ConetenedorInfo1, ConetenedorInfo2, ConetenedorProfile, ConetenedorProfile1, ConetenedorProfile2, ConetenedorProfile3, EspacioContenedor, Principal } from "../../components/store/styles/LoadingStore";
 import { BotonesMeGustaNOMegusta, ContenedorInfoUbication, ContenedorInfoUbication1, DescriptionStore, EspacioPhotos, Photo, StoreProfile, SeparadorVertical } from "./styles/StoreDetail";
@@ -280,15 +280,98 @@ const StoreDetail = ({
                                                             leaveTo="translate-x-full"
                                                         >
                                                             <Dialog.Panel className="ml-auto w-full max-w-xs h-full flex-col overflow-y-auto bg-stone-800 py-4 pb-12 shadow-xl">
-                                                                <div className="px-4">
-                                                                    <ul role="list" className="space-y-4 pb-6 text-sm font-medium text-gray-200">
-                                                                        {loading_categories ? (
-                                                                            <LoadingCategoriesStores />
-                                                                        ) : (
-                                                                            <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
-                                                                        )}
-                                                                    </ul>
-                                                                </div>
+                                                                <>
+                                                                    <div className="flex items-center justify-between m-4">
+                                                                        <h2 className="text-lg font-semibold">Categorias</h2>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                                                                            onClick={() => setMobileFiltersOpen(false)}
+                                                                        >
+                                                                            <span className="absolute -inset-0.5" />
+                                                                            <span className="sr-only">Cerrar menú</span>
+                                                                            <XMarkIcon className="h-8 w-8" aria-hidden="true" />
+                                                                        </button>
+                                                                    </div>
+                                                                    <div className="px-4">
+                                                                        <ul role="list" className="space-y-4 pb-6 text-sm font-medium text-gray-200">
+                                                                            {loading_categories ? (
+                                                                                <LoadingCategoriesStores />
+                                                                            ) : (
+                                                                                <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
+                                                                            )}
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div className="m-4">
+                                                                        <SearchForm storeSlug={storeSlug} />
+                                                                    </div>
+                                                                    <div className="flex items-center m-4">
+                                                                        <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
+                                                                    </div>
+                                                                    <div className="m-4">
+                                                                        {isAuthenticated ?
+                                                                            <div>
+                                                                                {profile && profile.firs_name == null ? (
+                                                                                    <div className="bg-stone-800 text-gray-100 rounded-md">
+                                                                                        <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
+                                                                                        <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
+                                                                                            <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+                                                                                            Ir al perfil del usuario
+                                                                                            {/* <span className="text-xs bg-red-500 text-white font-semibold rounded-full px-2 text-center ml-2">{cart_count}</span> */}
+                                                                                        </Link>
+
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div>
+                                                                                        <div className="flex items-start ">
+                                                                                            <div className="flex flex-col w-full">
+                                                                                                <textarea
+                                                                                                    ref={textareaRef}
+                                                                                                    id="commentTextArea"
+                                                                                                    className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm"
+                                                                                                    placeholder="Cuentanos tu experiencia...."
+                                                                                                    maxLength={200} // Aquí estableces el límite de caracteres
+                                                                                                ></textarea>
+                                                                                                <button
+                                                                                                    onClick={() => {
+                                                                                                        handleComment();
+                                                                                                    }}
+                                                                                                    disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
+
+                                                                                                    className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold text-sm"
+                                                                                                >
+                                                                                                    {buttonText}
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                            : <></>
+                                                                        }
+                                                                        {/* Segunda fila */}
+                                                                        <div className="my-4">
+                                                                            {comments && Array.isArray(comments) && comments.length === 0 ? (
+                                                                                <div className="flex items-center gap-2 p-3 rounded-md">
+                                                                                    <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
+                                                                                    <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
+                                                                                </div>
+                                                                            ) : (
+                                                                                Array.isArray(comments) && comments.map((comment, index) => (
+                                                                                    <div key={index}>
+                                                                                        <CommentStore
+                                                                                            comment={comment}
+                                                                                            profile={profile}
+                                                                                            isAuthenticated={isAuthenticated}
+                                                                                            delete_comment_store={delete_comment_store}
+                                                                                            edit_comment_store={edit_comment_store}
+                                                                                        />
+                                                                                    </div>
+                                                                                ))
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </>
                                                             </Dialog.Panel>
                                                         </Transition.Child>
                                                     </div>
@@ -318,7 +401,6 @@ const StoreDetail = ({
                                             <FunnelIcon className="h-5 w-5" aria-hidden="true" />
                                         </button>
                                     </div>
-
                                 </div>
                                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
                                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
@@ -329,18 +411,21 @@ const StoreDetail = ({
                                                 Categorias disponibles
                                             </p>
 
-                                            <div className="grid grid-cols-1 gap-y-10">
+                                            <div className="grid grid-cols-1 gap-y-8">
                                                 {/* Contenido de la primera fila */}
                                                 <div className="container mx-auto px-2 py-2">
                                                     <CategoriesStore categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
                                                 </div>
-                                                 <div>
-                                                    <SearchForm storeSlug={storeSlug}/>
-                                                </div> 
+                                                <div className="hidden sm:block">
+                                                    <SearchForm storeSlug={storeSlug} />
+                                                </div>
+                                                <div className="flex items-center hidden sm:block">
+                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
+                                                </div>
                                                 {isAuthenticated ?
                                                     <div>
                                                         {profile && profile.firs_name == null ? (
-                                                            <div className="bg-stone-800 text-gray-100 rounded-md mb-4">
+                                                            <div className="bg-stone-800 text-gray-100 rounded-md">
                                                                 <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
                                                                 <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
                                                                     <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />
@@ -351,10 +436,7 @@ const StoreDetail = ({
                                                             </div>
                                                         ) : (
                                                             <div>
-                                                                <div className="flex pb-4 items-center">
-                                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
-                                                                </div>
-                                                                <div className="flex items-start pb-5">
+                                                                <div className="flex items-start hidden sm:block">
                                                                     <div className="flex flex-col w-full">
                                                                         <textarea
                                                                             ref={textareaRef}
@@ -376,12 +458,12 @@ const StoreDetail = ({
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                         )}
                                                     </div>
-                                                    : <></>}
+                                                    : <></>
+                                                }
                                             </div>
-                                            <div className="my-4">
+                                            <div className="my-4 hidden sm:block">
                                                 {/* Segunda fila */}
 
                                                 <div style={{ maxHeight: '900px', overflowY: 'scroll', scrollbarWidth: 'none', padding: '10px' }}>

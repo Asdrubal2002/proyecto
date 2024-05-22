@@ -19,6 +19,7 @@ import ProductsByCategory from './containers/product/ProductsByCategory'
 import HelpWithMyStore from './containers/ayuda/HelpWithMyStore'
 import Options_admin from './containers/options-products/Options_admin'
 import HelpWithPhotos from './containers/ayuda/HelpWithPhotos'
+import Invoices from './containers/invoices/Invoices'
 
 
 
@@ -57,7 +58,9 @@ function AnimatedRoutes() {
 
               <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
 
+              <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
 
+              <Route exact path='/invoices' element={<Invoices />} />
 
 
 

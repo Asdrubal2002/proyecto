@@ -14,22 +14,17 @@ import {
   CircleStackIcon,
   PaperAirplaneIcon,
   ListBulletIcon,
-  TagIcon
+  TagIcon,
+  CalculatorIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
-
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-
 export default function ItemsSidebar() {
-
   const location = useLocation  ()
-
-
   const navigation = [
     { name: 'Inicio', href: '/', icon: ChartBarIcon, current: location.pathname==='/store_admin_home' ? true:false },
     { name: 'Mi Negocio', href: '/store', icon: BuildingStorefrontIcon, current: location.pathname==='/store' ? true:false  },
@@ -37,7 +32,7 @@ export default function ItemsSidebar() {
     { name: 'Productos', href: '/products', icon: CircleStackIcon, current: location.pathname==='/products' ? true:false },
     { name: 'Métodos de entrega o envío', href: '/shipping', icon: PaperAirplaneIcon, current: location.pathname==='/shipping' ? true:false },
     { name: 'Opciones', href: '/my_options', icon: TagIcon, current: location.pathname==='/my_options' ? true:false },
-    { name: 'Reportes', href: '#', icon: ChartBarIcon, current: false },
+    { name: 'Pedidos', href: '/invoices', icon: CalculatorIcon, current: false },
   ]
 
   return (

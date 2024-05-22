@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SearchForm = ({
-  storeSlug
-}) => {
+const SearchForm = ({ storeSlug }) => {
   const [name, setName] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-
 
   const navigate = useNavigate();
 
@@ -17,7 +14,11 @@ const SearchForm = ({
       return;
     }
 
-    const query = `?name=${encodeURIComponent(name || '')}&minPrice=${minPrice || ''}&maxPrice=${maxPrice || ''}`;
+    // Eliminar puntos y comas de los precios si fueron ingresados con ellos
+    const normalizedMinPrice = minPrice ? minPrice.replace(/[.,]/g, '') : '';
+    const normalizedMaxPrice = maxPrice ? maxPrice.replace(/[.,]/g, '') : '';
+
+    const query = `?name=${encodeURIComponent(name || '')}&minPrice=${normalizedMinPrice || ''}&maxPrice=${normalizedMaxPrice || ''}`;
     navigate(`/products_filtered/${storeSlug}${query}`);
   };
 

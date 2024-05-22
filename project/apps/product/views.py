@@ -534,24 +534,6 @@ class LikedProductsAPIView(APIView):
 
         return Response(response_data)
 
-
-
-# class DeleteOptionAPIView(APIView):
-#     def delete(self, request, option_id, format=None):
-#         # Buscar la opción por su ID
-#         option = get_object_or_404(Option, id=option_id)
-        
-#         # Verificar si la opción está asociada a algún producto
-#         if ProductOption.objects.filter(option=option).exists():
-#             # Si la opción está asociada a algún producto, devolver un mensaje indicando que no se puede eliminar
-#             return JsonResponse({'message': 'No se puede eliminar esta opción porque está asociada a uno o más productos.'}, status=200)
-        
-#         # Si la opción no está asociada a ningún producto, eliminarla
-#         option.delete()
-        
-#         # Devolver una respuesta de éxito
-#         return JsonResponse({'message': 'La opción se eliminó correctamente.'}, status=204)
-
 class DeleteOptionAPIView(APIView):
     def delete(self, request, option_id, format=None):
         # Buscar la opción por su ID
@@ -575,7 +557,7 @@ class DeleteOptionAPIView(APIView):
     
 class ProductListViewFiltered(APIView):
     def get(self, request, storeSlug, categorySlug=None, format=None):
-        queryset = Product.objects.all()
+        queryset = Product.objects.filter(is_active=True, category__is_active=True)  # Filtrar solo productos activos
         store_slug = self.kwargs.get('storeSlug')
         if store_slug:
             queryset = queryset.filter(category__store__slug=store_slug)
@@ -607,3 +589,28 @@ class ProductListViewFiltered(APIView):
         
         return queryset
 
+class UpdateOptionAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, *args, **kwargs):
+        option_id = request.data.get('id')  # Obtener el ID de la opción del cuerpo de la solicitud
+        if not option_id:
+            return Response({"error": "Option ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            option = Option.objects.get(id=option_id)
+        except Option.DoesNotExist:
+            return Response({"error": "Option not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Verificar si el usuario tiene permisos para editar esta opción
+        if request.user != option.store.administrator:
+            return Response({"error": "You don't have permission to edit this option"}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = CreateOptionSerializer(option, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            option = serializer.save()
+            serialized_option = CreateOptionSerializer(option).data
+            return Response(serialized_option, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

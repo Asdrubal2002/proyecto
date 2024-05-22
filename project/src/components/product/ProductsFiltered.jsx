@@ -13,6 +13,7 @@ import LoadingStores from "../home/LoadingStores";
 import ProductListFiltered from "./ProductListFiltered";
 import SearchForm from "../searcher/SearchForm";
 import FooterStores from "../store/FooterStores";
+import LoadingCategoriesStores from "../store/LoadingCategoriesStores";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -92,6 +93,10 @@ const ProductsFiltered = ({
                                                             <CategoriesStoreMobile categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} closeCategories={() => setMobileFiltersOpen(false)} />
                                                         )}
                                                     </ul>
+                                                </div>
+                                                <div className='m-4 '>
+                                                    <SearchForm storeSlug={storeSlug}/>
+
                                                 </div>
                                             </Dialog.Panel>
                                         </Transition.Child>

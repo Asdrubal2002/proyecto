@@ -475,7 +475,7 @@ function Create({
                         <p className='text-yellow-400'>
                           Por ejemplo, para una tienda llamada <strong>{formData.name}</strong>, la ruta podría
                           ser: <strong>{formData.name.toLowerCase().replace(/\s+/g, '_').replace(/[^\w]/g, '')}</strong>.
-                          Ten en cuenta que la ruta no puede contener espacios ni símbolos. Es solo un ejemplo, puedes poner la dirección que te guste para tu tienda.
+                          Ten en cuenta que la ruta no puede contener espacios, mayúsculas, símbolos. Es solo un ejemplo, puedes poner la dirección que te guste para tu tienda.
                         </p>
                       </div>
                     </Disclosure.Panel>

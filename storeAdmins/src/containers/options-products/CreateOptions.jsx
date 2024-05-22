@@ -26,6 +26,7 @@ function CreateOptions({
     const [formData, setFormData] = useState(initialFormData);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const [messageEdit, setMessageEdit] = useState(false);
 
     const handleDeleteOption = (option) => {
         const config = {
@@ -43,10 +44,10 @@ function CreateOptions({
                     setLoading(false);
                     get_options_admin();
                     setMessage(
-                    <div>
-                          <p className='m-4 bg-green-600 p-4 rounded-lg'>Se ha eliminado exitosamente esta opción: <strong> {option.value}</strong></p>
+                        <div>
+                            <p className='m-4 bg-green-600 p-4 rounded-lg'>Se ha eliminado exitosamente esta opción: <strong> {option.value}</strong></p>
 
-                    </div>
+                        </div>
                     )
                 } else if (res.status === 200 && res.data.related_products) {
                     // Si hay productos relacionados, puedes acceder a ellos aquí
@@ -56,19 +57,21 @@ function CreateOptions({
                     // Mostrar los productos relacionados en una lista
                     const productList = relatedProducts.map((product, index) => (
                         <li key={product.id}>
-                          <span>{index + 1}. </span> {/* Mostrar el índice enumerado */}
-                          {product.product.name} - {product.product.price}
+                            <span>{index + 1}. </span> {/* Mostrar el índice enumerado */}
+                            {product.product.name} - {product.product.price}
                         </li>
-                      ));
-                      // Establecer el mensaje con la lista de productos
-                      setMessage(
+                    ));
+                    // Establecer el mensaje con la lista de productos
+                    setMessage(
                         <div>
-                          <p className='m-4 bg-red-700 p-4 rounded-lg font-semibold'>No se puede eliminar esta opción <strong> {option.value}</strong> porque está asociada a los siguientes productos:</p>
-                          <ul className='m-4 font-semibold'>
+                        <span className='m-4 bg-red-700 p-4 rounded-lg font-semibold block'>
+                            No se puede eliminar esta opción <strong>{option.value}</strong> porque está asociada a los siguientes productos:
+                        </span>
+                        <ul className='m-4 font-semibold'>
                             {productList}
-                          </ul>
-                        </div>
-                      );
+                        </ul>
+                    </div>
+                    );
 
                 }
             } catch (err) {
@@ -80,20 +83,12 @@ function CreateOptions({
 
         fetchData();
         window.scrollTo(0, 0);
-        
+
 
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
-        if (formData.valueOption.length > maxChars) {
-            setError(`El nombre de la opción no puede exceder los ${maxChars} caracteres.`);
-            return;
-        }
-        const formDataToSend = new FormData();
-        formDataToSend.append('value', formData.valueOption);
-        console.log(formDataToSend);
-
         const config = {
             headers: {
                 'Accept': 'application/json',
@@ -101,37 +96,76 @@ function CreateOptions({
             }
         };
 
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-options-admin/`,
-                    formDataToSend,
-                    config);
+        if (formData.valueOption.length > maxChars) {
+            setError(`El nombre de la opción no puede exceder los ${maxChars} caracteres.`);
+            return;
+        }
 
-                if (res.status === 201) {
-                    setLoading(false);
-                    get_options_admin();
-                } else {
+        if (editingOptionId) {
+            const formDataToSendEdit = new FormData();
+            formDataToSendEdit.append('id', editingOptionId);
+            formDataToSendEdit.append('value', formData.valueOption);
+            const fetchData = async () => {
+                setLoading(true);
+                try {
+                    const res = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/options/update/`,
+                        formDataToSendEdit,
+                        config);
+
+                    if (res.status === 200) {
+                        setLoading(false);
+                        get_options_admin();
+                    } else {
+                        setLoading(false);
+                    }
+                } catch (err) {
                     setLoading(false);
                 }
-            } catch (err) {
-                setLoading(false);
-            }
-        };
-        fetchData();
+            };
+            fetchData();
+            clearFormData()
 
-        setFormData(initialFormData);
-        setError('');
+        } else {
+            const formDataToSend = new FormData();
+            formDataToSend.append('value', formData.valueOption);
+            console.log(formDataToSend);
+
+           
+            const fetchData = async () => {
+                setLoading(true);
+                try {
+                    const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-options-admin/`,
+                        formDataToSend,
+                        config);
+
+                    if (res.status === 201) {
+                        setLoading(false);
+                        get_options_admin();
+                    } else {
+                        setLoading(false);
+                    }
+                } catch (err) {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+            clearFormData()
+            
+        }
     };
 
     const handleEditOption = (option) => {
         setMessage('')
+
         window.scrollTo(0, 0);
         setFormData({
             valueOption: option.value,
         });
+
+
         setEditingOptiongId(option.id);
-        console.log(editingOptionId)
+        setMessageEdit(true)
+        console.log(editingOptionId, formData)
     }
 
     const handleChange = (e) => {
@@ -141,6 +175,14 @@ function CreateOptions({
             [name]: value,
         }));
     };
+
+    const clearFormData = () => {
+        setFormData(initialFormData);
+        setMessageEdit(false)
+        setEditingOptiongId(null)
+        setError('');
+    };
+
 
     const filteredOptions = options ? options.filter(option =>
         option.value.toLowerCase().includes(searchTerm.toLowerCase())
@@ -174,6 +216,12 @@ function CreateOptions({
                     >
                         Guardar Opción
                     </button>
+                    {
+                        messageEdit ? <>
+                            <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
+
+                        </> : <></>
+                    }
                 </div>
             </form>
 

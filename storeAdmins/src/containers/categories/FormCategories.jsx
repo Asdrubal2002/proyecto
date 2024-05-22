@@ -216,7 +216,7 @@ function FormCategories({
                         disabled={!parentEnabled} // Deshabilitar el campo si parentEnabled es falso
 
                     >
-                        <option value="">Categoría Principal</option>
+                        <option value="">Categoría Padre</option>
                         {categories && categories
                             .filter(category => !category.parent)
                             .map(category => (
@@ -237,9 +237,7 @@ function FormCategories({
 
                         </> : <></>
                     }
-
                 </div>
-
             </form>
             {
                 loading ? (
