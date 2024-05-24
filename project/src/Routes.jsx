@@ -32,6 +32,7 @@ import PoliciesUser from './containers/Home/PoliciesUser.jsx';
 import DashboardAccount from './containers/Profile/DashboardAccount.jsx';
 import ProductsFiltered from './components/product/ProductsFiltered.jsx';
 import ProductsFilteredByCategory from './components/product/ProductsFilteredByCategory.jsx';
+import Quentions from './containers/Store/Quentions.jsx';
 
 
 
@@ -71,6 +72,7 @@ function AnimatedRoutes() {
         <Route path="/products_filtered/:storeSlug" element={<ProductsFiltered />} />
         <Route path="/products_filtered_by_category/:storeSlug/:categorySlug" element={<ProductsFilteredByCategory />} />
 
+        <Route exact path='/questions/:storeSlug' element={<Quentions />} />
 
         
 

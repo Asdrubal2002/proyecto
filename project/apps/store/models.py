@@ -52,12 +52,12 @@ class StoreLike(models.Model):
         unique_together = ('user', 'store')
 
 class Store(models.Model):
-    administrator = models.OneToOneField(User, on_delete=models.CASCADE)
+    administrator = models.ManyToManyField(User, related_name="stores")
     name = models.CharField(max_length=100, blank=False, null=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField(max_length=500, blank=False)
     location = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=300, blank=True, null=True)
     phone = models.CharField(max_length=255, blank=False)
     email = models.EmailField(max_length=255, unique=True, blank=False, null=False)
     logo = models.ImageField(upload_to=store_directory_path_profile)
@@ -76,8 +76,6 @@ class Store(models.Model):
     instagram = models.URLField(max_length=100, blank=True, null=True)
     facebook = models.URLField(max_length=100, blank=True, null=True)
     x_red_social = models.URLField(max_length=100, blank=True, null=True)
-
-
 
     def save(self, *args, **kwargs):
         if not self.pk:  # Solo si es un objeto nuevo
@@ -127,7 +125,7 @@ class Store(models.Model):
 class StorePolicy(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='policies')
     name = models.CharField(max_length=100)  # Nuevo campo para el nombre de la política
-    policy_text =  models.TextField(max_length=1000, blank=False)
+    policy_text =  models.TextField(max_length=5000, blank=False)
 
     def save(self, *args, **kwargs):
         # Limitar la longitud del contenido HTML a un máximo de 10000 caracteres
@@ -136,7 +134,26 @@ class StorePolicy(models.Model):
         super().save(*args, **kwargs)
 
 
+class UserStoreAssociation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    associated_on = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'store')
+
+    def __str__(self):
+        return f"{self.user.email} associated with {self.store.name} on {self.associated_on}"
+
+
+class FAQ(models.Model):
+    store = models.ForeignKey(Store, related_name='faqs', on_delete=models.CASCADE)
+    question = models.CharField(max_length=255, blank=False, null=False)
+    answer = models.TextField(max_length=1000, blank=False)
+    created_on = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return self.question
 
 
 

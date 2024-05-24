@@ -11,14 +11,16 @@ from .views import (
     EditStoreBannerView,
 
     StorePolicyCreateAPIView,
-    StorePolicyUpdateAPIView,
-    StorePolicyDeleteAPIView,
     StorePolicyListByStoreAPIView,
     EditStoreView,
     StoreLikeDislikeAPIView,
     StoreLikesAPIView,
-    LikedStoresAPIView
-
+    LikedStoresAPIView,
+    StoreUsersListView,
+    AssociateUserToStoreAPIView,
+    DeactivateSellerAPIView,
+    RemoveAssociateAPIView,
+    FAQRetrieveByStoreSlugAPIView
     
 )
 
@@ -34,8 +36,7 @@ urlpatterns = [
     path("edit-Store-banner/", EditStoreBannerView.as_view()),
 
     path('policies-create/', StorePolicyCreateAPIView.as_view(), name='store_policy_create'),
-    path('policies/update/<int:pk>/', StorePolicyUpdateAPIView.as_view(), name='store_policy_update'),
-    path('policies/delete/<int:pk>/', StorePolicyDeleteAPIView.as_view(), name='store_policy_delete'),
+  
     path('policies/<store_slug>/', StorePolicyListByStoreAPIView.as_view(), name='store_policy_list_by_store'),
 
     path("edit-Store/", EditStoreView.as_view()),
@@ -44,5 +45,13 @@ urlpatterns = [
     path('store/<storeSlug>/likes/', StoreLikesAPIView.as_view(), name='product-likes'),
 
     path('liked-stores', LikedStoresAPIView.as_view(), name='liked_stores'),
+    path('store-partners/', StoreUsersListView.as_view(), name='store-users-list'),
+
+    path('associate-user-to-store/', AssociateUserToStoreAPIView.as_view(), name='associate-user-to-store'),
+
+    path('desactivate-seller/', DeactivateSellerAPIView.as_view(), name='desactivate-user-to-store'),
+    path('remove-seller/', RemoveAssociateAPIView.as_view(), name='remove-user-to-store'),
+
+    path('<store_slug>/faqs/', FAQRetrieveByStoreSlugAPIView.as_view(), name='faq-list-by-store-slug'),
 
 ]

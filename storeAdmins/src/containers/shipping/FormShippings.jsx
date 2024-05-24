@@ -49,8 +49,8 @@ function FormShippings({
       errors.name = 'El nombre no puede exceder los 50 caracteres';
     }
 
-    if (formData.additional_notes.length > 200) {
-      errors.additional_notes = 'El nombre no puede exceder los 200 caracteres';
+    if (formData.additional_notes.length > 400) {
+      errors.additional_notes = 'El nombre no puede exceder los 400 caracteres';
     }
 
     if (!formData.time_to_delivery.trim()) {

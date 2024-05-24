@@ -39,7 +39,7 @@ class UserInvoicesAPIView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 def send_invoice_email(invoice, user):
-    subject = "Confirmación de Compra - Orden #{}".format(invoice.transaction_number)
+    subject = "Confirmación de pedido - Orden #{}".format(invoice.transaction_number)
     html_message = render_to_string("invoices/invoice_created_email.html", {"invoice": invoice})
     plain_message = strip_tags(html_message)
     from_email = (

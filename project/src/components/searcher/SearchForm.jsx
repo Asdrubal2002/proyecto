@@ -28,7 +28,7 @@ const SearchForm = ({ storeSlug }) => {
       <div className="mb-4">
         <input
           type="text"
-          placeholder="Nombre del Producto"
+          placeholder="Palabra clave"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-md py-2 px-4 focus:outline-none bg-stone-900 text-sm"

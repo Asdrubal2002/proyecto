@@ -17,7 +17,13 @@ import {
     GET_STORE_POLICIES_FAIL,
 
     SET_LOADING_STORE_POLICIES_SUCCESS,
-    REMOVE_LOADING_GET_STORE_POLICIES_FAIL
+    REMOVE_LOADING_GET_STORE_POLICIES_FAIL,
+
+    GET_STORE_FAQ_SUCCESS,
+    GET_STORE_FAQ_FAIL,
+
+    SET_LOADING_STORE_FAQS,
+    REMOVE_LOADING_GET_STORE_FAQS
 
 } from './types';
 
@@ -227,6 +233,44 @@ export const get_store_policies = (storeSlug) => async dispatch => {
         });
         dispatch({
             type: REMOVE_LOADING_GET_STORE_POLICIES_FAIL
+        });
+    }
+}
+
+
+export const get_store_faqs = (storeSlug) => async dispatch => {
+    dispatch({
+        type: SET_LOADING_STORE_FAQS
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/store/${storeSlug}/faqs/`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_STORE_FAQ_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_STORE_FAQ_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_LOADING_GET_STORE_FAQS
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_STORE_FAQ_FAIL
+        });
+        dispatch({
+            type: REMOVE_LOADING_GET_STORE_FAQS
         });
     }
 }

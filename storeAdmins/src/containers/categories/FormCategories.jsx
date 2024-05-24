@@ -57,7 +57,7 @@ function FormCategories({
             setErrorMessage('El campo de nombre no puede estar vacío');
             return;
         }
-    
+
         // Crear el slug a partir del nombre
         const slug = formData.name
             .trim()
@@ -66,7 +66,7 @@ function FormCategories({
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .replace(/\s+/g, '-');
-    
+
         // Verificar si se está creando una nueva categoría o editando una existente
         if (editingCategoryId) {
             // Llamar a la función para editar la categoría
@@ -78,12 +78,12 @@ function FormCategories({
             // Llamar a la función para crear una nueva categoría
             await create_category(formData.name, slug, formData.parent)
             get_categories()
-    
+
         }
-    
+
         // Aquí puedes agregar lógica adicional después de enviar el formulario si es necesario
     };
-    
+
 
     const handleDelete = async (categoryId) => {
         await delete_category(categoryId)
@@ -276,7 +276,11 @@ function FormCategories({
                             <tbody>
                                 {filteredCategories.map((category, index) => (
                                     <React.Fragment key={category.id}>
-                                        <tr key={category.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <tr
+                                            key={category.id}
+                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
+                                            onClick={() => toggleCategory(category.id)}
+                                        >
                                             <td className="w-4 p-4">{index + 1}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
@@ -291,22 +295,56 @@ function FormCategories({
                                             <td className={`px-6 py-4 whitespace-nowrap ${category.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>
                                                 {category.is_active ? "Activa" : "Inactiva"}
                                             </td>
-
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <p>Principal</p>
                                             </td>
                                             <td className="py-4 whitespace-nowrap">
-                                                <button onClick={() => handleOpenModal(category.id)} className="mr-2 text-red-600 dark:text-red-500 hover:underline font-medium">Eliminar</button>
-                                                <button onClick={() => handleEditModal(category)} className="mr-2 text-blue-600 dark:text-blue-500 hover:underline font-medium">Editar</button>
-                                                <button onClick={() => handleToggleActive(category.id)} className="text-green-600 dark:text-green-500 hover:underline font-medium">{category.is_active ? 'Desactivar' : 'Activar'}</button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenModal(category.id);
+                                                    }}
+                                                    className="mr-2 text-red-600 dark:text-red-500 hover:underline font-medium"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEditModal(category);
+                                                    }}
+                                                    className="mr-2 text-blue-600 dark:text-blue-500 hover:underline font-medium"
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleToggleActive(category.id);
+                                                    }}
+                                                    className="text-green-600 dark:text-green-500 hover:underline font-medium"
+                                                >
+                                                    {category.is_active ? 'Desactivar' : 'Activar'}
+                                                </button>
 
                                                 {category.sub_categories && category.sub_categories.length > 0 && (
-                                                    <button onClick={() => toggleCategory(category.id)} className="ml-2 text-gray-600 dark:text-gray-400 hover:underline">
-                                                        {expandedCategories.includes(category.id) ? <ArrowUpIcon className="" width={18} height={18} color="#fff" radius="6" /> : <ArrowDownIcon className="" width={18} height={18} color="#fff" radius="6" />}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            toggleCategory(category.id);
+                                                        }}
+                                                        className="ml-2 text-gray-600 dark:text-gray-400 hover:underline"
+                                                    >
+                                                        {expandedCategories.includes(category.id) ? (
+                                                            <ArrowUpIcon className="" width={18} height={18} color="#fff" radius="6" />
+                                                        ) : (
+                                                            <ArrowDownIcon className="" width={18} height={18} color="#fff" radius="6" />
+                                                        )}
                                                     </button>
                                                 )}
                                             </td>
                                         </tr>
+
                                         {category.sub_categories && expandedCategories.includes(category.id) && category.sub_categories.map(subCategory => (
                                             <tr key={subCategory.id} className="bg-white border-b dark:bg-gray-700 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                 <td className="w-4 p-4"></td>

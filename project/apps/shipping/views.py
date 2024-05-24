@@ -40,11 +40,12 @@ class UserStoreShippingListView(APIView):
 
     def get(self, request, format=None):
         # Obtener el usuario autenticado
-        user = request.user
+        #user = request.user
+        store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
 
         try:
             # Obtener la tienda del usuario
-            store = user.store
+            store
         except Store.DoesNotExist:
             return Response(
                 {"error": "El usuario no tiene una tienda asociada."},
@@ -75,7 +76,7 @@ class UserAddStoreShippingListView(APIView):
         if 'price' in data:
             data['price'] = data['price'] if data['price'] else 0
 
-        store = user.store
+        store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
 
         serializer = CreateShippingSerializer(data=data)
         if serializer.is_valid():
@@ -97,7 +98,7 @@ class ShippingDeleteAPIView(APIView):
             )
 
         # Verificar si el envío pertenece a la tienda del usuario autenticado
-        if shipping.store != request.user.store:
+        if shipping.store != request.user.stores.first():
             return Response(
                 {"message": "No tienes permiso para eliminar este envío"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -108,7 +109,7 @@ class ShippingDeleteAPIView(APIView):
 
         # Listar los envíos restantes
         remaining_shippings = Shipping.objects.filter(
-            store=request.user.store
+            store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
         )
         serializer = ShippingSerializer(remaining_shippings, many=True)
 
@@ -138,7 +139,7 @@ class ShippingStateAPIView(APIView):
             )
 
         # Verificar si el envío pertenece a la tienda del usuario autenticado
-        if shipping.store != request.user.store:
+        if shipping.store != request.user.stores.first():
             return Response(
                 {"message": "No tienes permiso para modificar este envío"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -151,7 +152,7 @@ class ShippingStateAPIView(APIView):
         new_state = "activo" if shipping.is_active else "inactivo"
 
         # Obtener todos los envíos de la tienda del usuario autenticado
-        shippings = Shipping.objects.filter(store=request.user.store)
+        shippings = Shipping.objects.filter(store=request.user.stores.first())
 
         # Serializar los envíos
         serializer = ShippingSerializer(shippings, many=True)
@@ -188,7 +189,7 @@ class EditShippingView(APIView):
             serializer.save()
 
             # Listar todos los envíos después de editar uno
-            shippings = Shipping.objects.filter(store=request.user.store)
+            shippings = Shipping.objects.filter(store=request.user.stores.first())
             serializer = ShippingSerializer(shippings, many=True)
             
             return Response({"shippings": serializer.data}, status=status.HTTP_200_OK)

@@ -67,11 +67,9 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
                       <DocumentCheckIcon className="w-6 h-6" />
                     </Link>
                   </div>
-                  <p className="mt-6 text-base text-gray-400">
-                    {cart.store.description.length > 150
-                      ? cart.store.description.slice(0, 170)
-                      : cart.store.description}...
-                  </p>
+                  {/* <p className="mt-6 text-base text-gray-400">
+                    Tienes productos seleccionados en esta tienda.
+                  </p> */}
 
                   <div className="mt-10 flex items-center gap-x-4">
                     <h4 className="flex-none text-sm font-semibold leading-6 text-azul_corp_ho">Tus productos</h4>
@@ -106,7 +104,7 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
                       <div
                         className="mt-10 block w-full rounded-md bg-azul_corp px-3 py-2 text-center text-sm font-semibold text-white shadow-sm"
                       >
-                        Accede a tus productos seleccionados de la tienda {cart.store.name}
+                        Accede a tus productos seleccionados de la tienda
                       </div>
                     </div>
                   </div>

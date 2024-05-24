@@ -12,7 +12,7 @@ class Shipping(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='shipping_store')
     time_to_delivery = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=20, decimal_places=2)  # Se cambia a DecimalField para permitir decimales personalizados
-    additional_notes = models.CharField(max_length=200, blank=True, null=True)
+    additional_notes = models.CharField(max_length=400, blank=True, null=True)
     is_active = models.BooleanField(default=False)
 
 

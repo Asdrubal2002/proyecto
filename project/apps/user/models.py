@@ -54,6 +54,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)  # Nuevo campo para identificar si el usuario es vendedor
     photo = models.ImageField(upload_to=user_directory_path_profile, blank=True)
+    is_primary_store_admin = models.BooleanField(default=False)
 
     objects = UserAccountManager()
 
@@ -65,6 +66,14 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         
     def __str__(self):
         return self.email
+    
+    @property
+    def profile(self):
+        return UserProfile.objects.get(user=self)
+
+    @property
+    def location(self):
+        return UserLocation.objects.get(user=self)
 
 
 

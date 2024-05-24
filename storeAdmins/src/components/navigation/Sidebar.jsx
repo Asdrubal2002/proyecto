@@ -126,22 +126,27 @@ export default function Sidebar({ children, logout, profile, user }) {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-              <div className="flex flex-shrink-0 items-center px-4">
+              <div className="flex flex-shrink-0 items-center px-4 justify-between">
                 <img
                   className="h-8 w-auto"
                   src="/LogoRuvlo.png"
                   alt="Your Company"
                 />
+                <Link to="/help" className='group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-900'>
+                  <QuestionMarkCircleIcon className='mr-4 flex-shrink-0 h-6 w-6' />
+                  Ayuda
+                </Link>
               </div>
+
               <ItemsSidebar />
             </div>
-            <div className='mt-5 space-y-1 px-2'>
+            {/* <div className='mt-5 space-y-1 px-2'>
               <Link to="/help" className='group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-900'>
                 <QuestionMarkCircleIcon className='mr-4 flex-shrink-0 h-6 w-6' />
                 ¿Necesitas ayuda con tu tienda?
 
               </Link>
-            </div>
+            </div> */}
 
             <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
               <button onClick={e => setOpen(true)} className="group block w-full flex-shrink-0">
@@ -164,9 +169,6 @@ export default function Sidebar({ children, logout, profile, user }) {
                       </div>
                     </Menu.Button>
                   </Menu>
-
-
-
 
                   <div className="ml-3">
                     <p className="text-sm text-gray-700 group-hover:text-gray-900">{profile && profile.firs_name} {profile && profile.last_name}</p>

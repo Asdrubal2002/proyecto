@@ -10,7 +10,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function CreateProduct({
     categories,
-    get_products
+    get_products,
+    count
 }) {
     const [errors, setErrors] = useState({});
     const [open, setOpen] = useState(false)
@@ -81,14 +82,14 @@ function CreateProduct({
             <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
                 <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
                     <div className="ml-4 mt-2">
-                        <h3 className="text-lg font-medium leading-6 text-gray-200">¿Tienes otro producto nuevo?</h3>
+                        <h3 className="text-lg font-medium leading-6 text-gray-200">¿Tienes otro producto nuevo? </h3>
                     </div>
                     <div className="ml-4 mt-2 flex-shrink-0">
                         <button
                             onClick={e => setOpen(true)}
                             className="relative inline-flex items-center rounded-md border border-transparent bg-azul_corp px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-azul_corp_ho focus:outline-none "
                         >
-                            Crear producto
+                            Crear producto, tienes {count} productos
                         </button>
                     </div>
                 </div>
@@ -207,7 +208,9 @@ function CreateProduct({
     )
 }
 const mapStateToProps = state => ({
-    categories: state.Product_category.categories
+    categories: state.Product_category.categories,
+    count: state.Products.count,
+
 })
 export default connect(mapStateToProps, {
     get_products

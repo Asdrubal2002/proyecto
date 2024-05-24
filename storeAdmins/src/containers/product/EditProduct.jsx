@@ -307,7 +307,7 @@ function EditProduct({
             }
         };
         fetchData();
-        window.scrollTo(0, 670);
+        window.scrollTo(0, 900);
     };
 
     // Función para comprimir la imagen
@@ -337,45 +337,7 @@ function EditProduct({
         });
     };
 
-    const onSubmitOption = e => {
-        e.preventDefault()
-
-        const config = {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `JWT ${localStorage.getItem('access')}`
-            }
-        };
-
-        const formData = new FormData()
-        formData.append('value', optionPr)
-        formData.append('quantity', quantity)
-        formData.append('product', product.id)
-
-
-        const fetchData = async () => {
-            setLoading(true)
-            try {
-                const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-option/`,
-                    formData,
-                    config)
-
-                if (res.status === 201) {
-                    setLoading(false)
-                    resetStates()
-                    get_products_options(slug)
-
-                } else {
-                    setLoading(false)
-                    resetStates()
-                }
-            } catch (err) {
-                setLoading(false)
-                resetStates()
-            }
-        }
-        fetchData()
-    }
+   
 
     const handleDeleteOption = (optionId) => {
         const config = {

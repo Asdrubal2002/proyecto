@@ -209,8 +209,8 @@ function Create({
       errors.location = 'La locación no puede contener mas de 100 caracteres';
     }
 
-    if (formData.address.trim().length > 100) {
-      errors.address = 'la dirección de la tienda no puede contener mas de 100 caracteres';
+    if (formData.address.trim().length > 300) {
+      errors.address = 'la dirección de la tienda no puede contener mas de 300 caracteres';
     }
 
     if (!formData.phone) {

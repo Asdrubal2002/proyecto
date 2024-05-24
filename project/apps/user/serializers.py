@@ -11,4 +11,5 @@ class UserCreateSerializer(UserCreateSerializer):
             'email',
             'photo',
             'get_first_letters',
+            'is_primary_store_admin'
         ) 

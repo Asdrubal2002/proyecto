@@ -12,6 +12,7 @@ import { get_store_comments } from '../../redux/actions/comments/Comments_store'
 import FormCreatePolicy from '../../components/store/FormCreatePolicy';
 import PoliticsFoundations from '../../components/store/PoliticsFoundations';
 import Compressor from 'compressorjs';
+import FormCreateFAQS from '../../components/store/FormCreateFAQS';
 
 
 
@@ -112,47 +113,52 @@ function Store({
   const onSubmitPhotos = async (e) => {
     e.preventDefault();
 
+    if (!logo) {
+      return;
+    }
+
     const config = {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `JWT ${localStorage.getItem('access')}`
-        }
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `JWT ${localStorage.getItem('access')}`
+      }
     };
 
     const formData = new FormData();
 
     // Comprime la imagen antes de agregarla al formData
     if (logo) {
-        const compressedImage = await compressImage(logo);
-        formData.append('logo', compressedImage, logo.name);
+      const compressedImage = await compressImage(logo);
+      formData.append('logo', compressedImage, logo.name);
     }
 
     const fetchData = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-photo/`,
-                formData,
-                config);
+      setLoading(true);
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/store/edit-Store-photo/`,
+          formData,
+          config);
 
-            if (res.status === 200) {
-                setLoading(false);
-                setPreviewImage(null);
-                setUpdatePhoto(false);
-                setPhoto(null);
-                get_user_store();
-            } else {
-                setLoading(false);
-            }
-
-        } catch (err) {
-            setLoading(false);
-            alert('Error al enviar', err);
+        if (res.status === 200) {
+          setLoading(false);
+          setPreviewImage(null);
+          setUpdatePhoto(false);
+          setPhoto(null);
+          get_user_store();
+        } else {
+          setLoading(false);
         }
+
+      } catch (err) {
+        setLoading(false);
+        alert('Error al enviar', err);
+      }
     };
 
     fetchData();
-};
+  };
+
 
 
   const onSubmitBanner = async (e) => {
@@ -378,6 +384,17 @@ function Store({
                         )
                       }>Políticas de mi negocio
                       </Tab>
+
+                      <Tab className={({ selected }) =>
+                        classNames(
+                          'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
+
+                          selected
+                            ? 'bg-white text-azul_corp_ho shadow'
+                            : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                        )
+                      }>Preguntas frecuentes
+                      </Tab>
                     </Tab.List>
                     <Tab.Panels>
                       <Tab.Panel>
@@ -596,7 +613,7 @@ function Store({
                                               onChange={e => onChange(e)}
                                               name='address'
                                               type='text'
-                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              maxLength={300} // Máximo de 50 caracteres permitidos
                                               className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
 
                                               placeholder='Nueva Dirección'
@@ -604,7 +621,7 @@ function Store({
                                             <div className="flex items-center space-x-2 ml-4">
                                               <button
                                                 type="submit"
-                                                disabled={address.length > 90} // Deshabilitar el botón si el boton si pasa de 90
+                                                disabled={address.length > 300} // Deshabilitar el botón si el boton si pasa de 300
                                                 className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                               >
                                                 <CheckIcon width={20} height={20} color="#fff" radius="6" />
@@ -724,6 +741,7 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Correo Electrónico</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -736,7 +754,7 @@ function Store({
                                               onChange={e => onChange(e)}
                                               name='email'
                                               type='text'
-                                              maxLength={50} // Máximo de 50 caracteres permitidos
+                                              maxLength={100} // Máximo de 50 caracteres permitidos
                                               className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
                                               required
                                               placeholder='Nuevo Correo'
@@ -768,6 +786,8 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
+
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Horario de atención</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -781,10 +801,10 @@ function Store({
                                                 onChange={e => onChange(e)}
                                                 name='schedule'
                                                 type='text'
-                                                maxLength={50} // Máximo de 50 caracteres permitidos
+                                                maxLength={100} // Máximo de 50 caracteres permitidos
                                                 className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
                                                 required
-                                                placeholder='Nuevo Correo'
+                                                placeholder='Horario'
                                               />
                                               <div className="flex items-center space-x-2 ml-4">
                                                 <button
@@ -816,6 +836,7 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Instagram</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -1108,6 +1129,7 @@ function Store({
                           </Dialog>
                         </Transition.Root>
                       </Tab.Panel>
+
                       <Tab.Panel>
                         <div className='bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md'>
                           {comments && Array.isArray(comments) && comments.length === 0 ? (
@@ -1150,27 +1172,28 @@ function Store({
 
 
                       </Tab.Panel>
+
                       <Tab.Panel>
                         <div className="bg-gray-800 py-6 px-4 sm:px-6 lg:px-8 rounded-md">
                           <PoliticsFoundations />
                           <FormCreatePolicy />
                         </div>
+                      </Tab.Panel>
 
+                      <Tab.Panel>
+                        <div className='bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md'>
+                          <FormCreateFAQS/>
+                        </div>
                       </Tab.Panel>
                     </Tab.Panels>
                   </Tab.Group>
                 </div>
-
               </>
             ) : (
               <Create />
-
             )}
-
-
           </>
       }
-
     </Layout>
   )
 }

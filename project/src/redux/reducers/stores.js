@@ -25,7 +25,9 @@ import {
     GET_STORES_LIKED_SUCCESS,
     GET_STORES_LIKED_FAIL,
     SET_STORES_LOADING,
-    REMOVE_STORES_LOADING
+    REMOVE_STORES_LOADING,
+    GET_STORE_FAQ_SUCCESS,
+    GET_STORE_FAQ_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -42,7 +44,8 @@ const initialState = {
     policies: null,
     likes: null,
     loading_likes: null,
-    stores_liked: null
+    stores_liked: null,
+    faqs: null
 };
 
 export default function Stores(state = initialState, action) {
@@ -214,8 +217,20 @@ export default function Stores(state = initialState, action) {
                 ...state,
                 loading: false
             }
-                
-                 
+            
+        case GET_STORE_FAQ_SUCCESS:
+            return {
+                ...state,
+                faqs: payload.faqs
+            }
+        case GET_STORE_FAQ_FAIL:
+            return {
+                ...state,
+                faqs: null
+            }
+
+
+
         default:
             return state
 

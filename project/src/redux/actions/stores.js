@@ -26,7 +26,9 @@ import {
     GET_STORES_LIKED_SUCCESS,
     GET_STORES_LIKED_FAIL,
     SET_STORES_LOADING,
-    REMOVE_STORES_LOADING   
+    REMOVE_STORES_LOADING,
+    GET_STORE_FAQ_SUCCESS,
+    GET_STORE_FAQ_FAIL
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -183,7 +185,6 @@ export const get_store_list_category_page = (slug, page) => async dispatch => {
     }
 }
 
-
 export const get_search_stores = (slug, search) => async dispatch => {
     dispatch({
         type: SET_STORE_LOADING,
@@ -287,7 +288,6 @@ export const get_stores_by_arrival = () => async dispatch => {
         });
     }
 }
-
 
 export const get_related_stores = (storeSlug) => async dispatch => {
     const config = {
@@ -438,7 +438,6 @@ export const add_like_dislike_store = (storeSlug) => async dispatch => {
 
 }
 
-
 export const get_user_wish_list_stores = () => async dispatch => {
     dispatch({
         type: SET_STORES_LOADING,
@@ -481,3 +480,39 @@ export const get_user_wish_list_stores = () => async dispatch => {
     }
 };
 
+export const get_store_faqs = (storeSlug) => async dispatch => {
+    dispatch({
+        type: SET_STORE_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/store/${storeSlug}/faqs/`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_STORE_FAQ_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_STORE_FAQ_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_STORE_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_STORE_FAQ_FAIL
+        });
+        dispatch({
+            type: REMOVE_STORE_LOADING
+        });
+    }
+}

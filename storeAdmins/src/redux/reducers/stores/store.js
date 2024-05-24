@@ -12,14 +12,21 @@ import {
     GET_STORE_POLICIES_FAIL,
 
     SET_LOADING_STORE_POLICIES_SUCCESS,
-    REMOVE_LOADING_GET_STORE_POLICIES_FAIL
+    REMOVE_LOADING_GET_STORE_POLICIES_FAIL,
+
+    GET_STORE_FAQ_SUCCESS,
+    GET_STORE_FAQ_FAIL,
+    SET_LOADING_STORE_FAQS,
+    REMOVE_LOADING_GET_STORE_FAQS
 } from "../../actions/store/types";
 
 const initialState = {
     store: null,
     loading: false,
     policies: null,
-    loading_policies: false
+    loading_policies: false,
+    faqs: null,
+    loading_faqs: false
 
 };
 
@@ -81,6 +88,29 @@ export default function Store(state = initialState, action) {
             return {
                 ...state,
                 loading_policies: false,
+            };
+
+        case GET_STORE_FAQ_SUCCESS:
+            return {
+                ...state,
+                faqs: payload.faqs
+            }
+        case GET_STORE_FAQ_FAIL:
+            return {
+                ...state,
+                faqs: null
+            }
+
+        case SET_LOADING_STORE_FAQS:
+            return {
+                ...state,
+                loading_faqs: true,
+            };
+
+        case REMOVE_LOADING_GET_STORE_FAQS:
+            return {
+                ...state,
+                loading_faqs: false,
             };
 
 

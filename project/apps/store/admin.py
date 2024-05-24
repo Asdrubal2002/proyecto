@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Store, StorePolicy, StoreLike
+from .models import Store, StorePolicy, StoreLike, UserStoreAssociation, FAQ
 
 
 # Register your models here.
@@ -16,4 +16,6 @@ admin.site.register(StorePolicy)
 
 admin.site.register(StoreLike)
 
+admin.site.register(UserStoreAssociation)
 
+admin.site.register(FAQ)

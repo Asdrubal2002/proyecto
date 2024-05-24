@@ -41,8 +41,8 @@ function FormCreatePolicy({
   
     if (!formData.policy_text.trim()) {
       errors.policy_text = 'La descripción de la política es requerida';
-    } else if (formData.policy_text.length > 1000) {
-      errors.policy_text = 'El texto de la política no puede exceder los 1000 caracteres';
+    } else if (formData.policy_text.length > 5000) {
+      errors.policy_text = 'El texto de la política no puede exceder los 5000 caracteres';
     }
   
     setFormErrors(errors);

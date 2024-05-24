@@ -61,7 +61,7 @@ class CategoryListViewAdmin(APIView):
         user = request.user
 
         # Obtener la tienda asociada al usuario autenticado
-        store = user.store
+        store = user.stores.all().first()  # Suponiendo que el usuario solo administra una tienda
 
         # Obtener las categorías asociadas a la tienda del usuario autenticado
         categories = Category.objects.filter(store=store).order_by('name')
@@ -109,8 +109,16 @@ class CreateCategoryAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CreateCategorySerializer(data=request.data)
         if serializer.is_valid():
+            # Obtener la tienda del usuario autenticado
+            store = request.user.stores.all().first()
+            if not store:
+                return Response(
+                    {"error": "El usuario no tiene tiendas asociadas."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
             # Agregar la tienda del usuario autenticado como propietario de la categoría
-            serializer.validated_data["store"] = request.user.store
+            serializer.validated_data["store"] = store
 
             # Obtener el nombre de la categoría del serializer
             name = serializer.validated_data["name"]
@@ -126,7 +134,7 @@ class CreateCategoryAPIView(APIView):
                 slug = slugify(name)
 
             # Verificar si ya existe una categoría con el mismo slug en la tienda del usuario
-            if Category.objects.filter(store=request.user.store, slug=slug).exists():
+            if Category.objects.filter(store=store, slug=slug).exists():
                 return Response(
                     {"error": "Ya existe una categoría con este nombre en la tienda."},
                     status=status.HTTP_400_BAD_REQUEST
@@ -138,7 +146,7 @@ class CreateCategoryAPIView(APIView):
             category = serializer.save()
 
             # Listar todas las categorías después de crear una nueva
-            categories = Category.objects.filter(store=request.user.store).order_by(
+            categories = Category.objects.filter(store=store).order_by(
                 "-created_at"
             )
             serializer = CategorieStoreSerializer(categories, many=True)
@@ -158,9 +166,11 @@ class CategoryDeleteAPIView(APIView):
             return Response(
                 {"message": "La categoría no existe"}, status=status.HTTP_404_NOT_FOUND
             )
-
+        
+        # Obtener la tienda asociada al usuario autenticado
+        user_store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
         # Verificar si la categoría pertenece a la tienda del usuario autenticado
-        if category.store != request.user.store:
+        if category.store != user_store:
             return Response(
                 {"message": "No tienes permiso para eliminar esta categoría"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -171,7 +181,7 @@ class CategoryDeleteAPIView(APIView):
 
         # Listar las categorías restantes
         remaining_categories = Category.objects.filter(
-            store=request.user.store
+            store=user_store
         ).order_by("-created_at")
         serializer = CategorieStoreSerializer(remaining_categories, many=True)
 
@@ -201,7 +211,11 @@ class CategoryStateAPIView(APIView):
             )
 
         # Verificar si la categoría pertenece a la tienda del usuario autenticado
-        if category.store != request.user.store:
+
+        user_store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
+
+
+        if category.store != user_store:
             return Response(
                 {"message": "No tienes permiso para modificar esta categoría"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -214,7 +228,7 @@ class CategoryStateAPIView(APIView):
         new_state = "activo" if category.is_active else "inactivo"
 
         # Obtener todas las categorías de la tienda del usuario autenticado
-        categories = Category.objects.filter(store=request.user.store).order_by(
+        categories = Category.objects.filter(store=user_store).order_by(
             "-created_at"
         )
 
@@ -253,7 +267,7 @@ class EditCategoryView(APIView):
             serializer.save()
 
             # Listar todas las categorías después de crear una nueva
-            categories = Category.objects.filter(store=request.user.store).order_by(
+            categories = Category.objects.filter(store=request.user.stores.first()).order_by(
                 "-created_at"
             )
             serializer = CategorieStoreSerializer(categories, many=True)

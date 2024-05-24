@@ -9,7 +9,9 @@ function FooterStores({
   const navigation = {
     solutions: [
       { name: 'Politicas', href: `/policies/${store&&store.slug}` },
+      { name: 'Preguntas frecuentes', href: `/questions/${store&&store.slug}` },
       { name: `${store&&store.city.estado_o_departamento.pais.currency.name}, ${store&&store.city.estado_o_departamento.pais.currency.typecurrency}` },
+
     ],
     support: [
       { name: `${store&&store.city.estado_o_departamento.pais.nombre}, ${store&&store.city.nombre}` },

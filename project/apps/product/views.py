@@ -152,7 +152,9 @@ class ProductOptionListView(APIView):
 class OptionListView(APIView):
     def get(self, request, *args, **kwargs):
         # Obtener el usuario autenticado
-        user = request.user
+        #user = request.user
+
+        user = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
 
         # Filtrar las opciones asociadas al usuario autenticado
         options = Option.objects.filter(store__administrator=user)
@@ -176,7 +178,7 @@ class CreateOptionAPIView(APIView):
         data = request.data.copy() 
 
         # Agregar el usuario autenticado como administrador de la tienda
-        data["store"] = request.user.store.id
+        data["store"] = request.user.stores.first().id
 
         # Obtener el ID del producto y la cantidad de la solicitud
         product_id = data.get('product', None)
@@ -230,8 +232,12 @@ class UserProductsAPIView(APIView):
 
     def get(self, request):
         try:
+
+            user = request.user
+            store = user.stores.all().first()  # Suponiendo que el usuario solo administra una tienda
+
             # Obtener la tienda del usuario autenticado
-            store = request.user.store
+            #store = request.user.store
 
             # Obtener todas las categorías de la tienda del usuario
             categories = store.categories_store.all()
@@ -441,7 +447,9 @@ class CreateOptionsAPIView(APIView):
     def post(self, request, *args, **kwargs):
         # Agregar el usuario autenticado como administrador de la tienda
         data = request.data.copy() 
-        data["store"] = request.user.store.id
+        data["store"] = request.user.stores.first().id
+
+
 
         # Crear un serializador con los datos de la solicitud
         serializer = CreateOptionSerializer(data=data)
@@ -603,7 +611,8 @@ class UpdateOptionAPIView(APIView):
             return Response({"error": "Option not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Verificar si el usuario tiene permisos para editar esta opción
-        if request.user != option.store.administrator:
+        user_store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
+        if user_store != option.store:
             return Response({"error": "You don't have permission to edit this option"}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = CreateOptionSerializer(option, data=request.data, partial=True)

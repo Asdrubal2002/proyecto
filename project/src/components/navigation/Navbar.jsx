@@ -417,7 +417,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/carts'} className="group -m-2 flex items-center p-2">
                                                     <BuildingStorefrontIcon
-                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/carts' ? 'text-azul_corp_ho' : 'text-gray-400'}`}
+                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/carts' ? 'text-gray-600' : 'text-gray-400'}`}
                                                         aria-hidden="true"
                                                     />
                                                     <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{cart_count}</span>
@@ -427,7 +427,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                             <div className="ml-4 flow-root lg:ml-6">
                                                 <Link to={'/invoices'} className="group -m-2 flex items-center p-2">
                                                     <ClipboardDocumentCheckIcon
-                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/invoices' ? 'text-azul_corp_ho' : 'text-gray-400'}`}
+                                                        className={`h-6 w-6 flex-shrink-0 group-hover:text-gray-500 ${window.location.pathname === '/invoices' ? 'text-gray-600' : 'text-gray-400'}`}
                                                         aria-hidden="true"
                                                     />
                                                     <span className="text-xs absolute top-1 mt-3 ml-4 bg-azul_corp text-white font-semibold rounded-full px-2 text-center">{invoice_count}</span>

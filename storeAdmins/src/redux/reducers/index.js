@@ -11,6 +11,7 @@ import Products from "./products/products";
 import Shippings_store from "./shippings/shippings";
 import Products_ByCategory from "./products/products_by_category";
 import Comments_Store from "./comments/comments_store";
+import Partners_store from "./users-store/users";
 
 
 
@@ -25,6 +26,7 @@ export default combineReducers({
     Products_ByCategory,
     Products,
     Shippings_store,
-    Comments_Store
+    Comments_Store,
+    Partners_store
 
 })

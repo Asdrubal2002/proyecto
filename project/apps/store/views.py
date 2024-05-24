@@ -6,13 +6,14 @@ from rest_framework import permissions, status
 from django.db.models import Q
 from django.core.files.base import ContentFile
 
-
-from apps.store.models import Store, StorePolicy, StoreLike
+from apps.store.models import Store, StorePolicy, StoreLike, UserStoreAssociation, FAQ
 from apps.store.serializers import (
     StoreSerializer,
     CreateStoreSerializer,
     StorePolicySerializer,
-    WishListStoreSerializer
+    WishListStoreSerializer,
+    UserAccountSerializer,
+    FAQSerializer
 )
 from apps.store_category.models import Category
 from django.shortcuts import get_object_or_404
@@ -28,7 +29,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from .permissions import CanEditStore
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import NotFound
-
+from apps.user.models import UserAccount
 # Create your views here.
 
 
@@ -235,11 +236,25 @@ class CreateStoreAPIView(APIView):
     permission_classes = [IsAuthenticated, IsSellerOrReadOnly]
 
     def post(self, request, *args, **kwargs):
-        # Asignar el usuario autenticado como administrador de la tienda
-        request.data["administrator"] = request.user.id
+        # Copiar los datos de la solicitud
+        data = request.data.copy()
+        
+        # Agregar el usuario autenticado como administrador en forma de lista
+        data["administrator"] = [request.user.id]
 
-        serializer = CreateStoreSerializer(data=request.data)
+        # Crear el serializador con los datos actualizados
+        serializer = CreateStoreSerializer(data=data)
+        
+        # Verificar si los datos son válidos
         if serializer.is_valid():
+
+            # Obtener el usuario actual
+            user = request.user
+
+            # Establecer al usuario como el administrador principal de la tienda
+            user.is_primary_store_admin = True
+            user.save()
+
             # Guardar la tienda en la base de datos
             store = serializer.save()
 
@@ -277,7 +292,7 @@ class CreateStoreAPIView(APIView):
                 return Response(response_data, status=status.HTTP_409_CONFLICT)  # Código de estado 409: Conflicto
 
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
 class UserStoreAPIView(APIView):
     def get(self, request, *args, **kwargs):
         # Obtener el usuario autenticado
@@ -309,7 +324,7 @@ class EditStoreLogoView(APIView):
             logo_file = data["logo"]
 
             # Obtiene el objeto Store del usuario autenticado
-            store = user.store
+            store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
 
             # Elimina el logo existente, si lo hay
             if store.logo:
@@ -335,7 +350,8 @@ class EditStoreBannerView(APIView):
             banner_file = data["banner"]
 
             # Obtiene el objeto Store del usuario autenticado
-            store = user.store
+            store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
+            #store = user.store
 
             # Elimina el banner existente, si lo hay
             if store.banner:
@@ -356,64 +372,24 @@ class StorePolicyCreateAPIView(APIView):
         if serializer.is_valid():
             # Obtener el usuario autenticado
             user = request.user
-            # Verificar si el usuario tiene una tienda asociada
-            if not hasattr(user, "store"):
+
+            # Verificar si el usuario tiene al menos una tienda asociada
+            user_stores = user.stores.all()
+            if not user_stores:
                 return Response(
                     {"error": "El usuario autenticado no tiene una tienda asociada"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            # Obtener la tienda asociada al usuario
-            store = user.store
+
+            # Tomar la primera tienda asociada al usuario
+            store = user_stores.first()
+
+            # Guardar la política con la tienda asociada al usuario
             serializer.save(store=store)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class StorePolicyUpdateAPIView(APIView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self, pk):
-        try:
-            return StorePolicy.objects.get(pk=pk)
-        except StorePolicy.DoesNotExist:
-            raise NotFound()
-
-    def put(self, request, pk, format=None):
-        policy = self.get_object(pk)
-        serializer = StorePolicySerializer(policy, data=request.data)
-        if serializer.is_valid():
-            # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
-            store = request.user.store_set.first()
-            if not store or policy.store != store:
-                return Response(
-                    {"error": "No tienes permiso para actualizar esta política"},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class StorePolicyDeleteAPIView(APIView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self, pk):
-        try:
-            return StorePolicy.objects.get(pk=pk)
-        except StorePolicy.DoesNotExist:
-            raise NotFound()
-
-    def delete(self, request, pk, format=None):
-        policy = self.get_object(pk)
-        # Verifica si el usuario autenticado es el administrador de la tienda asociada a la política
-        store = request.user.store_set.first()
-        if not store or policy.store != store:
-            return Response(
-                {"error": "No tienes permiso para eliminar esta política"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        policy.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class StorePolicyListByStoreAPIView(APIView):
     def get(self, request, store_slug, format=None):
@@ -436,7 +412,7 @@ class EditStoreView(APIView):
     def put(self, request, format=None):
         user = self.request.user
         data = self.request.data
-        store = user.store
+        store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
 
         # Actualizar campos de texto
         text_fields = ["description", "address", "location", "phone", "email", "schedule", "nit"]
@@ -495,3 +471,132 @@ class LikedStoresAPIView(APIView):
             'stores': serializer.data
         }
         return Response(response_data, status=status.HTTP_200_OK)
+    
+class StoreUsersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
+            if not store:
+                return Response({"error": "No tienes ninguna tienda asociada"}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Obtener los usuarios asociados a la tienda
+            users = store.administrator.all()
+
+            # Serializar los datos de los usuarios
+            serializer = UserAccountSerializer(users, many=True)
+
+            return Response({"partners": serializer.data}, status=status.HTTP_200_OK)
+
+        except Store.DoesNotExist:
+            return Response({"error": "Tienda no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        
+class AssociateUserToStoreAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        identification = request.data.get('identification')
+
+        if not email or not identification:
+            return Response({"error": "Email and identification are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(UserAccount, email=email, userprofile__identification=identification)
+        
+        # Obtener la tienda del usuario autenticado
+        store = request.user.stores.first()
+
+        if not store:
+            return Response({"error": "You do not have a store associated with your account"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verificar si el usuario autenticado es administrador de la tienda
+        if request.user not in store.administrator.all():
+            return Response({"error": "You do not have permission to associate users with this store"}, status=status.HTTP_403_FORBIDDEN)
+
+        # Verificar si el usuario ya está asociado con otra tienda
+        existing_association = UserStoreAssociation.objects.filter(user=user).exclude(store=store).exists()
+        if existing_association:
+            return Response({"error": "El usuario ya está asociado con otra tienda."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Asociar al usuario con la tienda en UserStoreAssociation
+        association, created = UserStoreAssociation.objects.get_or_create(user=user, store=store)
+
+        # Asociar al usuario con la tienda en el modelo Store
+        store.administrator.add(user)
+        
+        # Activar el campo is_seller
+        user.is_seller = True
+        user.save()
+
+        if created:
+            return Response({"message": "User successfully associated with the store"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "User is already associated with the store"}, status=status.HTTP_200_OK)
+
+class DeactivateSellerAPIView(APIView):
+    def put(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        
+        if not user_id:
+            return Response({"error": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(UserAccount, id=user_id)
+        
+        # Toggle the seller status
+        user.is_seller = not user.is_seller
+        user.save()
+        
+        if user.is_seller:
+            return Response({"message": "User is now activated as a seller"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "User is now deactivated as a seller"}, status=status.HTTP_200_OK)
+         
+class RemoveAssociateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        # Obtener el usuario autenticado y su tienda asociada
+        user = request.user
+        store = user.stores.first()
+
+        if not store:
+            return Response({"error": "Authenticated user does not have an associated store"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Obtener el ID del usuario a desasociar de la tienda
+        user_id = request.data.get('user_id')
+        
+        if not user_id:
+            return Response({"error": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verificar si el usuario a desasociar está asociado con la tienda del usuario autenticado
+        association = get_object_or_404(UserStoreAssociation, user_id=user_id, store=store)
+        
+        if association:
+            # Obtener el usuario a desasociar
+            user_to_remove = association.user
+            # Eliminar la asociación del usuario con la tienda
+            association.delete()
+            # Desactivar la propiedad is_seller del usuario
+            user_to_remove.is_seller = False
+            user_to_remove.save()
+            # Eliminar la asociación del usuario con la tienda en el modelo Store
+            store.administrator.remove(user_to_remove)
+            return Response({"message": "User successfully removed from store and is_seller deactivated"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Specified user is not associated with the store"}, status=status.HTTP_400_BAD_REQUEST)
+
+class FAQRetrieveByStoreSlugAPIView(APIView):
+    def get(self, request, store_slug, format=None):
+        # Obtenemos la tienda por su slug
+        store = get_object_or_404(Store, slug=store_slug)
+        try:
+            # Filtramos las preguntas frecuentes por la tienda encontrada
+            faqs = FAQ.objects.filter(store=store)
+            serializer = FAQSerializer(faqs, many=True)
+            return Response({"faqs": serializer.data}, status=status.HTTP_200_OK)
+        except FAQ.DoesNotExist:
+            return Response(
+                {"error": "No se encontraron preguntas frecuentes para esta tienda"},
+                status=status.HTTP_404_NOT_FOUND,
+            )

@@ -15,7 +15,8 @@ import {
   PaperAirplaneIcon,
   ListBulletIcon,
   TagIcon,
-  CalculatorIcon
+  CalculatorIcon,
+  HandRaisedIcon
 } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -32,7 +33,9 @@ export default function ItemsSidebar() {
     { name: 'Productos', href: '/products', icon: CircleStackIcon, current: location.pathname==='/products' ? true:false },
     { name: 'Métodos de entrega o envío', href: '/shipping', icon: PaperAirplaneIcon, current: location.pathname==='/shipping' ? true:false },
     { name: 'Opciones', href: '/my_options', icon: TagIcon, current: location.pathname==='/my_options' ? true:false },
-    { name: 'Pedidos', href: '/invoices', icon: CalculatorIcon, current: false },
+    { name: 'Pedidos', href: '/invoices', icon: CalculatorIcon, current: location.pathname==='/invoices' ? true:false },
+    { name: 'Socios', href: '/partners', icon: HandRaisedIcon, current: location.pathname==='/partners' ? true:false },
+
   ]
 
   return (

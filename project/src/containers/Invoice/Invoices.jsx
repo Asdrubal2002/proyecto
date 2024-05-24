@@ -58,18 +58,19 @@ function Invoices({
                                         <Link to={`/store/${invoice.store.slug}`} className="flex items-center flex-grow">
                                             <h3 className="text-2xl font-bold tracking-tight text-gray-300">#{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
                                         </Link>
-                                        <button onClick={() => handleDelteInvoice(invoice.id)} className="ml-2 text-gray-400" >
-                                            <TrashIcon className="w-6 h-6" />
-                                        </button>
+                                        {
+                                            invoice.status.id === 1 && (
+                                                <button onClick={() => handleDelteInvoice(invoice.id)} className="ml-2 text-gray-400">
+                                                    <TrashIcon className="w-6 h-6" />
+                                                </button>
+                                            )
+                                        }
                                     </div>
                                     <div className="mt-10 flex items-center gap-x-4">
                                         <h4 className="flex-none text-sm font-semibold leading-6 text-azul_corp_ho">Detalles</h4>
                                         <div className="h-px flex-auto bg-gray-100" />
                                     </div>
-                                    <ul
-                                        role="list"
-                                        className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-gray-400 sm:grid-cols-2 sm:gap-6"
-                                    >
+                                    <ul role="list" className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-gray-400 sm:grid-cols-2 sm:gap-6">
                                         <li className="flex gap-x-3">
                                             <PaperAirplaneIcon className="h-6 w-5 flex-none text-azul_corp_ho" aria-hidden="true" />
                                             {invoice.shipping_method ? (
@@ -80,41 +81,53 @@ function Invoices({
                                         </li>
                                         <li className="flex gap-x-3">
                                             <MapPinIcon className="h-6 w-5 flex-none text-azul_corp_ho" aria-hidden="true" />
-                                            <p>{invoice.shipping_location.address_line_1},  {invoice.shipping_location.city.nombre} - {invoice.shipping_location.delivery_notes}</p>                                          
+                                            <p>{invoice.shipping_location.address_line_1}, {invoice.shipping_location.city.nombre} - {invoice.shipping_location.delivery_notes}</p>
                                         </li>
                                     </ul>
-                                    <div class="inline-block mt-4 p-4">
-                                        {/* <p class="text-gray-400 text-sm ">Por favor, asegúrate de revisar los productos recibidos y reportar cualquier problema
-                                        dentro del plazo especificado en política de devolución de {invoice.store.name}.</p> */}
-                                        <li className="flex gap-x-3">
+                                    <div className="inline-block mt-4 p-4">
+                                        {
+                                            invoice.status.id === 1 && (
+                                                <div className="my-4 p-4 rounded-lg shadow-lg bg-gradient-to-r from-yellow-600 to-yellow-800 text-white ">
+                                                    <h4 className="text-xl font-bold mb-3 border-b border-yellow-400 pb-1">Información importante</h4>
+                                                    <p className="mb-2 ">
+                                                        1- <span className="font-bold">¡Orden enviada!</span> Revisa tu correo para ver tu pedido y los productos seleccionados.
+                                                    </p>
+                                                    <p className="mt-2">
+                                                        2- Puedes cancelar tu pedido mientras está en estado <span className="font-bold">Pendiente</span>.
+                                                    </p>
+                                                    <p className="mt-2 ">
+                                                        3- Consulta las políticas de {invoice.store.name}.
+                                                        <Link to={`/policies/${invoice.store.slug}`} className="ml-2 text-azul_corp font-bold">
+                                                            Aquí
+                                                        </Link>
+                                                    </p>
+                                                    <p className="mt-2">
+                                                        3- Te notificaremos por correo cada vez que el estado de tu pedido cambie.
+                                                    </p>
+                                                </div>
+                                            )
+                                        }
+                                        <li className="flex gap-x-3 mt-2">
                                             <ExclamationCircleIcon className="h-6 w-5 flex-none text-azul_corp_ho" aria-hidden="true" />
-                                            <Link className='text-azul_corp_ho text-sm'>Reportar problema a  {invoice.store.name}</Link>
+                                            <Link className='text-azul_corp_ho text-sm'>Reportar problema a {invoice.store.name}</Link>
                                         </li>
                                     </div>
                                 </div>
-                                <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-                                    <div className="rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
+                                <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0 flex">
+                                    <div className="flex-1 rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 flex flex-col justify-center">
                                         <div className="mx-auto max-w-xs px-8">
                                             <p className="text-base font-semibold text-gray-600">{invoice.store.name}</p>
                                             <p className="mt-6 flex items-baseline justify-center gap-x-2">
                                                 <span className="text-5xl font-bold tracking-tight text-gray-900">{invoice.status.name}</span>
                                             </p>
-                                            {/* <a
-                                            href={invoice.pdf_path}
-                                            target="_blank"  // Esto abrirá el enlace en una nueva ventana o pestaña del navegador
-                                            rel="noopener noreferrer"  // Buenas prácticas de seguridad cuando se utiliza target="_blank"
-                                            className="mt-10 block w-full rounded-md bg-azul_corp px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-azul_corp_ho focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        >
-                                            Ver orden
-                                        </a> */}
                                             <p className="mt-6 text-xs leading-5 text-gray-600">
                                                 Factura o recibo disponible para facilitar el reembolso o problema con la tienda.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
+
                         ))}
                         {invoices && invoices.length === 0 && <NoFoundCarts />}
                     </div>

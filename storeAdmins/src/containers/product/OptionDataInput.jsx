@@ -110,12 +110,12 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
                     onSuggestionsFetchRequested={onSuggestionsFetchRequested}
                     onSuggestionsClearRequested={onSuggestionsClearRequested}
                     getSuggestionValue={suggestion => suggestion.option ? suggestion.option.value : suggestion.value}
-                    renderSuggestion={suggestion => <div className="p-2 bg-gray-800 rounded m-1 flex"><BookmarkIcon width={20} height={20} color="#fff" radius="6" /> {suggestion.option ? suggestion.option.value : suggestion.value}</div>}
+                    renderSuggestion={suggestion => <div className="p-2 bg-gray-800 rounded m-1 flex cursor-pointer"><BookmarkIcon width={20} height={20} color="#fff" radius="6" /> {suggestion.option ? suggestion.option.value : suggestion.value}</div>}
                     inputProps={{
                         placeholder: 'Escriba una opción',
                         value,
                         onChange: handleChange,
-                        className: "p-2 rounded-md focus:outline-none bg-gray-800 text-sm placeholder:text-gray-400 text-gray-200"
+                        className: "p-2 rounded-md focus:outline-none bg-gray-800 text-sm placeholder:text-gray-400 text-gray-200 "
                     }}
                     onSuggestionSelected={onSuggestionSelected}
                 />
