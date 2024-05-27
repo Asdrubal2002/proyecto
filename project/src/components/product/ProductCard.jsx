@@ -77,7 +77,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
               <p className="text-sm text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && truncateText(data.description, 40)) }}></p>
 
               <div className="flex justify-between items-center w-full mt-1">
-                <span className="text-md font-semibold text-gray-200 flex"> <CurrencyDollarIcon className="w-6 h-6 text-green-500" />{data.formatted_price}</span>
+                <span className="text-md font-semibold text-gray-200 flex"> <CurrencyDollarIcon className="w-6 h-6 text-green-500" />{data.price_with_tax}</span>
                 <div className="flex items-center">
                   <button
                     onClick={(e) => handleButtonClick(data.slugProduct, e)}

@@ -24,7 +24,11 @@ const SearchFormByCategory = ({ storeSlug, categorySlug }) => {
 
   return (
     <div className="max-w-md mx-auto rounded-lg overflow-hidden">
-      <h2 className="text-xl font-semibold mb-4">Filtrar Productos </h2>
+      <h2 className="text-xl font-semibold mb-4">Filtrar productos en categoria  - {' '}
+        {categorySlug
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')}</h2>
       <div className="mb-4">
         <input
           type="text"

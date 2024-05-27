@@ -13,7 +13,7 @@ import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_
 import { CommentsProduct } from './CommentsProduct';
 import DOMPurify from 'dompurify'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
-import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import Comments from './Components/Comments';
 import Options from './Components/Options';
 
@@ -121,6 +121,7 @@ function ProductModal({
 
     return (
         <div>
+
             <div className="max-w-2xl mx-auto py-10 px-4 sm:py-10 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
                     <ImageGallery data={data?.images} />
@@ -136,7 +137,13 @@ function ProductModal({
 
                         <div className="mt-3 ">
                             <h2 className="sr-only">data information</h2>
-                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.formatted_price}</p>
+                            {data && data.tax && (
+                                <p className='text-sm flex items-center'>
+                                    <InformationCircleIcon className="w-6 h-6 text-yellow-700 mr-2" />
+                                    Este producto incluye un impuesto de {data.tax}%
+                                </p>
+                            )}
+                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.price_with_tax}</p>
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">

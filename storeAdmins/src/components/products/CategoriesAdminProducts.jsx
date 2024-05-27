@@ -15,52 +15,58 @@ function CategoriesAdminProducts({
 
     const [expandedCategories, setExpandedCategories] = useState([]);
 
-    const toggleCategory = categoryId => {
-        if (expandedCategories.includes(categoryId)) {
-            setExpandedCategories(expandedCategories.filter(id => id !== categoryId));
-        } else {
-            setExpandedCategories([...expandedCategories, categoryId]);
-        }
-    };
+    const toggleCategory = (categoryId) => {
+        setExpandedCategories(prevState => {
+          // Contraer todas las categorías excepto la seleccionada
+          const updatedExpandedCategories = prevState.includes(categoryId) ? [] : [categoryId];
+          return updatedExpandedCategories;
+        });
+      };
+      
 
     return (
         <div className="flex flex-wrap gap-4 mt-2">
-            {categories && categories.map(category => (
-                <div key={category.id} className="max-w-sm rounded-lg shadow-md overflow-hidden ">
-                    <div
-                        className="flex items-center justify-between px-4 py-3 bg-gray-800 text-white cursor-pointer"
-                        onClick={() => toggleCategory(category.id)}
+        {categories && categories.map(category => (
+          <div key={category.id} className="max-w-sm rounded-lg shadow-md overflow-hidden">
+            <div
+              className={`flex items-center justify-between px-4 py-3 cursor-pointer ${expandedCategories.includes(category.id) ? 'bg-blue-600' : 'bg-gray-800'} text-white`}
+              onClick={() => toggleCategory(category.id)}
+            >
+              <span className="text-sm font-medium">{category.name}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleCategory(category.id);
+                }}
+                className="focus:outline-none"
+              >
+                {expandedCategories.includes(category.id) ? (
+                  <MinusIcon className="h-4 w-4 text-gray-300" />
+                ) : (
+                  <PlusIcon className="h-4 w-4 text-gray-300" />
+                )}
+              </button>
+            </div>
+            {expandedCategories.includes(category.id) && (
+              <div className="px-4 py-2">
+                <div className="grid grid-cols-2 gap-2">
+                  {category.sub_categories.map(subCategory => (
+                    <Link
+                      key={subCategory.id}
+                      to={`/products_by_category/${userStore.slug}/${subCategory.slug}`}
+                      className="py-2 px-3 bg-gray-900 text-white rounded-md hover:bg-gray-700 text-sm"
                     >
-                        <span className="text-sm font-medium">{category.name}</span>
-                        <button
-                            onClick={() => toggleCategory(category.id)}
-                            className="focus:outline-none"
-                        >
-                            {expandedCategories.includes(category.id) ? (
-                                <MinusIcon className="h-4 w-4 text-gray-300" />
-                            ) : (
-                                <PlusIcon className="h-4 w-4 text-gray-300" />
-                            )}
-                        </button>
-                    </div>
-                    {expandedCategories.includes(category.id) && (
-                        <div className="px-4 py-2">
-                            <div className="grid grid-cols-2 gap-2">
-                                {category.sub_categories.map(subCategory => (
-                                    <Link
-                                        key={subCategory.id}
-                                        to={`/products_by_category/${userStore.slug}/${subCategory.slug}`}
-                                        className="py-2 px-3 bg-gray-900 text-white rounded-md hover:bg-gray-700 text-sm"
-                                    >
-                                        {subCategory.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                      {subCategory.name}
+                    </Link>
+                  ))}
                 </div>
-            ))}
-        </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      
     )
 }
 

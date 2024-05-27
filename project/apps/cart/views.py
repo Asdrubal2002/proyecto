@@ -42,30 +42,34 @@ class view_user_carts(APIView):
 def crear_item_carrito(product_option_id, user, cart):
     try:
         # Obtener la instancia de ProductOption
-        product_option = ProductOption.objects.get(id=product_option_id)
+        product_option = ProductOption.objects.select_for_update().get(id=product_option_id)
 
         # Verificar si la cantidad disponible es mayor que cero
         if product_option.quantity > 0:
-            # Verificar si ya existe un ítem con el mismo número de producto en el carrito
-            item_carrito, created = ItemCarrito.objects.get_or_create(product_option=product_option, cart=cart)
+            # Disminuir la cantidad disponible en 1 y aumentar la cantidad vendida en 1
+            product_option.quantity -= 1
+            product_option.sold += 1
+            product_option.save()
 
-            # Si el ítem ya existe en el carrito, simplemente actualizar la cantidad
+            # Verificar y actualizar el estado de stock bajo de la opción del producto
+            product_option.check_stock_level()
+
+            # Crear o actualizar el objeto ItemCarrito
+            item_carrito, created = ItemCarrito.objects.get_or_create(product_option=product_option, cart=cart)
             if not created:
                 item_carrito.quantity += 1
                 item_carrito.save()
 
-            # Disminuir la cantidad disponible y aumentar la cantidad vendida
-            product_option.quantity = F('quantity') - 1
-            product_option.sold = F('sold') + 1
-            product_option.save()
-
             return item_carrito, created
+
         else:
             return None, False
 
     except ProductOption.DoesNotExist:
         return None, False
-    
+
+
+
 class AddToCart(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -94,12 +98,18 @@ class AddToCart(APIView):
             item_carrito, created = crear_item_carrito(product_option_id, user, cart)
 
         if created:
+            # Actualizar estado de stock bajo en el producto si es necesario
+            product_option.product.check_stock_level()  # Llamar a la función para actualizar el estado de stock bajo
+
             return Response({'message': 'El ítem fue agregado al carrito correctamente'}, status=status.HTTP_201_CREATED)
         else:
             if item_carrito is None:
                 return Response({'error': 'Hubo un problema al agregar el ítem al carrito'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({'message': 'La cantidad del ítem en el carrito fue actualizada correctamente'}, status=status.HTTP_200_OK)
+            
+
+
 
 class ProductsCartView(APIView):
     permission_classes = [IsAuthenticated]
@@ -146,12 +156,16 @@ class IncrementItemQuantity(APIView):
                 item.product_option.quantity -= 1
                 item.product_option.save()
 
+                # Aumenta la cantidad vendida del producto
                 item.product_option.sold += 1
                 item.product_option.save()
 
+                # Llama al método para validar la situación de la cantidad del stock de la opción
+                item.product_option.check_stock_level()
+
                 # Actualiza y devuelve el item actualizado
                 item_serializer = ItemCarritoSerializer(item)
-                return Response({'cart':item_serializer.data}, status=status.HTTP_200_OK)
+                return Response({'cart': item_serializer.data}, status=status.HTTP_200_OK)
             else:
                 return Response(
                     {"error": "No hay más productos disponibles"},
@@ -163,6 +177,7 @@ class IncrementItemQuantity(APIView):
                 {"error": "Item de carrito no encontrado"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
 
 class DecrementItemQuantity(APIView):
     permission_classes = [IsAuthenticated]
@@ -190,12 +205,16 @@ class DecrementItemQuantity(APIView):
                 item.product_option.quantity += 1
                 item.product_option.save()
 
+                # Decrementa la cantidad vendida del producto
                 item.product_option.sold -= 1
                 item.product_option.save()
 
+                # Llama al método para validar la situación de la cantidad del stock de la opción
+                item.product_option.check_stock_level()
+
                 # Actualiza y devuelve el ítem actualizado
                 item_serializer = ItemCarritoSerializer(item)
-                return Response({'cart':item_serializer.data}, status=status.HTTP_200_OK)
+                return Response({'cart': item_serializer.data}, status=status.HTTP_200_OK)
             else:
                 return Response(
                     {"error": "La cantidad mínima es 1 para este producto"},
@@ -234,8 +253,12 @@ class RemoveItemFromCart(APIView):
             item.product_option.quantity += cantidad_eliminada
             item.product_option.save()
 
+            # Decrementa la cantidad vendida del producto
             item.product_option.sold -= cantidad_eliminada
             item.product_option.save()
+
+            # Llama al método para validar la situación de la cantidad del stock de la opción
+            item.product_option.check_stock_level()
 
             # Verifica si el carrito está vacío después de eliminar el ítem
             cart = item.cart
@@ -283,6 +306,9 @@ class RemoveCartBySlug(APIView):
                 item.product_option.sold -= item.quantity
                 item.product_option.save()
 
+                # Llama al método para validar la situación de la cantidad del stock de la opción
+                item.product_option.check_stock_level()
+
             # Elimina el carrito
             cart.delete()
 
@@ -295,6 +321,7 @@ class RemoveCartBySlug(APIView):
             return Response(
                 {"error": "Carrito no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
+
 
 class SynchCartView(APIView):
     def put(self, request, format=None):

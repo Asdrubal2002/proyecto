@@ -41,11 +41,12 @@ class Product(models.Model):
     description = RichTextField()
     slugProduct = models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    tax = models.DecimalField(max_digits=20, decimal_places=2, default=0, blank=True)
+    tax = models.DecimalField(max_digits=10, decimal_places=0, default=0, blank=True,  null=True)  # Cambiado a entero
     sold = models.IntegerField(default=0)
     date_created = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
-    
+    is_low_stock_alert = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
     
@@ -63,7 +64,14 @@ class Product(models.Model):
     def formatted_price(self):
         # Formatear el precio con separador de miles
         return formats.number_format(self.price, decimal_pos=self.price % 1)
-
+    
+    @property
+    def price_with_tax(self):
+        return self.price * (1 + self.tax / 100)
+    
+    def check_stock_level(self):
+        for option in self.product_options.all():
+            option.check_stock_level()
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -104,6 +112,22 @@ class ProductOption(models.Model):
     quantity = models.IntegerField(default=0)
     sold = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    is_stock_low = models.BooleanField(default=False)
+    low_stock_threshold = models.PositiveIntegerField(default=10)
 
     def __str__(self):
         return f"{self.product.name} - {self.option}"
+    
+    def check_stock_level(self):
+        # Refrescar la instancia para obtener el valor actualizado de quantity
+        self.refresh_from_db(fields=['quantity'])
+        self.is_stock_low = self.quantity < self.low_stock_threshold
+        self.save()
+
+        # Obtener el producto asociado y actualizar el campo is_low_stock_alert si es necesario
+        product = self.product
+        if product.product_options.filter(is_stock_low=True).exists():
+            product.is_low_stock_alert = True
+        else:
+            product.is_low_stock_alert = False
+        product.save()

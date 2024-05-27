@@ -8,7 +8,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import { get_user_invoices, remove_invoice } from '../../redux/actions/Invoice';
 import { InfinitySpin, Rings } from 'react-loader-spinner';
-import { CheckIcon, ExclamationCircleIcon, MapIcon, MapPinIcon, PaperAirplaneIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { BuildingStorefrontIcon, CheckIcon, ExclamationCircleIcon, MapIcon, MapPinIcon, PaperAirplaneIcon, TrashIcon } from '@heroicons/react/24/outline';
 import NoFoundCarts from '../Cart/NoFoundCarts';
 
 
@@ -55,8 +55,13 @@ function Invoices({
                             <div key={invoice.id} className="mx-auto mt-10 max-w-2xl rounded-3xl sm:mt-10 lg:mx-0 lg:flex lg:max-w-none bg-stone-900">
                                 <div className="p-8 sm:p-10 lg:flex-auto">
                                     <div className="flex items-center">
-                                        <Link to={`/store/${invoice.store.slug}`} className="flex items-center flex-grow">
+                                        <Link className="flex items-center flex-grow">
                                             <h3 className="text-2xl font-bold tracking-tight text-gray-300">#{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
+                                        </Link>
+                                        <Link to={`/store/${invoice.store.slug}`} className='flex font-semibold'>
+                                            <BuildingStorefrontIcon className="w-6 h-6 mr-2" />
+                                            Visitar tienda
+
                                         </Link>
                                         {
                                             invoice.status.id === 1 && (

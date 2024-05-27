@@ -77,6 +77,9 @@ function FormShippings({
         // Llamar a la función para editar la categoría
         await update_shipping(editingShippingId, formData.name, formData.time_to_delivery, formData.price, formData.additional_notes)
         get_shippings()
+        clearFormData()
+
+
 
       } else {
         // Llamar a la función para crear un nuevo método

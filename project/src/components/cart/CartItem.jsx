@@ -1,8 +1,11 @@
 import { memo, useCallback, useRef  } from 'react';
-import { CheckIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ClockIcon, XMarkIcon, } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { Carousel } from 'react-responsive-carousel';
 import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
+import { Battery100Icon, Battery0Icon } from "@heroicons/react/24/solid";
+
+
 
 const CartItem = ({ item, increment_item, decrement_item, remove_item, setRender }) => {
     // Referencia a la función de actualización del estado
@@ -61,7 +64,12 @@ const CartItem = ({ item, increment_item, decrement_item, remove_item, setRender
                         <p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">$ {item.product_option.product.formatted_price}</p>
                     </div>
                     <p className="mt-1 text-sm font-medium text-gray-300">$ {item.product_option.product.price * item.quantity}</p>
-                    <p className="mt-1 text-sm text-gray-500">impuesto $ {item.product_option.product.tax}</p>
+
+                    <p className="mt-1 text-sm text-gray-500">impuesto {item.product_option.product.tax} %</p>
+
+                    <p className="mt-1 text-sm font-medium text-gray-300">$ {item.subtotal}</p>
+
+                    
                 </div>
                 <div className="mt-4 sm:mt-0 sm:pr-9">
                     <div className="flex items-center">
@@ -100,12 +108,12 @@ const CartItem = ({ item, increment_item, decrement_item, remove_item, setRender
             <p className="mt-4 flex text-sm text-gray-400 space-x-2">
                 {item.product_option && item.product_option.quantity > 0 ? (
                     <>
-                        <CheckIcon className="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
+                        <Battery100Icon className="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
                         <span>Aún hay unidades disponibles</span>
                     </>
                 ) : (
                     <>
-                        <ClockIcon className="flex-shrink-0 h-5 w-5 text-gray-300" aria-hidden="true" />
+                        <Battery0Icon className="flex-shrink-0 h-5 w-5 text-gray-300" aria-hidden="true" />
                         <span>Ya no hay unidades disponibles</span>
                     </>
                 )}

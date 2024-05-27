@@ -17,17 +17,22 @@ class Cart(models.Model):
     @property
     def total_impuestos(self):
         # Calcula la suma total de impuestos de todos los elementos en el carrito
-        return sum(Decimal(item.product_option.product.tax) * item.quantity for item in self.items.all())
+        return sum((item.product_option.product.price * item.product_option.product.tax / 100) * item.quantity for item in self.items.all())
 
     @property
     def total_sin_impuestos(self):
         # Calcula la suma total sin impuestos de todos los elementos en el carrito
-        return sum(Decimal(item.product_option.product.price) * item.quantity for item in self.items.all())
+        return sum(item.product_option.product.price * item.quantity for item in self.items.all())
+
+    @property
+    def total_con_impuestos(self):
+        # Calcula el total con impuestos
+        return self.total_sin_impuestos + self.total_impuestos
 
     @property
     def total_con_impuestos_formateado(self):
         # Devuelve el total con impuestos formateado con separador de miles
-        return "{:,.2f}".format(self.total_sin_impuestos + self.total_impuestos)
+        return "{:,.2f}".format(self.total_con_impuestos)
 
 class ItemCarrito(models.Model):
     product_option = models.ForeignKey(ProductOption, on_delete=models.CASCADE)
@@ -37,13 +42,12 @@ class ItemCarrito(models.Model):
     @property
     def subtotal(self):
         # Obtén el precio y el impuesto del product_option
-        product_option = self.product_option
-        product = product_option.product
+        product = self.product_option.product
         price = Decimal(product.price)
-        tax = Decimal(product.tax)
+        tax_rate = Decimal(product.tax) / 100
         
         # Calcula el subtotal sumando el impuesto por la cantidad
-        subtotal_con_impuesto = (price + tax) * self.quantity
+        subtotal_con_impuesto = (price + (price * tax_rate)) * self.quantity
         return subtotal_con_impuesto
 
     @property

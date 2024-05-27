@@ -5,7 +5,7 @@ import { Navigate, useParams, useNavigate, Link } from 'react-router-dom';
 
 import { get_options_admin, get_product, get_products_options } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
-import { BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, InformationCircleIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowTrendingDownIcon, ArrowsUpDownIcon, BarsArrowUpIcon, CheckCircleIcon, CheckIcon, ChevronUpIcon, InformationCircleIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, TrashIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
 import { get_categories } from '../../redux/actions/categories_product/categories_product';
@@ -48,12 +48,12 @@ function EditProduct({
     const [updateCategory, setUpdateCategory] = useState(false)
     const [updateDescription, setUpdateDescription] = useState(false)
     const [updatePrice, setUpdatePrice] = useState(false)
+    const [updateTax, setUpadteTax] = useState(false)
+
 
     const [updatePhoto, setUpdatePhoto] = useState(false)
     const [previewImage, setPreviewImage] = useState()
     const [photo, setPhoto] = useState(null)
-
-    const [updateOptions, setUpdateOptions] = useState(false)
 
     const [openAddCategory, setOpenAddCategory] = useState(false)
 
@@ -73,6 +73,7 @@ function EditProduct({
         description: '',
         category: '',
         price: '',
+        tax: '',
         optionPr: '',
         quantity: ''
 
@@ -83,6 +84,7 @@ function EditProduct({
         description,
         category,
         price,
+        tax,
         optionPr,
         quantity
     } = formData
@@ -97,7 +99,7 @@ function EditProduct({
         setUpdateCategory(false)
         setUpdatePrice(false)
         setUpdatePhoto(false)
-        setUpdateOptions(false)
+        setUpadteTax(false)
     }
 
     const onSubmit = e => {
@@ -117,6 +119,10 @@ function EditProduct({
         formData.append('description', description)
         formData.append('category', selectedCategory)
         formData.append('price', price)
+        formData.append('tax', tax)
+
+        console.log(tax)
+
 
         const fetchData = async () => {
             setLoading(true)
@@ -337,8 +343,6 @@ function EditProduct({
         });
     };
 
-   
-
     const handleDeleteOption = (optionId) => {
         const config = {
             headers: {
@@ -411,6 +415,7 @@ function EditProduct({
                     <>
                         <div className="mt-5 border-t border-gray-200">
                             <dl className="divide-y divide-gray-200">
+                                {/* Nombre */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">Nombre del producto</dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
@@ -613,31 +618,9 @@ function EditProduct({
                                 {/* Precio */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
-
-
-                                        <Disclosure>
-                                            <Disclosure.Button className="focus:outline-none">
-                                                <p className='flex'>
-                                                    Precio  <InformationCircleIcon className="w-6 h-6 text-gray-400 mx-2" />
-                                                </p>
-                                            </Disclosure.Button>
-                                            <Transition
-                                                enter="transition duration-100 ease-out"
-                                                enterFrom="transform scale-95 opacity-0"
-                                                enterTo="transform scale-100 opacity-100"
-                                                leave="transition duration-75 ease-out"
-                                                leaveFrom="transform scale-100 opacity-100"
-                                                leaveTo="transform scale-95 opacity-0"
-                                            >
-                                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                                    <p>
-                                                        En Ruvlo, puedes escribir los precios de dos maneras diferentes: con o sin puntos. Por ejemplo, puedes poner <strong>"34.000"</strong> o simplemente <strong>"34000"</strong>. Es mejor mantener una forma consistente de escribir los precios tanto para los productos como para los métodos de pago.
-                                                    </p>
-                                                </Disclosure.Panel>
-                                            </Transition>
-                                        </Disclosure>
-
-
+                                        <p className='flex'>
+                                            Precio
+                                        </p>
                                     </dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
                                         {updatePrice ? (
@@ -694,6 +677,68 @@ function EditProduct({
                                     </dd>
                                 </div>
 
+
+
+                                {/* Impuesto */}
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200">
+                                        <p className='flex'>
+                                            Impuesto
+                                        </p>
+                                    </dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        {updateTax ? (
+                                            <>
+                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                    <input
+                                                        value={tax}
+                                                        onChange={e => {
+                                                            const { value } = e.target;
+                                                            // Mantener solo los números
+                                                            const cleanedValue = value.replace(/[^\d]/g, ''); // Eliminar todo excepto los números
+                                                            onChange({ target: { name: 'tax', value: cleanedValue } }); // Llamar a la función onChange con el valor limpio
+                                                        }}
+                                                        name='tax'
+                                                        type='text'
+                                                        maxLength={10} // Máximo de 10 caracteres para un valor monetario (por ejemplo, 999,999.99)
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        placeholder='Nuevo Impuesto'
+                                                    />
+
+
+                                                    {/* Mensaje de error si el campo de precio está vacío */}
+
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            disabled={tax.length > 10} // Deshabilitar el botón si el precio está vacío, no es un valor monetario válido o excede el límite
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                        >
+                                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setUpadteTax(false)}
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                        >
+                                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="flex-grow">{product && product.tax}  %</span>
+                                                <button
+                                                    onClick={() => setUpadteTax(true)}
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
+                                                    <PencilIcon width={20} height={20} color="#fff" radius="6" />
+
+                                                </button>
+                                            </>
+                                        )}
+                                    </dd>
+                                </div>
+
                                 {/* Optiones */}
 
 
@@ -710,13 +755,15 @@ function EditProduct({
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cantidad</th>
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
 
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cantidad</th>
+
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="bg-gray-900 divide-y divide-gray-700">
                                                     {options && options.length === 0 ? (
                                                         <tr>
-                                                            <td className="px-6 py-4 whitespace-normal" colSpan="4">
+                                                            <td className="px-6 py-4 whitespace-normal" colSpan="5">
                                                                 <div className="text-sm text-gray-300">
                                                                     <p>
                                                                         Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
@@ -726,10 +773,17 @@ function EditProduct({
                                                                             No puedes dejar este campo vacío. Si no tienes opciones, complétalo con una característica principal de tu producto y la cantidad que tengas disponible.
                                                                         </strong>
                                                                     </p>
+                                                                    <hr className='my-4' />
+                                                                    <p className='text-yellow-500'>
+                                                                        <strong>Opción:  </strong> Registra o Selecciona entre opciones como Colores, Pesos, etc.
+                                                                        <br />
+                                                                        <strong>Cantidad:  </strong> Especifica la cantidad disponible.
+                                                                        <br />
+                                                                        <strong>Umbral:  </strong> Define la cantidad mínima para recibir una alerta de stock bajo.
+                                                                    </p>
                                                                 </div>
                                                             </td>
                                                         </tr>
-
                                                     ) : (
                                                         options && options.map((option, index) => (
                                                             <tr key={index}>
@@ -737,13 +791,28 @@ function EditProduct({
                                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{option.quantity} Unidades</td>
                                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-300 ${option.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>{option.is_active ? "Activo" : "Inactivo"}</td>
 
+                                                                <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-300 ${option.is_stock_low ? 'bg-red-700 text-white' : 'bg-green-500 text-white'}`}>{option.is_stock_low ?
+                                                                    <div className='flex'>
+                                                                        <ArrowTrendingDownIcon className="mr-1.5 h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                                                                        Reducida
+                                                                    </div>
+
+                                                                    :
+                                                                    <div className='flex'>
+                                                                        <ArrowsUpDownIcon className="mr-1.5 h-5 w-5 flex-shrink-0 " aria-hidden="true" />
+                                                                        Estable
+                                                                    </div>
+
+                                                                }</td>
+
+
                                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                                     <button className="ml-2 focus:outline-none">
                                                                         <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option.id)} />
                                                                     </button>
-                                                                    <button className="ml-2 focus:outline-none">
+                                                                    {/* <button className="ml-2 focus:outline-none">
                                                                         <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option.id)} />
-                                                                    </button>
+                                                                    </button> */}
                                                                 </td>
                                                             </tr>
                                                         ))
@@ -892,7 +961,7 @@ function EditProduct({
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 {
-                                                    product && product.name  && product.price ?
+                                                    product && product.name && product.price ?
                                                         <></>
                                                         :
                                                         <p className="text-sm text-gray-500">
@@ -905,7 +974,7 @@ function EditProduct({
                                         </div>
                                     </div>
                                     {
-                                        (product && product.name  && product.price) &&
+                                        (product && product.name && product.price) &&
                                         <>
                                             {
                                                 product && product.is_active ?

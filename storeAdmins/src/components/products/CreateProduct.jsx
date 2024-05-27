@@ -21,11 +21,14 @@ function CreateProduct({
     const [loading, setLoading] = useState(false)
     const [description, setDescription] = useState('');
 
+
+
+
     function handleSubmit(event) {
         event.preventDefault();
 
         const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData);
+        const data = Object.fromEntries(formData.entries());  // Use entries to include all form data
         const editorContent = description;
         formData.set('description', editorContent);
 
@@ -35,12 +38,19 @@ function CreateProduct({
         // if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
         if (!data.category) errors.category = 'La categoría es obligatoria';
         if (!data.price) errors.price = 'El precio es obligatorio';
-        else if (!/^\d+$/.test(data.price)) errors.price = 'El precio debe ser un número entero sin puntos decimales. No se permiten espacios ni comas.';
+        else if (!/^\d+(\.\d{1,2})?$/.test(data.price)) errors.price = 'El precio debe ser un número entero o decimal.';
+        if (data.tax && !/^\d+$/.test(data.tax)) errors.tax = 'El Impuesto debe ser un número entero.';
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
             return;
         }
+
+        // Si el campo tax está vacío, eliminarlo del formData
+        if (!data.tax) {
+            formData.delete('tax');
+        }
+
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data', // Agregamos el Content-Type adecuado
@@ -59,10 +69,10 @@ function CreateProduct({
 
                 if (res.status === 200) {
                     setLoading(false);
-                    get_products()
+                    get_products();
                 } else {
                     setLoading(false);
-                    get_products()
+                    get_products();
                     resetStates();
                 }
             } catch (err) {
@@ -72,8 +82,11 @@ function CreateProduct({
         };
 
         fetchData();
-        setOpen(false)
+        setOpen(false);
     }
+
+
+
     const handleCategoryChange = e => {
         setSelectedCategory(e.target.value);
     };
@@ -177,7 +190,7 @@ function CreateProduct({
                                                 }}
                                                 config={{
                                                     toolbar: {
-                                                        items: [ 'bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado 
+                                                        items: ['bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado 
                                                         ]
                                                     },
                                                 }}
@@ -192,6 +205,15 @@ function CreateProduct({
                                             className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                                         />
                                         {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+
+                                        <input
+                                            name='tax'
+                                            type='text'
+                                            placeholder='Porcentaje de impuesto por ejemplo, 19, 5, 21, 25, ...'
+                                            className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                        />
+                                        {errors.tax && <span className="text-red-500 text-sm">{errors.tax}</span>}
+
                                         <button
                                             type="submit"
                                             className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

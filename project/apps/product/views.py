@@ -171,7 +171,7 @@ class OptionListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateOptionAPIView(APIView):
-    permission_classes = (CanEditProduct,)
+    permission_classes = (IsAuthenticated, CanEditProduct,)
 
     def post(self, request, *args, **kwargs):
         # Obtener los datos de la solicitud
@@ -183,6 +183,7 @@ class CreateOptionAPIView(APIView):
         # Obtener el ID del producto y la cantidad de la solicitud
         product_id = data.get('product', None)
         quantity = data.get('quantity', 0)
+        low_stock_threshold = data.get('low_stock_threshold', 10)  # Obtener el umbral de stock bajo
 
         # Verificar si se proporcionó un ID de producto válido
         if product_id is None:
@@ -207,7 +208,12 @@ class CreateOptionAPIView(APIView):
                 return Response({"error": "La opción especificada no existe"}, status=status.HTTP_404_NOT_FOUND)
 
             # Si la opción existe, crear la relación con el producto
-            product_option = ProductOption.objects.create(product_id=product_id, option=option, quantity=quantity)
+            product_option = ProductOption.objects.create(
+                product_id=product_id, 
+                option=option, 
+                quantity=quantity, 
+                low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
+            )
             serialized_option = OptionSerializer(option).data
 
             return Response(serialized_option, status=status.HTTP_201_CREATED)
@@ -220,7 +226,12 @@ class CreateOptionAPIView(APIView):
                 option = serializer.save()
 
                 # Crear la relación con el producto
-                product_option = ProductOption.objects.create(product_id=product_id, option=option, quantity=quantity)
+                product_option = ProductOption.objects.create(
+                    product_id=product_id, 
+                    option=option, 
+                    quantity=quantity, 
+                    low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
+                )
                 serialized_option = OptionSerializer(option).data
 
                 return Response(serialized_option, status=status.HTTP_201_CREATED)
@@ -243,7 +254,7 @@ class UserProductsAPIView(APIView):
             categories = store.categories_store.all()
 
             # Obtener todos los productos asociados a las categorías de la tienda del usuario
-            products = Product.objects.filter(category__in=categories).order_by('-date_created')
+            products = Product.objects.filter(category__in=categories).order_by('-is_low_stock_alert')
 
             paginator = LargeSetPagination()
             results = paginator.paginate_queryset(products, request)
@@ -286,7 +297,12 @@ class EditProductView(APIView):
             if not (data["price"] == "undefined"):
                 product.price = data["price"]
                 product.save()
+        if data["tax"]:
+            if not (data["tax"] == "undefined"):
+                product.tax = data["tax"]
+                product.save()
 
+         
         return Response({"success": "post edited"})
 
 class StatusProductView(APIView):
@@ -379,6 +395,8 @@ class CreateProductView(APIView):
         category_id = data.get('category', None)
         description = data.get('description', '')
         price = data.get('price', 0)
+        tax = data.get('tax', 0)
+
 
         # Crear el objeto Product
         product = Product.objects.create(
@@ -386,6 +404,7 @@ class CreateProductView(APIView):
             category_id=category_id,
             description=description,
             price=price,
+            tax=tax,
             date_created=timezone.now()  # Utilizar timezone.now() en lugar de datetime.now()
         )
 
