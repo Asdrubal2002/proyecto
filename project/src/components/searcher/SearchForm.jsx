@@ -23,8 +23,8 @@ const SearchForm = ({ storeSlug }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto rounded-lg overflow-hidden">
-      <h2 className="text-xl font-semibold mb-4">Filtrar en todos los productos</h2>
+    <div className="max-w-md mx-auto rounded-lg overflow-hidden font-estilo_letra">
+      <h2 className="text-dm mb-4 font-bold">Filtrar en todos los productos</h2>
       <div className="mb-4">
         <input
           type="text"

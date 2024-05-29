@@ -164,7 +164,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                         />
                                     </Switch>
                                 </div>
-                                <Switch.Label className="text-sm leading-6 text-gray-400">
+                                <Switch.Label className="text-sm leading-6 text-gray-400 font-estilo_letra font-bold">
                                     Aceptas nuestros {' '}
                                     <Link to="/conditions" className="font-semibold text-azul_corp_ho">
                                         términos y condiciones

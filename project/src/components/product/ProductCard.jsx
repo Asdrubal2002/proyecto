@@ -71,9 +71,9 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
           className="block bg-gray-700 bg-opacity-75 transition-colors duration-300 rounded-b-lg cursor-pointer"
           onClick={e => setOpen(true)}
         >
-          <div className="w-full h-full p-4 hover:bg-opacity-100 focus:bg-opacity-100">
+          <div className="w-full h-full p-4 hover:bg-opacity-100 focus:bg-opacity-100 font-estilo_letra">
             <div className="flex flex-col items-start">
-              <h3 className="text-lg font-medium text-gray-300">{data.name}</h3>
+              <h3 className="text-md font-bold text-gray-300">{data.name}</h3>
               <p className="text-sm text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && truncateText(data.description, 40)) }}></p>
 
               <div className="flex justify-between items-center w-full mt-1">
@@ -89,7 +89,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
               </div>
             </div>
             {showBubble && (
-              <div className="absolute bottom-16 right-4 bg-azul_corp text-white p-2 rounded-lg font-medium">
+              <div className="absolute bottom-16 right-4 bg-azul_corp text-white p-2 rounded-lg font-sm">
                 {
                   isAuthenticated ? <>
                     Se agregado a favoritos

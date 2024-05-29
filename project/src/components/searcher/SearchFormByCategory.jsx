@@ -23,7 +23,7 @@ const SearchFormByCategory = ({ storeSlug, categorySlug }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto rounded-lg overflow-hidden">
+    <div className="max-w-md mx-auto rounded-lg overflow-hidden font-estilo_letra">
       <h2 className="text-xl font-semibold mb-4">Filtrar productos en categoria  - {' '}
         {categorySlug
           .split('-')

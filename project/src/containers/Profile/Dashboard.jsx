@@ -121,13 +121,13 @@ function Dashboard({
             <Helmet>
                 <title>Ruvlo | Cuenta</title>
             </Helmet>
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
                     <div className="hidden md:block">
                         <Searcher />
                     </div>
                     <div className="flex items-center mt-4 sm:mt-0">
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
+                        <h2 className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0">
                             Perfil del usuario
                         </h2>
                     </div>
@@ -155,7 +155,7 @@ function Dashboard({
                                         ) : (
                                             <>
                                                 {profile && profile.firs_name || profile && profile.last_name ? (
-                                                    <div className="font-sans text-base grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div className="text-base grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                         <div className="flex items-center">
                                                             <span className="mr-4 font-semibold">{`${profile.firs_name} ${profile.last_name}`}</span>
                                                             <span className="inline-block">{profile.phone && profile.phone.replace(/.(?=.{2})/g, '*')}</span>
@@ -193,7 +193,7 @@ function Dashboard({
                                         ) : (
                                             <>
                                                 {location && location.address_line_1 || location && location.address_line_2 || (location && location.city && location.city.nombre) || location && location.postal_zip_code || location && location.delivery_notes ? (
-                                                    <div className="font-sans text-base grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="text-base grid grid-cols-1 md:grid-cols-2 gap-4">
                                                         {location.address_line_1 && <p className="mb-2"><span className="font-semibold">Dirección Principal:</span> {location.address_line_1.replace(/.(?=.{4})/g, '*')}</p>}
                                                         {location.address_line_2 && <p className="mb-2"><span className="font-semibold">Dirección Secundaria:</span> {location.address_line_2}</p>}
                                                         {(location.city && location.city.nombre) && <p className="mb-2"><span className="font-semibold">Ciudad:</span> {location.city.nombre}</p>}

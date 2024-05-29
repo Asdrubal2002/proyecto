@@ -38,9 +38,9 @@ export default function About() {
                     <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                         <div className="lg:pr-4">
                             <div className="lg:max-w-lg">
-                                <p className="text-base font-semibold leading-7 text-azul_corp_ho">Empieza a vender</p>
-                                <h1 className="mt-2 text-3xl text-gray-200 sm:text-4xl">Con Ruvlo</h1>
-                                <p className="mt-6 text-xl leading-8 text-gray-300">
+                                <p className="text-base font-semibold leading-7 text-azul_corp_ho font-estilo_letra">Empieza a vender</p>
+                                <h1 className="mt-2 text-3xl text-gray-200 sm:text-4xl font-estilo_letra">Con Ruvlo</h1>
+                                <p className="mt-6 text-xl leading-8 text-gray-300 font-estilo_letra">
                                     Con nuestra plataforma, puedes lanzar tu propia tienda en línea y vender tus productos de manera sencilla a través de Ruvlo. </p>
                             </div>
                         </div>
@@ -54,7 +54,7 @@ export default function About() {
                     </div>
                     <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                         <div className="lg:pr-4">
-                            <div className="max-w-xl text-base leading-7 text-gray-300 lg:max-w-lg">
+                            <div className="max-w-xl text-base leading-7 text-gray-300 lg:max-w-lg font-estilo_letra">
                                 <p>
                                     Te ofrecemos una amplia gama de características y servicios diseñados para impulsar tu éxito</p>
                                 <ul role="list" className="mt-8 space-y-8 text-gray-400">

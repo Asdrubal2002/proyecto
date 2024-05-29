@@ -133,13 +133,13 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
 
               {formularioValido === false && (
                 <MensajeError>
-                  <p className="flex">
-                    <b className="h-5 w-5 mr-2">
-                      <InformationCircleIcon />
-                    </b>
-                    Por favor rellena el formulario completamente.
-                  </p>
-                </MensajeError>
+                <p className="flex">
+                  <b className="h-5 w-5 mr-2">
+                    <InformationCircleIcon />
+                  </b>
+                  Por favor rellena el formulario completamente.
+                </p>
+              </MensajeError>
               )}
 
               {/* <div className="mt-6 grid grid-cols-3 gap-3">

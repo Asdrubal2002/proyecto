@@ -6,7 +6,7 @@ function ImagesForms({ title, children }) {
             <div className="pt-16 pb-80 sm:pt-24 sm:pb-20 lg:pt-16 lg:pb-12 h-screen">
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 sm:static">
                     <div className="sm:max-w-lg">
-                        <h2 className="text-3xl font-bold text-center">{title}</h2>
+                        <h2 className="text-3xl font-bold text-center font-estilo_letra font-bold">{title}</h2>
                         <div className="mt-8">
                             {children}
                         </div>

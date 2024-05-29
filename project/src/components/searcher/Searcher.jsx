@@ -52,7 +52,7 @@ function Searcher({
                     <select
                         name='slug'
                         onChange={e => onChange(e)}
-                        className="bg-stone-700 py-2 pl-4 pr-2 rounded-l-full text-gray-300 text-sm leading-5 focus:outline-none w-1/3 cursor-pointer"
+                        className="bg-stone-700 py-2 pl-4 pr-2 rounded-l-full text-gray-300 text-sm leading-5 focus:outline-none w-1/3 cursor-pointer font-estilo_letra"
                         value={formData.slug}  // Establecer el valor seleccionado
                     >
                         <option value="" disabled hidden>
@@ -87,7 +87,10 @@ function Searcher({
                             text-sm 
                             focus:outline-none
                             w-full 
-                            md:w-96"
+                            md:w-96
+                            font-estilo_letra 
+                            "
+                            
                         placeholder="Busca tu localidad, barrio, estado, tienda"
                     />
                     {/* Mensaje de error debajo de los campos */}

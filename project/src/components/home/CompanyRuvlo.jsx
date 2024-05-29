@@ -4,7 +4,7 @@ import { CheckIcon } from '@heroicons/react/24/outline'
 
 export default function CompanyRuvlo() {
   return (
-      <div className="pb-10">
+      <div className="pb-10 font-estilo_letra">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <h2 className="text-3xl leading-8 tracking-tight text-white sm:text-3xl">Nuestros Planes</h2>

@@ -63,13 +63,13 @@ const WishList = ({
                 <meta name="twitter:image" content='https://bafybeicwrhxloesdlojn3bxyjqnxgsagtd4sl53a7t4cn4vfe2abmybzua.ipfs.w3s.link/lightbnuilbg.jpg' />
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
                     <div className="hidden md:block">
                         <Searcher />
                     </div>
                     <div className="flex items-center mt-4 sm:mt-0">
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
+                        <h2 className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0">
                             {count && count} Productos favoritos
                         </h2>
                     </div>

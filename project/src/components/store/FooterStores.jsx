@@ -65,7 +65,7 @@ function FooterStores({
   }
 
   return (
-    <footer className="bg-stone-900" aria-labelledby="footer-heading">
+    <footer className="bg-stone-900 font-estilo_letra" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
@@ -78,7 +78,7 @@ function FooterStores({
                 <ul role="list" className="mt-4 space-y-4">
                   {navigation.solutions.map((item, index) => (
                     <li key={`solution_${index}`}>
-                      <Link to={item.href} className="text-base text-gray-400 hover:text-gray-100">
+                      <Link to={item.href} className="text-sm text-gray-400 hover:text-gray-100">
                         {item.name}
                       </Link>
                     </li>
@@ -90,7 +90,7 @@ function FooterStores({
                 <ul role="list" className="mt-4 space-y-4">
                   {navigation.support.map((item, index) => (
                     <li key={`support_${index}`}>
-                      <p href={item.href} className="text-base text-gray-400 ">
+                      <p href={item.href} className="text-sm text-gray-400 ">
                         {item.name}
                       </p>
                     </li>
@@ -104,7 +104,7 @@ function FooterStores({
                 <ul role="list" className="mt-4 space-y-4">
                   {navigation.company.map((item, index) => (
                     <li key={`company_${index}`}>
-                      <a href={item.href} className="text-base text-gray-400">
+                      <a href={item.href} className="text-sm text-gray-400">
                         {item.name}
                       </a>
                     </li>
@@ -116,7 +116,7 @@ function FooterStores({
                 <ul role="list" className="mt-4 space-y-4 overflow-hidden">
                   {navigation.legal.map((item, index) => (
                     <li key={`legal_${index}`}>
-                      <a href={item.href} className="text-base text-gray-400" style={{ overflowWrap: 'break-word' }}>
+                      <a href={item.href} className="text-sm text-gray-400" style={{ overflowWrap: 'break-word' }}>
                         {item.name}
                       </a>
                     </li>
@@ -168,7 +168,7 @@ function FooterStores({
               </a>
             ))}
           </div>
-          <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
+          <p className="mt-8 text-sm text-gray-400 md:mt-0 md:order-1">
             &copy; 2024 Ruvlo, Inc. All rights reserved.
           </p>
         </div>

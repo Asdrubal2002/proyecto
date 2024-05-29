@@ -127,7 +127,7 @@ function Products({
       <div>
         {hasShippingOptions ? (
           // Renderizar opciones de envío si hay
-          <div className='mb-5 grid gap-6 grid-cols-1 sm:grid-cols-2'>
+          <div className='mb-5 grid gap-6 grid-cols-1 sm:grid-cols-2 '>
             {shipping.map((shipping, index) => (
               <div
                 key={index}
@@ -184,7 +184,7 @@ function Products({
         <title>Ruvlo | Tu Compra </title>
       </Helmet>
       <div>
-        <div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+        <div className="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8 font-estilo_letra">
           <h1 className="text-3xl font-bold tracking-tight text-gray-300 sm:text-3xl">Cantidad de productos ({cart && cart.items ? cart.items.length : 0})</h1>
           <div className="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
 
@@ -199,9 +199,9 @@ function Products({
             </section>
             <section aria-labelledby="summary-heading" className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5 sticky top-20">
               <Link to={cart && cart.store ? `/store/${cart.store.slug}` : "/"} className="flex items-center justify-between">
-                <h2 id="summary-heading" className="text-lg font-medium text-gray-900 mr-2">
+                <h2 id="summary-heading" className="text-lg font-semibold text-gray-900 mr-2">
                   {cart && cart.store ? (
-                    <p>Detalle de compra en {cart.store.name}</p>
+                    <p>Detalle de pedido en {cart.store.name}</p>
                   ) : (
                   <p>Volver a navegar</p>
                   )}
@@ -217,7 +217,7 @@ function Products({
                         <Rings width={30} height={30} color="#0C4896" radius="6" />
                       </> : <>
                         {/* <dd className="text-sm font-medium text-gray-900">$ {cart && cart.total_sin_impuestos.toFixed(2)}</dd> */}
-                        <dd className="text-sm font-medium text-gray-900">$ {cart && cart.total_sin_impuestos}</dd>
+                        <dd className="text-sm font-bold text-gray-900">$ {cart && cart.total_sin_impuestos}</dd>
                       </>
                       }
                     </div>
@@ -233,17 +233,17 @@ function Products({
                         <Rings width={30} height={30} color="#0C4896" radius="6" />
                       </> : <>
                         {/* <dd className="text-sm font-medium text-gray-900">$ {cart && cart.total_impuestos.toFixed(2)}</dd> */}
-                        <dd className="text-sm font-medium text-gray-900">$ {cart && cart.total_impuestos}</dd>
+                        <dd className="text-sm font-bold text-gray-900">$ {cart && cart.total_impuestos}</dd>
                       </>
                       }
                     </div>
                     <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-                      <dt className="text-base font-medium text-gray-900">Total compra</dt>
+                      <dt className="text-base font-bold text-gray-900">Total compra</dt>
                       {loading ? <>
                         <Rings width={30} height={30} color="#0C4896" radius="6" />
                       </> : <>
                         {/* <dd className="text-base font-medium text-gray-900">$ {cart && cart.total.toFixed(2)}</dd> */}
-                        <dd className="text-base font-medium text-gray-900">$ {cart && cart.total_con_impuestos_formateado}</dd>
+                        <dd className="text-base font-bold text-gray-900">$ {cart && cart.total_con_impuestos_formateado}</dd>
                       </>
                       }
                     </div>
@@ -327,12 +327,12 @@ function Products({
                         {renderShipping()}
                       </div>
                       <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-                        <dt className="text-base font-medium text-gray-900">Total compra</dt>
+                        <dt className="text-base font-bold text-gray-900">Total compra</dt>
                         {loading ? <>
                           <Rings width={30} height={30} color="#0C4896" radius="6" />
                         </> : <>
                           {/* <dd className="text-base font-medium text-gray-900">$ {cart && cart.total_con_impuestos_formateado}</dd> */}
-                          <dd className="text-base font-medium text-gray-900">$ {suma}</dd>
+                          <dd className="text-base font-bold text-gray-900">$ {suma}</dd>
                         </>
                         }
                       </div>
@@ -342,7 +342,7 @@ function Products({
                         onClick={toggleContenido}
                         className="flex-1 bg-azul_corp border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-azul_corp_ho "
                       >
-                        Volver
+                        Atras
                       </button>
                       {profile.firs_name == null ? (<>
                         <Link to={'/dashboard'}

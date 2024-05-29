@@ -23,11 +23,11 @@ function DashboardAccount({
                 <title>Ruvlo | Cambios de cuenta</title>
             </Helmet>
 
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra ">
                 <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
                     <Searcher className="flex-1" />
                     <div className="flex items-center mt-4 sm:mt-0">
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
+                        <h2 className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0">
                             Datos de tu cuenta
                         </h2>
                     </div>

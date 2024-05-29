@@ -40,7 +40,7 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
           <InfinitySpin width={250} height={250} color="#fff" radius="6" />
         </div>
       ) : (
-        <div className="py-14 sm:py-14">
+        <div className="py-14 sm:py-14 font-estilo_letra">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
               <h2 className="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">Centro de compras</h2>

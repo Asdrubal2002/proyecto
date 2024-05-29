@@ -20,13 +20,13 @@ function StoreCardHorizontal({ data, index }) {
           )
         }
 
-        <div className="p-4 md:p-6 flex flex-col justify-between">
+        <div className="p-4 md:p-6 flex flex-col justify-between font-estilo_letra">
           <div>
             <div className="text-gray-400 text-sm">
               {data.city.nombre} - {data.city.estado_o_departamento.nombre}
             </div>
-            <h2 className="text-2xl estilo_letra text-white mb-2 ">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
-            <p className="text-dm md:text-dm text-gray-400 mb-3">{data.description.length > 200 ? data.description.slice(0, 200) + '...' : data.description}</p>
+            <h2 className="text-2xl text-white mb-2">{data.name} {data.verified && <CheckBadgeIcon className="h-6 w-6 inline-block text-blue-500" />}</h2>
+            <p className="text-sm text-gray-400 mb-3">{data.description.length > 200 ? data.description.slice(0, 200) + '...' : data.description}</p>
           </div>
           <div className="relative mt-2 flex items-center gap-x-4">
             {
@@ -40,7 +40,7 @@ function StoreCardHorizontal({ data, index }) {
               <p className="font-semibold text-gray-200">
                 {data.name}
               </p>
-              <p className="text-gray-300"> {data.schedule}</p>
+              <p className="text-gray-300 text-sm"> {data.schedule}</p>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ function ListCategoryProducts({ categories, loading_categories, storeSlug,closeC
 
     return (
         
-            <ul role="list" className="space-y-4 text-sm font-medium text-gray-100">
+            <ul role="list" className="space-y-4 text-sm font-estilo_letra text-gray-100">
                 {loading_categories ? (
                     <LoadingCategoriesStores />
                 ) : categories && categories.length > 0 ? (

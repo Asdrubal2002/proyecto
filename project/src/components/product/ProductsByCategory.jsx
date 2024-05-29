@@ -108,7 +108,7 @@ const ProductsByCategory = ({
               </div>
             </Dialog>
           </Transition.Root>
-          <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
             <div className="flex flex-col sm:flex-row  justify-between border-b border-gray-200 pb-6 pt-10">
               <div className="hidden sm:block">
                 <Searcher className="flex-1" />
@@ -116,11 +116,11 @@ const ProductsByCategory = ({
               <div className="flex flex-col sm:flex-row items-center mt-4 sm:mt-0">
                 <Link
                   to={`/store/${storeSlug}`}
-                  className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
+                  className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
                 >
                   <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
                   {/* Agrega el icono de búsqueda */}
-                  {count} Productos -
+                  {count} Productos - 
                   <strong>
                     {' '}
                     {categorySlug

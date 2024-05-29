@@ -13,6 +13,7 @@ export const ContenedorInfo = tw.div`
     sm:px-6 
     lg:py-16 
     lg:px-8
+    font-estilo_letra
 
 `;
 
@@ -91,6 +92,7 @@ export const BotonActivar = tw.button`
     text-base 
     text-white 
     hover:bg-azul_corp_ho
+    font-bold
 `;
 
 

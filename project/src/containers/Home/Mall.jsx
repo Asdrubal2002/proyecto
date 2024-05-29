@@ -115,8 +115,8 @@ const Mall = ({
                         <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 pt-10">
                             <Searcher className="flex-1" />
                             <div className="flex items-center mt-4 sm:mt-0">
-                                <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                                 {count} Tiendas encontradas
+                                <h2 className="text-lg md:text-xl font-estilo_letra font-bold text-gray-800 dark:text-white mb-2 sm:mb-0">
+                                 {count} Resultados
                                 </h2>
                                 {/* <button
                                     type="button"
@@ -138,7 +138,7 @@ const Mall = ({
                                         <StoreList stores={stores} get_store_list_page={get_search_stores_page} slug={slug} search={search} count={count} />
                                     ) : (
                                         <>
-                                            <div className="bg-gray-800 text-gray-200 rounded-md p-4">
+                                            <div className="bg-gray-800 text-gray-200 rounded-md p-4 font-estilo_letra ">
                                                 <p className="text-center text-gray-300 mb-2">No se encontraron tiendas que coincidan con la búsqueda: <strong>{search}</strong></p>
                                                 <p className="text-center text-gray-300 mb-4">Pero no te preocupes, ¡pronto habrá más tiendas disponibles!</p>
                                             </div>

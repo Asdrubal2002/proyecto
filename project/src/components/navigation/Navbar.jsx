@@ -162,7 +162,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                 leaveFrom="translate-x-0"
                                 leaveTo="-translate-x-full"
                             >
-                                <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
+                                <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl font-estilo_letra">
                                     <div className="flex px-4 pb-2 pt-5">
                                         <button
                                             type="button"
@@ -186,7 +186,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                             className={({ selected }) =>
                                                                 classNames(
                                                                     selected ? 'border-azul_corp_ho text-azul_corp_ho' : 'border-transparent text-gray-900',
-                                                                    'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium'
+                                                                    'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium '
                                                                 )
                                                             }
                                                         >
@@ -209,9 +209,6 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                         <span className="absolute inset-0 " aria-hidden="true" />
                                                                         {item.name}
                                                                     </Link>
-                                                                    <p aria-hidden="true" className="mt-1">
-                                                                        de
-                                                                    </p>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -257,15 +254,15 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                         </div>
                                     </>}
                                     {/* Links */}
-                                    <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                                    <div className="space-y-6 border-t border-gray-200 px-4 py-6  font-bold">
 
                                         <div className="flow-root">
-                                            <Link to={'/'} className="-m-2 block p-2 font-medium text-gray-900">
+                                            <Link to={'/'} className="-m-2 block p-2  text-gray-900">
                                                 Centro comercial
                                             </Link>
                                         </div>
                                         <div className="flow-root">
-                                            <Link to={'/company'} className="-m-2 block p-2 font-medium text-gray-900">
+                                            <Link to={'/company'} className="-m-2 block p-2  text-gray-900 ">
                                                 Compañia
                                             </Link>
                                         </div>
@@ -281,7 +278,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                        Desde hoy la democratizar el mercador sera posible.
                     </MessajeNavbar>  */}
 
-                    <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
                         <Contenedor1>
                             <Contenedor2>
                                 <button
@@ -319,7 +316,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                     open
                                                                         ? 'border-azul_corp_ho text-white'
                                                                         : 'border-transparent text-white hover:text-gray-400',
-                                                                    'relative  -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out'
+                                                                    'relative  -mb-px flex items-center border-b-2 pt-px text-sm font-bold transition-colors duration-200 ease-out '
                                                                 )}
                                                             >
                                                                 {category.name}
@@ -397,14 +394,14 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                         <Link
 
                                             to={'/company'}
-                                            className={`flex items-center text-sm font-medium ${window.location.pathname === '/company' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
+                                            className={`flex items-center text-sm  font-bold ${window.location.pathname === '/company' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
                                             >
                                             Compañia
                                         </Link>
 
                                         <NavLink
                                             to={'/'}
-                                            className={`flex items-center text-sm font-medium ${window.location.pathname === '/' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
+                                            className={`flex items-center text-sm  font-bold ${window.location.pathname === '/' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-100 hover:text-gray-400'}`}
                                             >
                                             Centro comercial
                                         </NavLink>
@@ -475,7 +472,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             active
                                                                                 ? "bg-gray-800 text-gray-300"
                                                                                 : "text-gray-300",
-                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                            "block px-4 py-2 text-sm "
                                                                         )}
                                                                     >
                                                                         Datos personales
@@ -490,7 +487,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             active
                                                                                 ? "bg-gray-800 text-gray-300"
                                                                                 : "text-gray-300",
-                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                            "block px-4 py-2 text-sm "
                                                                         )}
                                                                     >
                                                                         Datos de tu cuenta
@@ -505,7 +502,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             active
                                                                                 ? "bg-gray-800 text-gray-300"
                                                                                 : "text-gray-300",
-                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                            "block px-4 py-2 text-sm "
                                                                         )}
                                                                     >
                                                                         Tiendas seleccionadas
@@ -520,7 +517,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             active
                                                                                 ? "bg-gray-800 text-gray-300"
                                                                                 : "text-gray-300",
-                                                                            "block px-4 py-2 text-sm font-estilo_letra"
+                                                                            "block px-4 py-2 text-sm "
                                                                         )}
                                                                     >
                                                                         Pedidos realizados
@@ -535,7 +532,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                                             active
                                                                                 ? "bg-gray-800 text-gray-300"
                                                                                 : "text-gray-300",
-                                                                            "block w-full text-left px-4 py-2 text-sm font-estilo_letra"
+                                                                            "block w-full text-left px-4 py-2 text-sm "
                                                                         )}
                                                                     >
                                                                         Salir de tu cuenta
@@ -547,12 +544,11 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                                                 </Transition>
                                             </Menu>
                                         </> : <>
-                                            <Links to="/signup">
+                                            <Links to="/signup" className=' font-bold'>
                                                 Registrarse
                                             </Links>
                                             <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-
-                                            <Links to='/login'>
+                                            <Links to='/login' className=' font-bold'>
                                                 Ingresar
                                             </Links>
 

@@ -120,35 +120,33 @@ function ProductModal({
     };
 
     return (
-        <div>
-
+        <div className='font-estilo_letra'>
             <div className="max-w-2xl mx-auto py-10 px-4 sm:py-10 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
                     <ImageGallery data={data?.images} />
                     {/* data info */}
                     <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
                         <div className='my-4 flex'>
-                            <Link to={`/${data && data.slugProduct}/detail`} className='text-azul_corp_ho hover:text-azul_corp font-semibold'>Más detalles</Link>
+                            <Link to={`/${data && data.slugProduct}/detail`} className='text-azul_corp_ho hover:text-azul_corp font-semibold text-sm'>Más detalles</Link>
                             <div className='mx-4 border-r border-gray-300'></div>
-                            <Link to={`/products_by_category/${data && data.category.store.slug}/${data && data.category.slug}`} className='text-azul_corp_ho hover:text-azul_corp font-semibold'>{data && data.category.name}</Link>
+                            <Link to={`/products_by_category/${data && data.category.store.slug}/${data && data.category.slug}`} className='text-azul_corp_ho hover:text-azul_corp font-semibold text-sm'>{data && data.category.name}</Link>
                         </div>
 
-                        <h1 className="text-3xl font-semibold tracking-tight text-gray-200">{data && data.name}</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-gray-200">{data && data.name}</h1>
 
                         <div className="mt-3 ">
-                            <h2 className="sr-only">data information</h2>
                             {data && data.tax && (
-                                <p className='text-sm flex items-center'>
-                                    <InformationCircleIcon className="w-6 h-6 text-yellow-700 mr-2" />
+                                <p className='text-xs flex items-center'>
+                                    <InformationCircleIcon className="w-6 h-6 text-yellow-700 mr-2 " />
                                     Este producto incluye un impuesto de {data.tax}%
                                 </p>
                             )}
-                            <p className="text-3xl text-gray-300 flex items-center "><CurrencyDollarIcon className="w-8 h-8 text-green-500" />  {data && data.price_with_tax}</p>
+                            <p className="text-3xl text-gray-300 flex items-center font-bold my-4"><CurrencyDollarIcon className="w-8 h-8 text-green-500" /> {data && data.price_with_tax}</p>
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">
                             {/* <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3> */}
-                            <p className="text-base text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
+                            <p className="text-md text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
                         </div>
                         <div className="mt-6">
                             <h3 className="sr-only">options</h3>
@@ -171,7 +169,7 @@ function ProductModal({
                             isAuthenticated ? <div className="mt-6">
                                 <div className="mt-2 flex sm:flex-col1">
                                     {loadingToCar ? <>
-                                        <button className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                                        <button >
                                             <Rings width={20} height={20} color="#fff" radius="6" />
                                         </button>
                                     </> : <>
@@ -179,9 +177,8 @@ function ProductModal({
                                             onClick={addItemToCart}
                                             type="submit"
                                             disabled={!options || options.every(option => option.quantity === 0)}
-                                            className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md py-2 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-azul_corp_ho  sm:w-full">
-                                            <ShoppingCartIcon className="h-6 w-6 text-gray-400 mx-2" />
-
+                                            className="max-w-xs flex-1 bg-azul_corp border border-transparent rounded-md flex items-center justify-center text-md hover:bg-azul_corp_ho sm:w-full">
+                                            <ShoppingCartIcon className="h-6 w-6 text-gray-400 m-2" />
                                             Agregar al carrito
                                         </button>
 
@@ -198,7 +195,7 @@ function ProductModal({
                                             ) : (
                                                 <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
                                             )}
-                                            <span className="ml-2  ">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
+                                            <span className="ml-2">{likes} Me gusta</span> {/* Muestra el número de likes al lado del botón */}
                                         </button>
                                     </div>
                                 </div>
@@ -214,8 +211,6 @@ function ProductModal({
                                             </Link>
                                             <Link to={'/login'} className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-red-500">
                                                 <span className="ml-2 text-gray-400">{likes}  Me gusta</span> {/* Muestra el número de likes al lado del botón */}
-
-                                                <span className="sr-only">Add to favorites</span>
                                             </Link>
                                         </div>
                                     </div>
@@ -225,7 +220,7 @@ function ProductModal({
                     <section aria-labelledby="details-heading" className="mt-4">
                         <Disclosure>
                             <Disclosure.Button className="pb-2" onClick={handleComments}>
-                                <p className="hover:bg-stone-800 p-2 rounded-md text-sm font-medium">
+                                <p className="hover:bg-stone-800 p-2 rounded-md text-sm font-medium ">
                                     {comments_count}  Comentarios del producto
                                 </p>
                             </Disclosure.Button>
@@ -251,14 +246,12 @@ function ProductModal({
                                                         placeholder="Cuentanos tu experiencia...."
                                                         maxLength={200} // Aquí estableces el límite de caracteres
                                                     ></textarea>
-
                                                     <button
                                                         onClick={() => {
                                                             handleComment();
                                                         }}
                                                         disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
-
-                                                        className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold"
+                                                        className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none text-md"
                                                     >
                                                         {buttonText}
                                                     </button>

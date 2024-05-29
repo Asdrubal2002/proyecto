@@ -46,7 +46,7 @@ function Invoices({
                     <InfinitySpin width={250} height={250} color="#fff" radius="6" />
                 </div>
             ) : (
-                <div className="py-14 sm:py-14">
+                <div className="py-14 sm:py-14 font-estilo_letra">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="mx-auto max-w-2xl sm:text-center">
                             <h2 className="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">Centro de ordenes</h2>
@@ -56,7 +56,7 @@ function Invoices({
                                 <div className="p-8 sm:p-10 lg:flex-auto">
                                     <div className="flex items-center">
                                         <Link className="flex items-center flex-grow">
-                                            <h3 className="text-2xl font-bold tracking-tight text-gray-300">#{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
+                                            <h3 className="text-2xl font-semobold tracking-tight text-gray-300">#{invoice.transaction_number} -  $ {invoice.total_amount} </h3>
                                         </Link>
                                         <Link to={`/store/${invoice.store.slug}`} className='flex font-semibold'>
                                             <BuildingStorefrontIcon className="w-6 h-6 mr-2" />

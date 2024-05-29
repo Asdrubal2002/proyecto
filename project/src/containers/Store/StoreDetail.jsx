@@ -217,7 +217,7 @@ const StoreDetail = ({
                                                             ) : (
                                                                 <OutlineHeartIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
                                                             )}
-                                                            <span className="ml-2">{likes} Me gusta</span>
+                                                            <span className="ml-2 font-estilo_letra">{likes} Me gusta</span>
                                                         </button>
                                                     </div>
 
@@ -226,7 +226,7 @@ const StoreDetail = ({
                                         </ConetenedorProfile3>
                                         {/* Store name */}
                                         <ConetenedorInfo2>
-                                            <h1 className="text-2xl text-color_letra_blanca">
+                                            <h1 className="text-2xl font-estilo_letra">
                                                 {store && store.name}
                                                 {store && store.verified ? <CheckBadgeIcon className="h-5 w-5 inline-block text-blue-500" /> : <></>}
                                             </h1>
@@ -387,7 +387,7 @@ const StoreDetail = ({
                                         <Searcher className="flex-1" />
                                     </div>
                                     <div className="flex justify-between items-center mt-2 sm:mt-0">
-                                        <h2 className="flex items-center text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
+                                        <h2 className="flex items-center text-lg md:text-xl text-gray-800 dark:text-white mb-2 sm:mb-0 font-estilo_letra">
                                             <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
                                             {/* Agrega el icono de búsqueda */}
                                             {count} Productos Registrados
@@ -407,7 +407,7 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className=" px-4 py-2 rounded-md text-xl font-medium hidden sm:block ">
+                                            <p className="py-2 rounded-md text-md font-bold hidden sm:block font-estilo_letra">
                                                 Categorias disponibles
                                             </p>
 
@@ -420,7 +420,7 @@ const StoreDetail = ({
                                                     <SearchForm storeSlug={storeSlug} />
                                                 </div>
                                                 <div className="flex items-center hidden sm:block">
-                                                    <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
+                                                    <p className="ml-1 text-sm font-estilo_letra">{comments_count} Comentarios sobre {store && store.name}</p>
                                                 </div>
                                                 {isAuthenticated ?
                                                     <div>
@@ -441,7 +441,7 @@ const StoreDetail = ({
                                                                         <textarea
                                                                             ref={textareaRef}
                                                                             id="commentTextArea"
-                                                                            className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm"
+                                                                            className="rounded-lg px-4 py-2 w-full resize-none text-gray-200 text-md bg-stone-900 border-0 outline-none border-transparent text-sm font-estilo_letra"
                                                                             placeholder="Cuentanos tu experiencia...."
                                                                             maxLength={200} // Aquí estableces el límite de caracteres
                                                                         ></textarea>
@@ -451,7 +451,7 @@ const StoreDetail = ({
                                                                             }}
                                                                             disabled={buttonText === 'Comentario enviado'} // Deshabilitar el botón después de enviar el comentario
 
-                                                                            className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold text-sm"
+                                                                            className="mt-2 px-4 py-2 bg-azul_corp text-white rounded-lg hover:bg-azul_corp_ho focus:outline-none font-semibold text-sm font-estilo_letra"
                                                                         >
                                                                             {buttonText}
                                                                         </button>
@@ -470,7 +470,7 @@ const StoreDetail = ({
                                                     {comments && Array.isArray(comments) && comments.length === 0 ? (
                                                         <div className="flex items-center gap-2 p-3 rounded-md">
                                                             <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-400" />
-                                                            <p className="text-gray-200 font-semibold">¡Sé el primero en comentar!</p>
+                                                            <p className="text-gray-200 text-sm font-estilo_letra">¡Sé el primero en comentar!</p>
                                                         </div>
                                                     ) : (
                                                         Array.isArray(comments) && comments.map((comment, index) => (

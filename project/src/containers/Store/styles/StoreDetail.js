@@ -43,7 +43,7 @@ export const DescriptionStore = tw.p`
     mt-2 
     max-w-4xl 
     text-sm 
-    text-color_letra_oscura_clara
+    font-estilo_letra
 `;
 
 export const ContenedorInfoUbication = tw.div`

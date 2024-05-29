@@ -7,6 +7,7 @@ export const ContenedorFormulario = tw.div`
     sm:mx-auto 
     sm:w-full 
     sm:max-w-md
+    font-estilo_letra
     
 `;
 
@@ -54,24 +55,29 @@ export const LeyendaError = tw.p`
 `;
 
 export const MensajeError = tw.div`
-    h-10
-    font-semibold
-	bg-red-100
-    text-sm
-	pt-3
-    pl-5
-    rounded
+  h-auto
+  font-semibold
+  bg-red-100
+  text-sm
+  px-2
+  py-2
+  rounded
+  flex
+  flex-wrap
+  text-red-700
+  
+  text-sm
+  p {
+    m-0
     flex
-    text-red-700
-	p {
-		m-0
-	} 
-	b {
-        mt-2
-		ml-10;
-	}
+    flex-wrap
+    w-full
+  }
+  b {
+    mt-2
+    mr-2
+  }
 `;
-
 export const GrupoInput = tw.div`
     relative 
     mt-2 
@@ -92,8 +98,7 @@ export const Input = tw.input`
     text-white
     placeholder:text-gray-500 
     focus:outline-none
-    sm:text-sm 
-    sm:leading-6
+    text-sm 
 
     ${props => props.valido === 'true' && css`
         border-2 border-exito
@@ -119,6 +124,7 @@ export const Boton = tw.button`
     text-white 
     bg-azul_corp 
     hover:bg-azul_corp_ho 
+    font-bold
 `;
 
 

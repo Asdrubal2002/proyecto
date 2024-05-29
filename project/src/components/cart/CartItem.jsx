@@ -49,7 +49,7 @@ const CartItem = ({ item, increment_item, decrement_item, remove_item, setRender
             </Carousel>
     
         </div>
-        <div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
+        <div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6 font-estilo_letra">
             <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
                 <div>
                     <div className="flex justify-between">

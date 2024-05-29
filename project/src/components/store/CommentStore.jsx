@@ -31,7 +31,7 @@ const CommentStore = ({ comment, profile, isAuthenticated, delete_comment_store,
 
 
     return (
-        <div className="flex items-start gap-2.5 p-2">
+        <div className="flex items-start gap-2.5 p-2 font-estilo_letra">
             {comment.user_photo != null ? (
                 <img className="w-8 h-7 rounded-full" src={comment.user_photo} alt="Profile Picture" />
             ) : (
@@ -42,8 +42,8 @@ const CommentStore = ({ comment, profile, isAuthenticated, delete_comment_store,
             {/* Resto del código de tu componente */}
             <div className="flex flex-col gap-1 w-full max-w-[320px]">
                 <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span className="text-sm font-semibold text-white">{comment && comment.user_profile.firs_name} {comment.user_profile.last_name}</span>
-                    <span className="text-sm font-normal text-gray-400 ">{new Date(comment.created).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</span>
+                    <span className="text-xs font-semibold text-white">{comment && comment.user_profile.firs_name} {comment.user_profile.last_name}</span>
+                    <span className="text-xs font-normal text-gray-400 ">{new Date(comment.created).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</span>
                 </div>
                 <div className="flex flex-col leading-1.5 border-gray-200 bg-gray-800 rounded-e-xl rounded-es-xl">
                     {isEditing ? (
