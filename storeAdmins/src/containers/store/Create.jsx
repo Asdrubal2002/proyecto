@@ -403,7 +403,7 @@ function Create({
                     }
                   </select>
                   {formErrors.category && (
-                    <p className="text-red-500 text-sm">{formErrors.category}</p>
+                    <p className="bg-red-800 p-2 rounded-md text-sm">{formErrors.category}</p>
                   )}
                 </div>
                 <Disclosure>

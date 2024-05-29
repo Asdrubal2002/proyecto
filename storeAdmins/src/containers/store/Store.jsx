@@ -708,7 +708,7 @@ function Store({
                                               value={phone}
                                               onChange={e => onChange(e)}
                                               name='phone'
-                                              type='number'
+                                              type='text'
                                               maxLength={50} // Máximo de 50 caracteres permitidos
                                               className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-300"
                                               required
@@ -717,7 +717,7 @@ function Store({
                                             <div className="flex items-center space-x-2 ml-4">
                                               <button
                                                 type="submit"
-                                                disabled={phone.length > 10 || phone === ''} // Deshabilitar el botón si el boton si pasa de 90
+                                                disabled={phone.length > 50 || phone === ''} // Deshabilitar el botón si el boton si pasa de 90
                                                 className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
                                               >
                                                 <CheckIcon width={20} height={20} color="#fff" radius="6" />
