@@ -13,7 +13,6 @@ export default {
         "exito":"#017BB4",
         "color_letra_blanca":"#F2F3F4",
         "color_letra_oscura_clara":"#D2D2D2",
-
         "fondo_mensajes_error":"#C0392B",
         "fondo_mensajes_exito":"#5DADE2"
       },

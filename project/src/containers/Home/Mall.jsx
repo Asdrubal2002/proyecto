@@ -116,7 +116,7 @@ const Mall = ({
                             <Searcher className="flex-1" />
                             <div className="flex items-center mt-4 sm:mt-0">
                                 <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-                                    Resultados de búsqueda: {count}
+                                 {count} Tiendas encontradas
                                 </h2>
                                 {/* <button
                                     type="button"

@@ -57,7 +57,7 @@ function EditProduct({
 
     const [openAddCategory, setOpenAddCategory] = useState(false)
 
-    const [suggestions, setSuggestions] = useState([]);
+    const [editOptionData, setEditOptionData] = useState(null);
 
 
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -100,6 +100,7 @@ function EditProduct({
         setUpdatePrice(false)
         setUpdatePhoto(false)
         setUpadteTax(false)
+        setEditOptionData(null); // Reinicia el estado de edición
     }
 
     const onSubmit = e => {
@@ -367,6 +368,11 @@ function EditProduct({
             }
         }
         fetchData()
+    };
+
+    const handleEditOption = (option) => {
+        setEditOptionData(option);
+        console.log(option)
     };
 
     return (
@@ -746,13 +752,13 @@ function EditProduct({
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
                                         <span className="flex-grow">
-                                            <OptionDataInput all_options={all_options} product={product} resetStates={resetStates} slug={slug} get_products_options={get_products_options} />
+                                            <OptionDataInput all_options={all_options} product={product} resetStates={resetStates} slug={slug} get_products_options={get_products_options} editOptionData={editOptionData} />
 
                                             <table className="min-w-full divide-y divide-gray-700 rounded-md">
                                                 <thead className="bg-gray-800">
                                                     <tr>
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nombre de la Opción</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cantidad</th>
+                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Unidades disponibles</th>
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
 
                                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cantidad</th>
@@ -796,23 +802,19 @@ function EditProduct({
                                                                         <ArrowTrendingDownIcon className="mr-1.5 h-6 w-6 flex-shrink-0" aria-hidden="true" />
                                                                         Reducida
                                                                     </div>
-
                                                                     :
                                                                     <div className='flex'>
                                                                         <ArrowsUpDownIcon className="mr-1.5 h-5 w-5 flex-shrink-0 " aria-hidden="true" />
                                                                         Estable
                                                                     </div>
-
                                                                 }</td>
-
-
                                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                                     <button className="ml-2 focus:outline-none">
                                                                         <TrashIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleDeleteOption(option.id)} />
                                                                     </button>
-                                                                    {/* <button className="ml-2 focus:outline-none">
-                                                                        <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option.id)} />
-                                                                    </button> */}
+                                                                    <button className="ml-2 focus:outline-none">
+                                                                        <PencilIcon width={20} height={20} color="#fff" radius="6" onClick={() => handleEditOption(option)} />
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         ))

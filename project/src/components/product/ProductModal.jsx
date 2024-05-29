@@ -13,7 +13,7 @@ import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_
 import { CommentsProduct } from './CommentsProduct';
 import DOMPurify from 'dompurify'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
-import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon, InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Comments from './Components/Comments';
 import Options from './Components/Options';
 
@@ -160,6 +160,7 @@ function ProductModal({
                                         selectedOptionId={selectedOptionId}
                                         handleOptionClick={handleOptionClick}
                                         setSelectedOptionId={setSelectedOptionId}
+                                        errorMessage={errorMessage}
                                     />
                                 </>}
                         </div>
@@ -286,7 +287,7 @@ function ProductModal({
                 </div>
             </div>
             <button onClick={closeModal} className="flex w-full py-2 px-4 text-white items-center justify-center font-semibold rounded-md shadow-md shadow-stone-700 hover:bg-stone-800 focus:outline-none">
-                <ArrowDownIcon className="h-6 w-6 " aria-hidden="true" />
+                <XMarkIcon className="h-6 w-6 " aria-hidden="true" />
             </button>
 
         </div>

@@ -33,8 +33,8 @@ export default function Footer() {
           <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
             {stats.map((stat) => (
               <div key={stat.id} className="mx-auto flex max-w-xs flex-col gap-y-4">
-                <dt className="text-base leading-7 text-color_letra_oscura_clara font-semibold">{stat.name}</dt>
-                <dd className="order-first text-3xl font-semibold tracking-tight text-color_letra_blanca sm:text-5xl ">
+                <dt className="text-color_letra_oscura_clara font-semibold">{stat.name}</dt>
+                <dd className="order-first text-3xl font-semibold tracking-tight text-color_letra_blanca sm:text-5xl">
                   {stat.value}
                 </dd>
               </div>

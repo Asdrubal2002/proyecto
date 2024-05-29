@@ -11,7 +11,6 @@ class Category(models.Model):
     
     name = models.CharField(max_length=255, unique=True)
     slug =  models.SlugField(max_length=255, unique=True, default=uuid.uuid4)
-    views = models.IntegerField(default=0, blank=True)
 
 
     def __str__(self):

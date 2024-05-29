@@ -24,7 +24,8 @@ from .views import (
     LikedProductsAPIView,
     DeleteOptionAPIView,
     ProductListViewFiltered,
-    UpdateOptionAPIView
+    UpdateOptionAPIView,
+    UpdateProductOptionAPIView
 )
 
 urlpatterns = [
@@ -56,5 +57,8 @@ urlpatterns = [
     # URL sin categorySlug
     path("products-filtered/<storeSlug>/", ProductListViewFiltered.as_view(), name="product-list-filtered-no-category"),
     path('options/update/', UpdateOptionAPIView.as_view(), name='update-option'),
+
+    path('option-update-product/', UpdateProductOptionAPIView.as_view(), name='option-update-product'),
+
 
 ]

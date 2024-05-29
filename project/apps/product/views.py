@@ -467,9 +467,6 @@ class CreateOptionsAPIView(APIView):
         # Agregar el usuario autenticado como administrador de la tienda
         data = request.data.copy() 
         data["store"] = request.user.stores.first().id
-
-
-
         # Crear un serializador con los datos de la solicitud
         serializer = CreateOptionSerializer(data=data)
 
@@ -639,6 +636,38 @@ class UpdateOptionAPIView(APIView):
         if serializer.is_valid():
             option = serializer.save()
             serialized_option = CreateOptionSerializer(option).data
+            return Response(serialized_option, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class UpdateProductOptionAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, *args, **kwargs):
+        option_id = request.data.get('id')
+        if not option_id:
+            return Response({"error": "Option ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            option = ProductOption.objects.get(id=option_id)
+        except ProductOption.DoesNotExist:
+            return Response({"error": "Option not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Actualizar la opción del producto
+        new_option_id = request.data.get('option')
+        if new_option_id:
+            try:
+                new_option = Option.objects.get(id=new_option_id)
+                option.option = new_option
+            except Option.DoesNotExist:
+                return Response({"error": "New option not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductOptionSerializer(option, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            option = serializer.save()
+            option.check_stock_level()  # Llamar a la función para verificar el nivel de stock
+            serialized_option = ProductOptionSerializer(option).data
             return Response(serialized_option, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
