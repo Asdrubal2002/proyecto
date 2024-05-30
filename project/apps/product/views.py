@@ -254,7 +254,7 @@ class UserProductsAPIView(APIView):
             categories = store.categories_store.all()
 
             # Obtener todos los productos asociados a las categorías de la tienda del usuario
-            products = Product.objects.filter(category__in=categories).order_by('-is_low_stock_alert')
+            products = Product.objects.filter(category__in=categories).order_by('-date_created','-is_low_stock_alert')
 
             paginator = LargeSetPagination()
             results = paginator.paginate_queryset(products, request)

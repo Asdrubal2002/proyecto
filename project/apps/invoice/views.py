@@ -5,8 +5,8 @@ from django.utils.html import strip_tags
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Invoice
-from .serializers import InvoiceSerializer, CreateInvoiceSerializer
+from .models import Invoice, InvoiceStatus
+from .serializers import InvoiceSerializer, CreateInvoiceSerializer, InvoiceStatusSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
@@ -15,6 +15,7 @@ from apps.shipping.models import Shipping
 from io import BytesIO
 from django.http import FileResponse
 from decimal import Decimal
+from apps.store.models import Store
 
 
 class UserInvoicesAPIView(APIView):
@@ -93,7 +94,6 @@ class AddInvoiceAPIView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class DeleteInvoiceAPIView(APIView):
     def delete(self, request):
         # Verifica si se proporcionó un ID de factura en el cuerpo de la solicitud
@@ -156,3 +156,43 @@ class DeleteInvoiceAPIView(APIView):
             },
             status=status.HTTP_204_NO_CONTENT,
         )
+
+class InvoiceListAPIView(APIView):
+    def get(self, request):
+        try:
+            # Obtener la tienda del usuario autenticado
+            store = get_object_or_404(Store, administrator=request.user)
+            # Obtener todas las facturas asociadas con la tienda del usuario autenticado
+            invoices = Invoice.objects.filter(store=store).order_by('-created_at')
+            # Serializar las facturas
+            serializer = InvoiceSerializer(invoices, many=True)
+            # Devolver la respuesta con las facturas serializadas
+            return Response({"invoices": serializer.data}, status=status.HTTP_200_OK)
+        except Store.DoesNotExist:
+            # Si no se encuentra la tienda del usuario autenticado, devolver un mensaje de error
+            return Response({"error": "No se encontró la tienda asociada al usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
+        
+class InvoiceStatusListAPIView(APIView):
+    def get(self, request):
+        statuses = InvoiceStatus.objects.all()
+        serializer = InvoiceStatusSerializer(statuses, many=True)
+        return Response(serializer.data)
+
+
+class InvoiceDetailAPIView(APIView):
+    def get(self, request, transaction_number):
+        # Validar que el usuario esté autenticado
+        if not request.user.is_authenticated:
+            return Response({"error": "Usuario no autenticado."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Obtener la tienda del usuario autenticado
+        store = get_object_or_404(Store, administrator=request.user)
+
+        # Obtener la factura por transaction_number, asegurándose de que pertenezca a la tienda del usuario autenticado
+        invoice = get_object_or_404(Invoice, transaction_number=transaction_number, store=store)
+
+        # Serializar la factura
+        serializer = InvoiceSerializer(invoice)
+
+        # Devolver la respuesta con la factura serializada
+        return Response(serializer.data, status=status.HTTP_200_OK)

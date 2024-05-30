@@ -21,6 +21,8 @@ import Options_admin from './containers/options-products/Options_admin'
 import HelpWithPhotos from './containers/ayuda/HelpWithPhotos'
 import Invoices from './containers/invoices/Invoices'
 import Partner from './containers/partners/Partner'
+import InvoiceDetail from './containers/invoices/InvoiceDetail'
+
 
 
 
@@ -54,7 +56,6 @@ function AnimatedRoutes() {
 
               <Route exact path='/help' element={<HelpWithMyStore />} />
 
-
               <Route exact path='/my_options' element={<Options_admin />} />
 
               <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
@@ -64,6 +65,9 @@ function AnimatedRoutes() {
               <Route exact path='/invoices' element={<Invoices />} />
 
               <Route exact path='/partners' element={<Partner />} />
+
+              <Route exact path='/invoice/:transaction_number' element={<InvoiceDetail />} />
+
 
 
 

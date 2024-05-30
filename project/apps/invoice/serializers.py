@@ -21,7 +21,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     status=InvoiceStatusSerializer()
     class Meta:
         model = Invoice
-        fields = ['id', 'buyer', 'store', 'shipping_method', 'shipping_location', 'cart', 'total_amount', 'status','transaction_number']
+        fields = ['id', 'buyer', 'store', 'shipping_method', 'shipping_location', 'cart', 'total_amount', 'status','transaction_number','created_at']
 
 
 class CreateInvoiceSerializer(serializers.ModelSerializer):

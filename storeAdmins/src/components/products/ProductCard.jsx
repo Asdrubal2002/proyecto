@@ -81,14 +81,14 @@ function ProductCard({
               <div className="flex items-center justify-center mr-1.5 h-6 w-6 flex-shrink-0 ">
                 <ArrowsUpDownIcon className="h-4 w-4 text-green-600" aria-hidden="true" />
               </div>
-              <div className='px-2 py-1 bg-green-500 text-white rounded-md mr-2'>
+              <div className='px-2 py-1 bg-green-200 text-green-700 rounded-md mr-2'>
                 Estable
               </div>
             </>
           )}
-          <p className="mt-2 flex items-center text-sm text-gray-500">
+          <p className="mt-2 flex items-center text-sm text-gray-600">
             {data.is_active ? (
-              <CheckCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400" aria-hidden="true" />
+              <CheckCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-600" aria-hidden="true" />
             ) : (
               <XCircleIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-red-400" aria-hidden="true" />
             )}
