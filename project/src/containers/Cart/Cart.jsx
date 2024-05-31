@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import NoFoundCarts from './NoFoundCarts';
-import { CheckIcon, TrashIcon, DocumentCheckIcon, ArrowUpIcon, ChevronUpIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, TrashIcon, DocumentCheckIcon, ArrowUpIcon, ChevronUpIcon, ChevronRightIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 import { InfinitySpin, Rings } from "react-loader-spinner";
 import { remove_cart } from '../../redux/actions/cart';
 

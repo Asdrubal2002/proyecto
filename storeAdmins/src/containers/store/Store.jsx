@@ -414,7 +414,7 @@ function Store({
                                   </>
                                 )}
 
-                                {/* Botón centrado */}
+                                {/* Boton de actualiza banner */}
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   {updateBanner ? (
                                     <>
@@ -650,6 +650,7 @@ function Store({
                                     </dd>
                                   </div>
 
+                                  {/* ubicacion */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Ubicaciones en {userStore.city.nombre}</dt>
                                     {/* Validación sin repetir estilos */}
@@ -698,6 +699,8 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
+                                  {/* telefono */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Teléfono</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -742,6 +745,7 @@ function Store({
                                     </dd>
                                   </div>
 
+                                  {/* correo */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Correo Electrónico</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -787,7 +791,7 @@ function Store({
                                     </dd>
                                   </div>
 
-
+                                  {/* horario */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Horario de atención</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -837,6 +841,7 @@ function Store({
                                     </dd>
                                   </div>
 
+                                  {/* instagram */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Instagram</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -883,6 +888,8 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
+                                  {/* Facebook */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Facebook</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -929,6 +936,8 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
+                                  {/* otra red social */}
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">Otra red social</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
@@ -975,6 +984,7 @@ function Store({
                                       }
                                     </dd>
                                   </div>
+
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200"> Me gusta</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">Se inauguró el {userStore.get_formatted_created_on}</dd>
@@ -983,54 +993,8 @@ function Store({
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-300">
 
-                                      {/* <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
-                                        <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
-                                          {updateBanner ? (
-                                            <>
-                                              <form onSubmit={onSubmitBanner} className="flex w-full items-center">
-                                                <input
-                                                  type="file"
-                                                  name="banner"
-                                                  onChange={fileSelectedHandler}
-                                                  className="w-full py-3 px-2 border border-gray-300 rounded-lg"
-
-                                                />
-                                                <div className="flex items-center space-x-2 ml-4">
-                                                  <button
-                                                    type="submit"
-                                                    className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                  >
-                                                    <CheckIcon width={20} height={20} color="#fff" radius="6" />
-                                                  </button>
-                                                  <button
-                                                    onClick={() => {
-                                                      setUpdateBanner(false);
-                                                      setPreviewImageBanner(null);
-                                                      setBanner(null);
-                                                    }}
-                                                    className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                  >
-                                                    <XMarkIcon width={20} height={20} color="#fff" radius="6" />
-                                                  </button>
-                                                </div>
-                                              </form>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <button
-                                                onClick={() => setUpdateBanner(true)}
-                                                className="flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                              >
-                                                <PhotoIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
-                                                Agregar el banner a tu tienda
-                                              </button>
-                                            </>
-                                          )}
-                                        </div>
-                                      </div> */}
-
-
                                     </dt>
+                                    {/* foto de perfil de la tienda */}
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">
                                       <div className="py-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:py-5">
                                         <div className="mt-4 flex text-sm text-gray-300 sm:col-span-3 sm:mt-0">
@@ -1078,6 +1042,7 @@ function Store({
                                         </div>
                                       </div>
                                     </dd>
+
                                   </div>
                                 </dl>
                               </div>
@@ -1182,7 +1147,7 @@ function Store({
 
                       <Tab.Panel>
                         <div className='bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 rounded-md'>
-                          <FormCreateFAQS/>
+                          <FormCreateFAQS />
                         </div>
                       </Tab.Panel>
                     </Tab.Panels>

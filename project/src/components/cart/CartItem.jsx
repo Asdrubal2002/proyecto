@@ -64,12 +64,8 @@ const CartItem = ({ item, increment_item, decrement_item, remove_item, setRender
                         <p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">$ {item.product_option.product.formatted_price}</p>
                     </div>
                     <p className="mt-1 text-sm font-medium text-gray-300">$ {item.product_option.product.price * item.quantity}</p>
-
                     <p className="mt-1 text-sm text-gray-500">impuesto {item.product_option.product.tax} %</p>
-
-                    <p className="mt-1 text-sm font-medium text-gray-300">$ {item.subtotal}</p>
-
-                    
+                    <p className="mt-1 text-sm font-medium text-gray-300">$ {item.subtotal}</p> 
                 </div>
                 <div className="mt-4 sm:mt-0 sm:pr-9">
                     <div className="flex items-center">

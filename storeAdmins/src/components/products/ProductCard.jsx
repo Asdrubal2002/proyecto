@@ -17,7 +17,6 @@ function ProductCard({
   data
 }) {
 
-  const hasImages = data && data.images && data.images.length > 0;
 
   useEffect(() => {
     window.scrollTo(0, 0)

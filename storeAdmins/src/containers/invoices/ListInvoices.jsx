@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 function ListInvoices({
@@ -21,6 +22,13 @@ function ListInvoices({
     useEffect(() => {
         filterInvoices();
     }, [selectedMethod, selectedCity, selectedStatus, searchNumber, selectedDate, invoices]);
+
+    const navigate = useNavigate();
+
+    const handleRowClick = (transactionNumber) => {
+        navigate(`/invoice/${transactionNumber}`);
+    };
+
 
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
@@ -90,7 +98,7 @@ function ListInvoices({
         }).filter(value => value);
         return [...new Set(uniqueValues)];
     };
-    
+
 
     const shippingMethods = getUniqueValues('shipping_method.name');
     const cities = getUniqueValues('shipping_location.city.nombre');
@@ -111,81 +119,85 @@ function ListInvoices({
                 )
                     :
                     <div>
-                    <div className="flex space-x-4 mb-4">
-                    <select value={selectedMethod} onChange={handleMethodChange} className="p-2 bg-gray-800 text-gray-300">
-                    <option value="">Todos los métodos de entrega</option>
-                    {shippingMethods.map((method, index) => (
-                        <option key={index} value={method}>{method}</option>
-                    ))}
-                </select>
-                <select value={selectedCity} onChange={handleCityChange} className="p-2 bg-gray-800 text-gray-300">
-                    <option value="">Todas las ciudades</option>
-                    {cities.map((city, index) => (
-                        <option key={index} value={city}>{city}</option>
-                    ))}
-                </select>
-                <select value={selectedStatus} onChange={handleStatusChange} className="p-2 bg-gray-800 text-gray-300">
-                    <option value="">Todos los estados</option>
-                    {statusOptions.map((status, index) => (
-                        <option key={index} value={status.name}>{status.name}</option>
-                    ))}
-                </select>
-                <input
-                    type="text"
-                    value={searchNumber}
-                    onChange={handleSearchNumberChange}
-                    placeholder="Buscar por # Factura"
-                    className="p-2 bg-gray-800 text-gray-300"
-                />
-                <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    className="p-2 bg-gray-800 text-gray-300"
-                />
-            </div>
-            <table className="min-w-full divide-y divide-gray-700 rounded-md">
-                <thead className="bg-gray-800">
-                    <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"># Factura</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Fecha de pedido</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Método de entrega</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ciudad</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Total</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-gray-900 divide-y divide-gray-700">
-            {filteredInvoices && filteredInvoices.map((invoice, index) => (
-                <tr key={index} className="hover:bg-gray-700">
-                    <Link
-                        to={`/invoice/${invoice.transaction_number}`}
-                        style={{ display: 'contents', textDecoration: 'none', color: 'inherit' }}
-                    >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            {invoice.transaction_number}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            {format(new Date(invoice.created_at), 'PPP', { locale: es })} {format(new Date(invoice.created_at), 'hh:mm a', { locale: es })}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            {invoice.shipping_method?.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            {invoice.shipping_location?.city?.nombre}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-300">
-                            {invoice.total_amount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            {invoice.status?.name}
-                        </td>
-                    </Link>
-                </tr>
-            ))}
-        </tbody>
-            </table>
-        </div>
+                        <div className="flex space-x-4 mb-4">
+                            <select value={selectedMethod} onChange={handleMethodChange} className="p-2 bg-gray-800 text-gray-300 rounded-md">
+                                <option value="">Todos los métodos de entrega</option>
+                                {shippingMethods.map((method, index) => (
+                                    <option key={index} value={method}>{method}</option>
+                                ))}
+                            </select>
+                            <select value={selectedCity} onChange={handleCityChange} className="p-2 bg-gray-800 text-gray-300 rounded-md">
+                                <option value="">Todas las ciudades</option>
+                                {cities.map((city, index) => (
+                                    <option key={index} value={city}>{city}</option>
+                                ))}
+                            </select>
+                            <select value={selectedStatus} onChange={handleStatusChange} className="p-2 bg-gray-800 text-gray-300 rounded-md">
+                                <option value="">Todos los estados</option>
+                                {statusOptions&&statusOptions.map((status, index) => (
+                                    <option key={index} value={status.name}>{status.name}</option>
+                                ))}
+                            </select>
+                            <input
+                                type="text"
+                                value={searchNumber}
+                                onChange={handleSearchNumberChange}
+                                placeholder="Buscar por # Factura"
+                                className="p-2 bg-gray-800 text-gray-300 rounded-md"
+                            />
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                className="p-2 bg-gray-800 text-gray-300 rounded-md"
+                            />
+                        </div>
+                        <table className="min-w-full divide-y divide-gray-700 rounded-md">
+                            <thead className="bg-gray-800">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"># Factura</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Fecha de pedido</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Método de entrega</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ciudad</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Total</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-gray-900 divide-y divide-gray-700">
+                                {filteredInvoices && filteredInvoices.length > 0 ? (
+                                    filteredInvoices.map((invoice, index) => (
+                                        <tr key={index} className="hover:bg-gray-700 cursor-pointer" onClick={() => handleRowClick(invoice.transaction_number)}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                {invoice.transaction_number}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                {format(new Date(invoice.created_at), 'PPP', { locale: es })} {format(new Date(invoice.created_at), 'hh:mm a', { locale: es })}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                {invoice.shipping_method?.name}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                {invoice.shipping_location?.city?.nombre}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-300">
+                                                {invoice.total_amount}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                {invoice.status?.name}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">
+                                            No hay pedidos recientes.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+
+                    </div>
             }
         </>
     );
@@ -194,7 +206,7 @@ function ListInvoices({
 const mapStateToProps = state => ({
     invoices: state.Invoices.invoices,
     loading_invoices: state.Invoices.loading_invoices,
-    statusOptions:state.Invoices.status
+    statusOptions: state.Invoices.status
 
 });
 
