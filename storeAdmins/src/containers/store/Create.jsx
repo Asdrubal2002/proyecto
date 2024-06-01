@@ -249,12 +249,14 @@ function Create({
       errors.description = 'La descripción no sobrepasar el límite de 500 caracteres.';
     }
 
-    if (formData.url_pay.trim().length > 100) {
+    if (formData.url_pay.trim().length > 255) {
       errors.url_pay = 'La URL no puede contener mas de 100 caracteres';
     }
 
-    if (formData.account_pay.trim().length > 100) {
-      errors.account_pay = 'La cuenta bancaria no puede contener mas de 100 caracteres';
+    if (!/^\d+$/.test(formData.account_pay.trim())) {
+      errors.account_pay = 'La cuenta bancaria solo puede contener números.';
+    } else if (formData.account_pay.trim().length > 50) {
+      errors.account_pay = 'La cuenta bancaria no puede contener más de 50 caracteres.';
     }
 
     return errors;
@@ -345,7 +347,7 @@ function Create({
                     className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
                   />
                   {formErrors.name && (
-                    <p className="text-red-500 text-sm">{formErrors.name}</p>
+                    <p className="text-gray-200 bg-red-800 p-2 rounded-md text-sm">{formErrors.name}</p>
                   )}
                   <Disclosure>
                     <Disclosure.Button className="flex items-center focus:outline-none my-2 text-sm text-gray-400">
@@ -403,7 +405,7 @@ function Create({
                     }
                   </select>
                   {formErrors.category && (
-                    <p className="bg-red-800 p-2 rounded-md text-sm">{formErrors.category}</p>
+                    <p className="text-gray-200 bg-red-800 p-2 rounded-md text-sm">{formErrors.category}</p>
                   )}
                 </div>
                 <Disclosure>
@@ -710,7 +712,7 @@ function Create({
                   className="bg-stone-800 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 text-white text-sm"
                 />
                 {formErrors.account_pay && (
-                  <p className="text-red-500 text-sm">{formErrors.account_pay}</p>
+                  <p className="text-red-100 text-sm bg-red-800 p-2 rounded-md">{formErrors.account_pay}</p>
                 )}
               </div>
             </div>

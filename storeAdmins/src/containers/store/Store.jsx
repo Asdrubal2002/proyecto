@@ -592,6 +592,7 @@ function Store({
                                       </>
                                     )}
                                   </div>
+                                  
                                 </div>
                                 {/* Botón */}
                                 <div className='m-4'>

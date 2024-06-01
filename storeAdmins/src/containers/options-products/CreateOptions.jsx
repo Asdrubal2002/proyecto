@@ -59,6 +59,7 @@ function CreateOptions({
                         <li key={product.id}>
                             <span>{index + 1}. </span> {/* Mostrar el índice enumerado */}
                             {product.product.name} - {product.product.price}
+                            {/* <Link to={`/product/${product.product.slugProduct}`}>{product.product.name} - {product.product.price}</Link> */}
                         </li>
                     ));
                     // Establecer el mensaje con la lista de productos

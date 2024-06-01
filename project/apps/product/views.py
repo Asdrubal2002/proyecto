@@ -176,6 +176,7 @@ class CreateOptionAPIView(APIView):
     def post(self, request, *args, **kwargs):
         # Obtener los datos de la solicitud
         data = request.data.copy() 
+        print(data)
 
         # Agregar el usuario autenticado como administrador de la tienda
         data["store"] = request.user.stores.first().id
@@ -198,6 +199,7 @@ class CreateOptionAPIView(APIView):
 
         # Verificar si se proporcionó un ID de opción en la solicitud
         option_id = data.get('option', None)
+        print(option_id)
 
         # Si se proporcionó un ID de opción, intenta obtener la opción existente
         if option_id:
