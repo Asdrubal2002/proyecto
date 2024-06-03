@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { update_user_profile } from '../../../redux/actions/profile';
 import { connect } from 'react-redux';
+import { get_cities } from '../../../redux/actions/cities';
 
 const ProfileForm = ({
-    update_user_profile
+    update_user_profile,
+    get_cities,
+    countriesc
 }) => {
 
     const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
-        // Tu lógica aquí
-    }, []);
-
-    const countries = [
-        { code: '+57', name: 'Colombia' },
-        { code: '+56', name: 'Peru' },
-        // Agrega más países según sea necesario
-    ];
+        // Validar si countriesc tiene datos antes de llamar a la API
+        if (countriesc === null || countriesc.length === 0) {
+            get_cities();
+        }
+    }, [countriesc]);
 
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
         phone: '',
-        identification:'',
-        country: countries[0].code, // Establece el código del primer país como predeterminado
+        identification: '',
+        country: '', // Inicializar con el primer país si está disponible
     });
 
     const [formErrors, setFormErrors] = useState({
         first_name: '',
         last_name: '',
         phone: '',
-        identification:'',
+        identification: '',
     });
 
     const handleChange = (e) => {
@@ -65,19 +65,19 @@ const ProfileForm = ({
             first_name: '',
             last_name: '',
             phone: '',
-            identification:'',
+            identification: '',
         };
 
         if (formData.first_name.trim() === '') {
             errors.first_name = 'El nombre es obligatorio.';
-        }else if(formData.first_name.trim().length > 20){
+        } else if (formData.first_name.trim().length > 20) {
             errors.first_name = 'El nombre es demasiado largo.';
         }
 
-        
+
         if (formData.last_name.trim() === '') {
             errors.last_name = 'El apellido es obligatorio.';
-        }else if(formData.last_name.trim().length > 20){
+        } else if (formData.last_name.trim().length > 20) {
             errors.last_name = 'El apellido es demasiado largo.';
         }
 
@@ -85,6 +85,11 @@ const ProfileForm = ({
         if (!phoneRegex.test(formData.phone)) {
             errors.phone = 'El número de teléfono debe contener 10 dígitos';
         }
+
+        if (formData.country.trim() === '') {
+            errors.phone = 'El inicial del teléfono es obligatorio.';
+        }
+
 
         if (!phoneRegex.test(formData.identification)) {
             errors.identification = 'El número de identificación debe contener exactamente 10 dígitos';
@@ -126,12 +131,14 @@ const ProfileForm = ({
                     onChange={handleChange}
                     className="p-2 rounded-md mr-2 focus:outline-none bg-gray-200 text-sm text-gray-900"
                 >
-                    {countries.map((country) => (
-                        <option key={country.code} value={country.code}>
-                            {country.name} ({country.code})
+                    <option value="" disabled selected>Selecciona un país</option>
+                    {countriesc && countriesc.map((country) => (
+                        <option key={country.countrycode} value={country.countrycode}>
+                            {country.nombre} ({country.countrycode})
                         </option>
                     ))}
                 </select>
+
                 <input
                     type="text"
                     id="phone"
@@ -162,8 +169,10 @@ const ProfileForm = ({
 }
 
 const mapStateToProps = (state) => ({
+    countriesc: state.Cities.countries
 });
 
 export default connect(mapStateToProps, {
-    update_user_profile
+    update_user_profile,
+    get_cities
 })(ProfileForm);

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from django.db.models import Q
+from django.db.models import Q, Func
 from django.core.files.base import ContentFile
 
 from apps.store.models import Store, StorePolicy, StoreLike, UserStoreAssociation, FAQ
@@ -31,6 +31,15 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import NotFound
 from apps.user.models import UserAccount
 # Create your views here.
+
+import unicodedata
+
+class RemoveAccents(Func):
+    function = 'UNACCENT'
+    template = "%(function)s(%(expressions)s)"
+
+def normalize_text(text):
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
 
 
 class StoreDetailview(APIView):
@@ -95,16 +104,23 @@ class ListSearchView(APIView):
 
     def get(self, request, format=None):
         if Store.objects.all().exists():
-            slug = request.query_params.get("c")
-            search = request.query_params.get("s")
+            slug = request.query_params.get("c", "")
+            search = request.query_params.get("s", "")
+
+            # Normalize search text
+            search_normalized = normalize_text(search)
 
             if len(search) == 0:
                 search_results = Store.objects.order_by("created_on").all()
             else:
-                search_results = Store.objects.order_by("-created_on").filter(
-                    Q(description__icontains=search)
-                    | Q(name__icontains=search)
-                    | Q(location__icontains=search),
+                search_results = Store.objects.order_by("-created_on").annotate(
+                    normalized_description=RemoveAccents('description'),
+                    normalized_name=RemoveAccents('name'),
+                    normalized_location=RemoveAccents('location')
+                ).filter(
+                    Q(normalized_description__icontains=search_normalized)
+                    | Q(normalized_name__icontains=search_normalized)
+                    | Q(normalized_location__icontains=search_normalized),
                     is_active=True,
                 )
 
@@ -241,6 +257,7 @@ class CreateStoreAPIView(APIView):
         
         # Agregar el usuario autenticado como administrador en forma de lista
         data["administrator"] = [request.user.id]
+        print(data)
 
         # Crear el serializador con los datos actualizados
         serializer = CreateStoreSerializer(data=data)
@@ -600,3 +617,31 @@ class FAQRetrieveByStoreSlugAPIView(APIView):
                 {"error": "No se encontraron preguntas frecuentes para esta tienda"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+class FAQCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = FAQSerializer(data=request.data)
+        if serializer.is_valid():
+            # Obtener el usuario autenticado
+            user = request.user
+
+            # Verificar si el usuario tiene al menos una tienda asociada
+            user_stores = user.stores.all()
+            if not user_stores:
+                return Response(
+                    {"error": "El usuario autenticado no tiene una tienda asociada"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Tomar la primera tienda asociada al usuario
+            store = user_stores.first()
+
+            # Guardar la FAQ con la tienda asociada al usuario
+            serializer.save(store=store)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        

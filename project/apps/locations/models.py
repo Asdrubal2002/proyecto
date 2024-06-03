@@ -10,7 +10,7 @@ class Pais(models.Model):
 
     nombre = models.CharField(max_length=100)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True, blank=True)
-
+    countrycode = models.CharField(max_length=5)
 
     def __str__(self):
         return self.nombre

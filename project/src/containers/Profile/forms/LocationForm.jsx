@@ -6,8 +6,15 @@ import { update_user_location } from '../../../redux/actions/profile';
 
 function LocationForm({ get_cities, cities, update_user_location }) {
     useEffect(() => {
-        get_cities();
-    }, []);
+
+
+        if (cities === null || cities.length === 0) {
+            // Llama a get_cities solo si countriesc es null o está vacío
+            get_cities();
+        }
+
+
+    }, [cities]);
 
     const [formData, setFormData] = useState({
         address_line_1: '',

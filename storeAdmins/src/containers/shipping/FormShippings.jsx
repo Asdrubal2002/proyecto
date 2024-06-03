@@ -152,7 +152,7 @@ function FormShippings({
 
   return (
     <div>
-      <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
+      <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre de entrega *</label>
           <input

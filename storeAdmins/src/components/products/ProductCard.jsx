@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
 import { connect } from "react-redux"
-import { ArrowTrendingDownIcon, 
-  ArrowsUpDownIcon, 
-  CheckCircleIcon, 
-  ClipboardDocumentCheckIcon, 
-  CurrencyDollarIcon, 
-  FlagIcon, 
-  PhotoIcon, 
-  XCircleIcon, 
+import {
+  ArrowTrendingDownIcon,
+  ArrowsUpDownIcon,
+  CheckCircleIcon,
+  ClipboardDocumentCheckIcon,
+  CurrencyDollarIcon,
+  FlagIcon,
+  PhotoIcon,
+  XCircleIcon,
   ScaleIcon,
-BanknotesIcon
+  BanknotesIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
@@ -71,18 +72,19 @@ function ProductCard({
               <div className="flex items-center justify-center mr-1.5 h-6 w-6 flex-shrink-0 bg-red-500 rounded-full">
                 <ArrowTrendingDownIcon className="h-4 w-4 text-white" aria-hidden="true" />
               </div>
-              <div className='px-2 py-1 bg-red-500 text-white rounded-md mr-2'>
-                Baja
-              </div>
+              <span className="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                Bajo
+              </span>
             </>
           ) : (
             <>
+              <span className="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                Estable
+              </span>
               <div className="flex items-center justify-center mr-1.5 h-6 w-6 flex-shrink-0 ">
                 <ArrowsUpDownIcon className="h-4 w-4 text-green-600" aria-hidden="true" />
               </div>
-              <div className='px-2 py-1 bg-green-200 text-green-700 rounded-md mr-2'>
-                Estable
-              </div>
+
             </>
           )}
           <p className="mt-2 flex items-center text-sm text-gray-600">

@@ -5,6 +5,7 @@ import {
 
 const initialState = {
     cities: null,
+    countries: null
 };
 
 export default function Cities(state = initialState, action) {
@@ -15,12 +16,14 @@ export default function Cities(state = initialState, action) {
         case GET_CITIES_SUCCESS:
             return {
                 ...state,
-                cities: payload.cities
+                cities: payload.cities,
+                countries: payload.countries
             }
         case GET_CITIES_FAIL:
             return {
                 ...state,
                 cities: null,
+                countries: null
             }
         default:
             return state

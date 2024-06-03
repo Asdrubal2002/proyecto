@@ -191,7 +191,7 @@ function CreateOptions({
 
     return (
         <>
-            <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
+            <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
                 <div className="mb-4">
                     <label htmlFor="valueOption" className="block text-sm font-medium text-gray-300">Nombre de la opción *</label>
                     <input

@@ -20,7 +20,8 @@ from .views import (
     AssociateUserToStoreAPIView,
     DeactivateSellerAPIView,
     RemoveAssociateAPIView,
-    FAQRetrieveByStoreSlugAPIView
+    FAQRetrieveByStoreSlugAPIView,
+    FAQCreateAPIView
     
 )
 
@@ -53,5 +54,6 @@ urlpatterns = [
     path('remove-seller/', RemoveAssociateAPIView.as_view(), name='remove-user-to-store'),
 
     path('<store_slug>/faqs/', FAQRetrieveByStoreSlugAPIView.as_view(), name='faq-list-by-store-slug'),
+    path('faqs/create/', FAQCreateAPIView.as_view(), name='faq-create'),
 
 ]

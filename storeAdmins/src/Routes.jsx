@@ -22,11 +22,14 @@ import HelpWithPhotos from './containers/ayuda/HelpWithPhotos'
 import Invoices from './containers/invoices/Invoices'
 import Partner from './containers/partners/Partner'
 import InvoiceDetail from './containers/invoices/InvoiceDetail'
+import UpdateStore from './containers/store/UpdateStore'
+import FormCreatePolicy from './components/store/FormCreatePolicy'
+import FormCreateFAQS from './components/store/FormCreateFAQS'
 
 
 
 
-HelpWithPhotos
+
 
 
 function AnimatedRoutes() {
@@ -60,17 +63,18 @@ function AnimatedRoutes() {
 
               <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
 
-              <Route exact path='/help_with_photos' element={<HelpWithPhotos />} />
-
               <Route exact path='/invoices' element={<Invoices />} />
 
               <Route exact path='/partners' element={<Partner />} />
 
               <Route exact path='/invoice/:transaction_number' element={<InvoiceDetail />} />
 
+              <Route exact path='/update_store' element={<UpdateStore />} />
+
+              <Route exact path='/create_policies' element={<FormCreatePolicy />} />
 
 
-
+              <Route exact path='/create_faqs' element={<FormCreateFAQS />} />
 
 
 

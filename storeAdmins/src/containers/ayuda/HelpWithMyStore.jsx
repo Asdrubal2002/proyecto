@@ -16,15 +16,28 @@ const faqs = [
         answer: (
             <>
                 <p>
-                    Ahora que has creado tu tienda, encontrarás dos botones uno en la parte superior <strong className="text-yellow-400">'Actualizar el banner de mi tienda'</strong> y en la parte inferior <strong className="text-yellow-400">'Agregar perfil a mi tienda'</strong>.
+                    Ahora que has creado tu tienda, ingresa <strong className="text-azul_corp_ho"><Link to={'/update_store'}>Editar datos de mi tienda</Link></strong> encontrarás dos botones uno en la parte superior <strong className="text-yellow-400">'Actualizar el banner de mi tienda'</strong> y <strong className="text-yellow-400">'Agregar perfil a mi tienda'</strong>.
                     Al presionarlos, se abrirá un selector de archivos donde podrás cargar tus imágenes.
                     Podrás previsualizarlas y verificar si se ajustan al tema de tu tienda.
                 </p>
             </>
         ),
-        href: [
-            { link: '/store', step: 'Establecer mis imagenes' },
+        
+    },
+    {
+        question: "¿Como crear categorias?",
+        answer: (
+            <>
+                <p>El formulario consta de dos campos:  <strong className="text-yellow-400">Nombre de la categoría</strong> y <strong className="text-yellow-400">Categoría Padre.</strong></p><br />
+                <p>Puedes nombrar tu categoría como desees. Por ejemplo, para una tienda de ropa, podrías llamar una categoría <strong className="text-yellow-400">'Infantil'</strong> y seleccionarla como <strong className="text-yellow-400">'Categoría Padre'</strong>, ya que puede haber otras categorías hijas dentro de 'Infantil', como jeans, camisas, medias, etc. O, por género <strong className="text-yellow-400">'Femenino'</strong>, <strong className="text-yellow-400">'Masculino'</strong> Dentro de estas categorías padres, puedes asignar subcategorías como blue jeans, camisas, ropa interior, entre otras.</p><br />
+                <p>Lo mismo ocurre con todos los productos. En temas tecnológicos, puedes organizar tus categorías por marcas o tipos. Por ejemplo, "CELULARES" y "COMPUTADORAS" como categorías padres, y dentro de ellas, las marcas correspondientes.</p>
+                <br /><p>Una vez que tengas una categoría padre, puedes guardar otras subcategorías dentro de ella seleccionando la opción correspondiente en el campo Categoría Padre.</p>
+
+            </>
+        ), href: [
+            { link: '/categories', step: 'Registrar Categorías' }
         ]
+
     },
     {
         question: "¿Cómo agrego productos a mi tienda?",
@@ -39,20 +52,7 @@ const faqs = [
             { link: '/categories', step: 'Registrar Categorías' },
         ]
     },
-    {
-        question: "¿Como crear categorias?",
-        answer: (
-            <>
-                <p>El formulario consta de dos campos:  <strong className="text-yellow-400">Nombre de la categoría y Categoría Padre.</strong></p><br />
-                <p>Puedes nombrar tu categoría como desees. Por ejemplo, para una tienda de ropa, podrías llamarla <strong className="text-yellow-400">'Infantil'</strong> y seleccionarla como <strong className="text-yellow-400">'Categoría Padre'</strong>, ya que puede haber otras categorías hijas dentro de 'Infantil', como jeans, camisas, medias, etc.</p><br />
-                <p>Una vez que tengas una categoría padre, puedes guardar otras subcategorías dentro de ella seleccionando la opción correspondiente en el campo Categoría Padre.</p>
-
-            </>
-        ), href: [
-            { link: '/categories', step: 'Registrar Categorías' }
-        ]
-
-    },
+   
     {
         question: "¿Como crear un método de entrega?",
         answer: (

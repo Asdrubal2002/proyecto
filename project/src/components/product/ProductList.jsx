@@ -14,7 +14,7 @@ function ProductList({ products, get_products_list_page, storeSlug, count }) {
 
     return (
         <div className="mx-auto max-w-2xl lg:max-w-7xl lg:px-8 py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 gap-5">
             {products && products.map((product, index) => (
                 <ProductCard data={product} key={index} index={index} />
             ))}

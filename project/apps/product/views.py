@@ -16,7 +16,7 @@ from apps.store.models import Store
 from apps.product_category.models import Category
 from django.http import JsonResponse
 
-from django.db.models import Q
+from django.db.models import Q, Func, Value
 from django.shortcuts import render, get_object_or_404
 from apps.store.pagination import (
     SmallSetPagination,
@@ -40,6 +40,13 @@ from django.http import HttpResponseNotFound
 
 
 # Create your views here.
+# Función para aplicar unaccent y upper a un campo
+class Unaccent(Func):
+    function = 'UNACCENT'
+
+class UnaccentUpper(Func):
+    function = 'UPPER'
+    template = '%(function)s(UNACCENT(%(expressions)s))'
 
 
 class ListProductsByCategoryView(APIView):
@@ -170,75 +177,6 @@ class OptionListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class CreateOptionAPIView(APIView):
-    permission_classes = (IsAuthenticated, CanEditProduct,)
-
-    def post(self, request, *args, **kwargs):
-        # Obtener los datos de la solicitud
-        data = request.data.copy() 
-        print(data)
-
-        # Agregar el usuario autenticado como administrador de la tienda
-        data["store"] = request.user.stores.first().id
-
-        # Obtener el ID del producto y la cantidad de la solicitud
-        product_id = data.get('product', None)
-        quantity = data.get('quantity', 0)
-        low_stock_threshold = data.get('low_stock_threshold', 10)  # Obtener el umbral de stock bajo
-
-        # Verificar si se proporcionó un ID de producto válido
-        if product_id is None:
-            return Response({"error": "ID de producto no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Obtener el valor de la opción de la solicitud
-        option_value = data.get('value', None)
-
-        # Verificar si se proporcionó un valor de opción válido
-        if option_value is None:
-            return Response({"error": "Valor de opción no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Verificar si se proporcionó un ID de opción en la solicitud
-        option_id = data.get('option', None)
-        print(option_id)
-
-        # Si se proporcionó un ID de opción, intenta obtener la opción existente
-        if option_id:
-            try:
-                # Obtener la opción existente
-                option = Option.objects.get(pk=option_id)
-            except Option.DoesNotExist:
-                return Response({"error": "La opción especificada no existe"}, status=status.HTTP_404_NOT_FOUND)
-
-            # Si la opción existe, crear la relación con el producto
-            product_option = ProductOption.objects.create(
-                product_id=product_id, 
-                option=option, 
-                quantity=quantity, 
-                low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
-            )
-            serialized_option = OptionSerializer(option).data
-
-            return Response(serialized_option, status=status.HTTP_201_CREATED)
-        else:
-            # Si no se proporcionó un ID de opción, crear una nueva opción
-            serializer = CreateOptionSerializer(data=data)
-
-            if serializer.is_valid():
-                # Guardar la nueva opción en la base de datos
-                option = serializer.save()
-
-                # Crear la relación con el producto
-                product_option = ProductOption.objects.create(
-                    product_id=product_id, 
-                    option=option, 
-                    quantity=quantity, 
-                    low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
-                )
-                serialized_option = OptionSerializer(option).data
-
-                return Response(serialized_option, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProductsAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -605,9 +543,17 @@ class ProductListViewFiltered(APIView):
         
         # Aplicar filtros si se proporcionan en la solicitud
         if name_filter:
-            queryset = queryset.filter(name__icontains=name_filter)
+            queryset = queryset.annotate(
+                unaccented_name=UnaccentUpper('name')
+            ).filter(
+                unaccented_name__icontains=UnaccentUpper(Value(name_filter))
+            )
         if category_slug_filter:
-            queryset = queryset.filter(category__slug=category_slug_filter)
+            queryset = queryset.annotate(
+                unaccented_category_slug=UnaccentUpper('category__slug')
+            ).filter(
+                unaccented_category_slug__icontains=UnaccentUpper(Value(category_slug_filter))
+            )
         if price_min_filter:
             queryset = queryset.filter(price__gte=price_min_filter)
         if price_max_filter and price_max_filter != '':  # Verificar si price_max_filter no está vacío
@@ -647,6 +593,7 @@ class UpdateProductOptionAPIView(APIView):
 
     def put(self, request, *args, **kwargs):
         option_id = request.data.get('id')
+        print(option_id)
         if not option_id:
             return Response({"error": "Option ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -673,3 +620,74 @@ class UpdateProductOptionAPIView(APIView):
             return Response(serialized_option, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class CreateOptionAPIView(APIView):
+    permission_classes = (IsAuthenticated, CanEditProduct,)
+
+    def post(self, request, *args, **kwargs):
+        # Obtener los datos de la solicitud
+        data = request.data.copy() 
+        print(data)
+
+        # Agregar el usuario autenticado como administrador de la tienda
+        data["store"] = request.user.stores.first().id
+
+        # Obtener el ID del producto y la cantidad de la solicitud
+        product_id = data.get('product', None)
+        quantity = data.get('quantity', 0)
+        low_stock_threshold = data.get('low_stock_threshold', 10)  # Obtener el umbral de stock bajo
+
+        # Verificar si se proporcionó un ID de producto válido
+        if product_id is None:
+            return Response({"error": "ID de producto no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Obtener el valor de la opción de la solicitud
+        option_value = data.get('value', None)
+
+        # Verificar si se proporcionó un valor de opción válido
+        if option_value is None:
+            return Response({"error": "Valor de opción no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verificar si se proporcionó un ID de opción en la solicitud
+        option_id = data.get('option', None)
+      
+
+        # Si se proporcionó un ID de opción, intenta obtener la opción existente
+        if option_id:
+            try:
+                # Obtener la opción existente
+                option = Option.objects.get(pk=option_id)
+            except Option.DoesNotExist:
+                return Response({"error": "La opción especificada no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Si la opción existe, crear la relación con el producto
+            product_option = ProductOption.objects.create(
+                product_id=product_id, 
+                option=option, 
+                quantity=quantity, 
+                low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
+            )
+            serialized_option = OptionSerializer(option).data
+
+            return Response(serialized_option, status=status.HTTP_201_CREATED)
+        else:
+            # Si no se proporcionó un ID de opción, crear una nueva opción
+            serializer = CreateOptionSerializer(data=data)
+
+            if serializer.is_valid():
+                # Guardar la nueva opción en la base de datos
+                option = serializer.save()
+
+                # Crear la relación con el producto
+                product_option = ProductOption.objects.create(
+                    product_id=product_id, 
+                    option=option, 
+                    quantity=quantity, 
+                    low_stock_threshold=low_stock_threshold  # Asignar el umbral de stock bajo
+                )
+                serialized_option = OptionSerializer(option).data
+
+                return Response(serialized_option, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

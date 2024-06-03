@@ -6,7 +6,7 @@ class PaisSerializer(serializers.ModelSerializer):
     currency=CurrencySerializer()
     class Meta:
         model = Pais
-        fields = ['id', 'nombre','currency']
+        fields = ['id', 'nombre','currency','countrycode']
 
 class EstadoODepartamentoSerializer(serializers.ModelSerializer):
     pais=PaisSerializer()

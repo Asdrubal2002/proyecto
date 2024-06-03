@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { create_policy, get_store_policies } from '../../redux/actions/store/store';
+import Layout from '../../hocs/Layout';
+import PoliticsFoundations from './PoliticsFoundations';
 
 function FormCreatePolicy({
   create_policy,
@@ -56,6 +58,7 @@ function FormCreatePolicy({
   
       setFormData(initialFormData);
       await create_policy(formData.name, formData.policy_text);
+      get_store_policies(userStoreSlug);
     } else {
       // Si hay errores, no envíes los datos
       console.log('El formulario contiene errores. No se enviará.');
@@ -64,7 +67,8 @@ function FormCreatePolicy({
   
 
   return (
-    <div>
+    <Layout>
+       <PoliticsFoundations />
       <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre de tu política de negocio *</label>
@@ -121,7 +125,7 @@ function FormCreatePolicy({
         <p>No hay políticas disponibles para esta tienda.</p>
       )}
 
-    </div>
+    </Layout>
   );
 }
 

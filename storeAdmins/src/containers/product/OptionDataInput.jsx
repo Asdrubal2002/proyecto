@@ -88,10 +88,8 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
             if (isEditing) {
                 formData.append('option', optionId); // Para edición, enviar el ID de la nueva opción
                 formData.append('id', editOptionData.id); // Incluir el ID de la opción para editar
-                console.log("llega a editar")
             } else {
                 formData.append('value', value); // Para creación, enviar el nombre de la opción
-                formData.append('option', optionId); 
             }
     
             let url = isEditing

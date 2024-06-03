@@ -147,35 +147,22 @@ function FormCategories({
 
     return (
         <>
-            <form onSubmit={onSubmit} className="bg-gray-800 rounded-lg shadow-md p-6 mb-4">
+            <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
                 <div className="mb-4">
 
                     <div className="flex items-center">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Nombre:</label>
-                        <Disclosure>
-                            <Disclosure.Button className="focus:outline-none">
-                                <InformationCircleIcon className="w-6 h-6 text-gray-400" />
-                            </Disclosure.Button>
-                            <Transition
-                                enter="transition duration-100 ease-out"
-                                enterFrom="transform scale-95 opacity-0"
-                                enterTo="transform scale-100 opacity-100"
-                                leave="transition duration-75 ease-out"
-                                leaveFrom="transform scale-100 opacity-100"
-                                leaveTo="transform scale-95 opacity-0"
-                            >
-                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                    Asigna un nombre a una categoría dentro de tu negocio.
-                                </Disclosure.Panel>
-                            </Transition>
-                        </Disclosure>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2 flex-grow">Nombre:</label>
+                        <Link to={'/help'} className='flex text-gray-400'>
+                            <InformationCircleIcon className="w-5 h-5 " />
+                            <p className='font-semibold text-sm '>Necesitas ayuda</p> 
+                        </Link>
                     </div>
 
                     <input
                         type="text"
                         name="name"
                         id="name"
-                        placeholder='¿Que nombre le vas a poner a tu categoria?'
+                        placeholder='¿Que nombre le vas a poner a tu categoria? Ejemplos: Femenina, Masculino, Computadoras, Aceites, Perros, Gatos '
                         className="placeholder:text-sm mt-1 p-2 block w-full rounded-md shadow-sm bg-gray-700 text-gray-300 focus:outline-none"
                         value={formData.name}
                         onChange={handleChange}
@@ -188,23 +175,7 @@ function FormCategories({
                 <div className="mb-4">
                     <div className="flex items-center">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Padre:</label>
-                        <Disclosure>
-                            <Disclosure.Button className="focus:outline-none">
-                                <InformationCircleIcon className="w-6 h-6 text-gray-400" />
-                            </Disclosure.Button>
-                            <Transition
-                                enter="transition duration-100 ease-out"
-                                enterFrom="transform scale-95 opacity-0"
-                                enterTo="transform scale-100 opacity-100"
-                                leave="transition duration-75 ease-out"
-                                leaveFrom="transform scale-100 opacity-100"
-                                leaveTo="transform scale-95 opacity-0"
-                            >
-                                <Disclosure.Panel className=" rounded-md p-2 text-yellow-400 text-sm">
-                                    Selecciona la categoría principal para esta nueva entrada.
-                                </Disclosure.Panel>
-                            </Transition>
-                        </Disclosure>
+                       
                     </div>
 
                     <select
