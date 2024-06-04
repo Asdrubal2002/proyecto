@@ -37,6 +37,7 @@ import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
 import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 import SearchForm from "../../components/searcher/SearchForm";
+import SearchProductosForm from "../../components/searcher/SearchProductosForm";
 
 
 function classNames(...classes) {
@@ -384,11 +385,14 @@ const StoreDetail = ({
                             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                                 <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 pb-6 pt-10">
                                     <div className="hidden sm:block">
-                                        <Searcher className="flex-1" />
+                                        {/* <Searcher className="flex-1" /> */}
+
+                                        <SearchProductosForm storeSlug={storeSlug} />
+
+
                                     </div>
                                     <div className="flex justify-between items-center mt-2 sm:mt-0">
                                         <h2 className="flex items-center text-lg md:text-xl text-gray-800 dark:text-white mb-2 sm:mb-0 font-estilo_letra">
-                                            <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
                                             {/* Agrega el icono de búsqueda */}
                                             {count} Productos Registrados
                                         </h2>

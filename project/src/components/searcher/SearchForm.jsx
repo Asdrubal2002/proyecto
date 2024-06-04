@@ -31,7 +31,7 @@ const SearchForm = ({ storeSlug }) => {
           placeholder="Palabra clave"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-md py-2 px-4 focus:outline-none bg-stone-900 text-sm"
+          className="w-full rounded-md py-2 px-4 focus:outline-none bg-stone-900 text-sm lg:hidden"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">

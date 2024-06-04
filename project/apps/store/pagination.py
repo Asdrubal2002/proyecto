@@ -17,6 +17,6 @@ class MediumSetPagination(PageNumberPagination):
 
 class LargeSetPagination(PageNumberPagination):
     page_query_param = 'p'
-    page_size = 21
+    page_size = 24
     page_size_query_param = 'page_size'
-    max_page_size = 21
+    max_page_size = 24

@@ -177,7 +177,6 @@ class OptionListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class UserProductsAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -521,7 +520,7 @@ class DeleteOptionAPIView(APIView):
     
 class ProductListViewFiltered(APIView):
     def get(self, request, storeSlug, categorySlug=None, format=None):
-        queryset = Product.objects.filter(is_active=True, category__is_active=True)  # Filtrar solo productos activos
+        queryset = Product.objects.filter(is_active=True, category__is_active=True)
         store_slug = self.kwargs.get('storeSlug')
         if store_slug:
             queryset = queryset.filter(category__store__slug=store_slug)
@@ -535,30 +534,36 @@ class ProductListViewFiltered(APIView):
         return paginator.get_paginated_response(products_serialized.data)
 
     def filter_queryset(self, queryset):
-        # Obtener el filtro de la solicitud
+        # Obtener los filtros de la solicitud
         name_filter = self.request.query_params.get('name', None)
         category_slug_filter = self.kwargs.get('categorySlug', None)
         price_min_filter = self.request.query_params.get('price_min', '')
-        price_max_filter = self.request.query_params.get('price_max', '').strip()  # Eliminar espacios en blanco
-        
+        price_max_filter = self.request.query_params.get('price_max', '').strip()
+
         # Aplicar filtros si se proporcionan en la solicitud
         if name_filter:
+            # Filtrar por palabras clave en el nombre y descripción del producto
             queryset = queryset.annotate(
-                unaccented_name=UnaccentUpper('name')
+                unaccented_name=UnaccentUpper('name'),
+                unaccented_description=UnaccentUpper('description')
             ).filter(
-                unaccented_name__icontains=UnaccentUpper(Value(name_filter))
+                Q(unaccented_name__icontains=UnaccentUpper(Value(name_filter))) |
+                Q(unaccented_description__icontains=UnaccentUpper(Value(name_filter)))
             )
+
         if category_slug_filter:
             queryset = queryset.annotate(
                 unaccented_category_slug=UnaccentUpper('category__slug')
             ).filter(
                 unaccented_category_slug__icontains=UnaccentUpper(Value(category_slug_filter))
             )
+
         if price_min_filter:
             queryset = queryset.filter(price__gte=price_min_filter)
-        if price_max_filter and price_max_filter != '':  # Verificar si price_max_filter no está vacío
+
+        if price_max_filter and price_max_filter != '':
             queryset = queryset.filter(price__lte=price_max_filter)
-        
+
         return queryset
 
 class UpdateOptionAPIView(APIView):
@@ -621,7 +626,6 @@ class UpdateProductOptionAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
 class CreateOptionAPIView(APIView):
     permission_classes = (IsAuthenticated, CanEditProduct,)
 

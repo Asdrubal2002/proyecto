@@ -118,7 +118,6 @@ const ProductsByCategory = ({
                   to={`/store/${storeSlug}`}
                   className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
                 >
-                  <GiftIcon className="h-6 w-6 mr-2 text-gray-600" aria-hidden="true" />
                   {/* Agrega el icono de búsqueda */}
                   {count} Productos - 
                   <strong>

@@ -64,38 +64,43 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
                 setError('Por favor complete todos los campos.');
                 return;
             }
-    
+
             if (parseInt(lowStockThreshold) <= 1) {
                 setError('El umbral de stock bajo debe ser mayor a 1.');
                 return;
             }
-    
+
             setLoading(true);
             setError(null);
-    
+
             const config = {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `JWT ${localStorage.getItem('access')}`
                 }
             };
-    
+
             const formData = new FormData();
             formData.append('quantity', quantity);
             formData.append('low_stock_threshold', lowStockThreshold);
             formData.append('product', product.id);
-            
+
+            // Verificar si hay un optionId definido antes de agregarlo al formulario
+            if (optionId) {
+                formData.append('option', optionId); // Enviar el ID de la opción si existe
+            }
+
             if (isEditing) {
-                formData.append('option', optionId); // Para edición, enviar el ID de la nueva opción
                 formData.append('id', editOptionData.id); // Incluir el ID de la opción para editar
             } else {
                 formData.append('value', value); // Para creación, enviar el nombre de la opción
+
             }
-    
+
             let url = isEditing
                 ? `${import.meta.env.VITE_REACT_APP_API_URL}/api/product/option-update-product/`
                 : `${import.meta.env.VITE_REACT_APP_API_URL}/api/product/create-option/`;
-    
+
             const fetchData = async () => {
                 setLoading(true);
                 try {
@@ -105,7 +110,7 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
                     } else {
                         res = await axios.post(url, formData, config);
                     }
-    
+
                     if (res.status === 200 || res.status === 201) {
                         setLoading(false);
                         get_products_options(slug);
@@ -123,9 +128,9 @@ const OptionDataInput = ({ all_options, product, resetStates, slug, get_products
             setLoading(false);
         }
     };
-    
-    
-    
+
+
+
 
     const resetForm = () => {
         setValue('');

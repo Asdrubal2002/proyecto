@@ -4,7 +4,7 @@ import PaginationProducts from '../pagination/PaginationProducts'
 
 function ProductListCategories({ products, get_products_list_page, storeSlug,categorySlug, count }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 16; // o cualquier otro número que prefieras
+    const pageSize = 24; // o cualquier otro número que prefieras
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);

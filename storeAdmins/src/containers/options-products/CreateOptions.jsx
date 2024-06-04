@@ -4,6 +4,7 @@ import { get_options_admin } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
 import { CheckIcon, GlobeAltIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
+import { Link } from 'react-router-dom';
 
 
 
@@ -56,22 +57,21 @@ function CreateOptions({
 
                     // Mostrar los productos relacionados en una lista
                     const productList = relatedProducts.map((product, index) => (
-                        <li key={product.id}>
+                        <li key={product.id} >
                             <span>{index + 1}. </span> {/* Mostrar el índice enumerado */}
-                            {product.product.name} - {product.product.price}
-                            {/* <Link to={`/product/${product.product.slugProduct}`}>{product.product.name} - {product.product.price}</Link> */}
+                            <Link to={`/product/${product.product.slugProduct}`} className='hover:text-azul_corp_ho'>{product.product.name} - {product.product.formatted_price}</Link>
                         </li>
                     ));
                     // Establecer el mensaje con la lista de productos
                     setMessage(
                         <div>
-                        <span className='m-4 bg-red-700 p-4 rounded-lg font-semibold block'>
-                            No se puede eliminar esta opción <strong>{option.value}</strong> porque está asociada a los siguientes productos:
-                        </span>
-                        <ul className='m-4 font-semibold'>
-                            {productList}
-                        </ul>
-                    </div>
+                            <span className='m-4 bg-red-700 p-4 rounded-lg font-semibold block'>
+                                No se puede eliminar esta opción <strong>{option.value}</strong> porque está asociada a los siguientes productos:
+                            </span>
+                            <ul className='m-4 font-semibold'>
+                                {productList}
+                            </ul>
+                        </div>
                     );
 
                 }
@@ -131,7 +131,7 @@ function CreateOptions({
             formDataToSend.append('value', formData.valueOption);
             console.log(formDataToSend);
 
-           
+
             const fetchData = async () => {
                 setLoading(true);
                 try {
@@ -151,7 +151,7 @@ function CreateOptions({
             };
             fetchData();
             clearFormData()
-            
+
         }
     };
 
