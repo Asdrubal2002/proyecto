@@ -10,6 +10,7 @@ import { ChatBubbleBottomCenterTextIcon, CheckIcon, ShoppingCartIcon, StarIcon, 
 
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
+import DOMPurify from 'dompurify'
 
 import ImageGallery from './ImageGallery';
 import { add_item } from '../../redux/actions/cart';
@@ -66,6 +67,12 @@ function ProductDetail({
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('¿Que te parecio el producto?');
     const [selectedOptionId, setSelectedOptionId] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
+    };
+
 
 
     const handleOptionClick = (optionValue) => {
@@ -180,7 +187,7 @@ function ProductDetail({
                 <div>
                     <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8 font-estilo_letra">
                         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-                         <ImageGallery data={product?.images} /> 
+                            <ImageGallery data={product?.images} />
                             {/* <div className="sticky top-10">
                                 <ImageGallery data={product?.images} />
                             </div> */}
@@ -198,7 +205,20 @@ function ProductDetail({
                                 </div>
                                 <div className="mt-6">
                                     <h3 className="sr-only">Description</h3>
-                                    <div className="text-base text-gray-300 space-y-6" dangerouslySetInnerHTML={{ __html: product && product.description }} />
+                                    <p className="text-md text-gray-300 leading-relaxed">
+                                        {isExpanded
+                                            ? <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description) }}></span>
+                                            : <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description.slice(0, 150) + '...') }}></span>
+                                        }
+                                    </p>
+                                    {product.description && product.description.length > 150 && (
+                                        <button
+                                            onClick={toggleDescription}
+                                            className="text-blue-500 hover:underline mt-2"
+                                        >
+                                            {isExpanded ? 'Ver menos' : 'Ver más información'}
+                                        </button>
+                                    )}
                                 </div>
                                 {/* Reviews */}
                                 <div className="mt-3">
@@ -315,13 +335,13 @@ function ProductDetail({
                                         )}
                                     </div> : <></>}
                                     <Comments
-                                    loading={loading_comments}
-                                    comments={comments}
-                                    profile={profile}
-                                    isAuthenticated={isAuthenticated}
-                                    delete_comment_product={delete_comment_product}
-                                    edit_comment_prodcut={edit_comment_prodcut}
-                                />
+                                        loading={loading_comments}
+                                        comments={comments}
+                                        profile={profile}
+                                        isAuthenticated={isAuthenticated}
+                                        delete_comment_product={delete_comment_product}
+                                        edit_comment_prodcut={edit_comment_prodcut}
+                                    />
                                 </section>
                             </div>
                         </div>

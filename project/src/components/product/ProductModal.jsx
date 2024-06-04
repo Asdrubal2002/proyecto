@@ -50,6 +50,11 @@ function ProductModal({
     const [buttonText, setButtonText] = useState('¿Que te parecio el producto?');
 
     const [selectedOptionId, setSelectedOptionId] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
+    };
 
 
     useEffect(() => {
@@ -145,8 +150,20 @@ function ProductModal({
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">
-                            {/* <h3 className="text-xl font-bold text-gray-400 mb-2">Descripción</h3> */}
-                            <p className="text-md text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data && data.description) }} />
+                            <p className="text-md text-gray-300 leading-relaxed">
+                                {isExpanded
+                                    ? <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.description) }}></span>
+                                    : <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.description.slice(0, 150) + '...') }}></span>
+                                }
+                            </p>
+                            {data.description && data.description.length > 150 && (
+                                <button
+                                    onClick={toggleDescription}
+                                    className="text-blue-500 hover:underline mt-2"
+                                >
+                                    {isExpanded ? 'Ver menos' : 'Ver más información'}
+                                </button>
+                            )}
                         </div>
                         <div className="mt-6">
                             <h3 className="sr-only">options</h3>

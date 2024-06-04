@@ -46,6 +46,8 @@ class Product(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
     is_low_stock_alert = models.BooleanField(default=False)
+    discount = models.DecimalField(max_digits=5, decimal_places=0, default=0, blank=True,  null=True) #descuento del price, no del price + tax, solo price
+
 
     def __str__(self):
         return self.name
@@ -68,6 +70,14 @@ class Product(models.Model):
     @property
     def price_with_tax(self):
         return self.price * (1 + self.tax / 100)
+    
+    @property
+    def formatted_price_with_discount(self):
+        # Calcular el precio con descuento
+        price_with_discount = self.price * (1 - self.discount / 100)
+        # Formatear el precio con descuento de la misma manera que el precio original y el precio con impuestos incluidos
+        return "{:,.2f}".format(price_with_discount)
+        
     
     def check_stock_level(self):
         for option in self.product_options.all():

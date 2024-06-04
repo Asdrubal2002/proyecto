@@ -68,8 +68,6 @@ def crear_item_carrito(product_option_id, user, cart):
     except ProductOption.DoesNotExist:
         return None, False
 
-
-
 class AddToCart(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -108,9 +106,6 @@ class AddToCart(APIView):
             else:
                 return Response({'message': 'La cantidad del ítem en el carrito fue actualizada correctamente'}, status=status.HTTP_200_OK)
             
-
-
-
 class ProductsCartView(APIView):
     permission_classes = [IsAuthenticated]
 

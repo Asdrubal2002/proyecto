@@ -49,6 +49,7 @@ function EditProduct({
     const [updateDescription, setUpdateDescription] = useState(false)
     const [updatePrice, setUpdatePrice] = useState(false)
     const [updateTax, setUpadteTax] = useState(false)
+    const [updateDiscount, setUpdateDiscount] = useState(false)
 
 
     const [updatePhoto, setUpdatePhoto] = useState(false)
@@ -74,6 +75,7 @@ function EditProduct({
         category: '',
         price: '',
         tax: '',
+        discount:'',
         optionPr: '',
         quantity: ''
 
@@ -85,6 +87,7 @@ function EditProduct({
         category,
         price,
         tax,
+        discount,
         optionPr,
         quantity
     } = formData
@@ -100,7 +103,9 @@ function EditProduct({
         setUpdatePrice(false)
         setUpdatePhoto(false)
         setUpadteTax(false)
+        setUpdateDiscount(false)
         setEditOptionData(null); // Reinicia el estado de edición
+        
     }
 
     const onSubmit = e => {
@@ -121,6 +126,8 @@ function EditProduct({
         formData.append('category', selectedCategory)
         formData.append('price', price)
         formData.append('tax', tax)
+        formData.append('discount', discount)
+
 
         console.log(tax)
 
@@ -689,7 +696,7 @@ function EditProduct({
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
                                         <p className='flex'>
-                                            Impuesto
+                                           % Impuesto
                                         </p>
                                     </dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
@@ -736,6 +743,68 @@ function EditProduct({
                                                 <span className="flex-grow">{product && product.tax}  %</span>
                                                 <button
                                                     onClick={() => setUpadteTax(true)}
+                                                    className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
+                                                    <PencilIcon width={20} height={20} color="#fff" radius="6" />
+
+                                                </button>
+                                            </>
+                                        )}
+                                    </dd>
+                                </div>
+
+                                
+
+                                  {/* Descuento */}
+                                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                                    <dt className="text-sm font-medium text-gray-200">
+                                        <p className='flex'>
+                                            % Descuesto
+                                        </p>
+                                    </dt>
+                                    <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
+                                        {updateDiscount ? (
+                                            <>
+                                                <form onSubmit={e => onSubmit(e)} className="flex w-full">
+                                                    <input
+                                                        value={discount}
+                                                        onChange={e => {
+                                                            const { value } = e.target;
+                                                            // Mantener solo los números
+                                                            const cleanedValue = value.replace(/[^\d]/g, ''); // Eliminar todo excepto los números
+                                                            onChange({ target: { name: 'discount', value: cleanedValue } }); // Llamar a la función onChange con el valor limpio
+                                                        }}
+                                                        name='discount'
+                                                        type='text'
+                                                        maxLength={10} // Máximo de 10 caracteres para un valor monetario (por ejemplo, 999,999.99)
+                                                        className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
+                                                        placeholder='Nuevo Impuesto'
+                                                    />
+
+
+                                                    {/* Mensaje de error si el campo de precio está vacío */}
+
+                                                    <div className="flex items-center space-x-2 ml-4">
+                                                        <button
+                                                            type="submit"
+                                                            disabled={tax.length > 10} // Deshabilitar el botón si el precio está vacío, no es un valor monetario válido o excede el límite
+                                                            className="px-4 py-2 rounded-md bg-azul_corp text-white font-medium hover:bg-azul_corp_ho focus:outline-none"
+                                                        >
+                                                            <CheckIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setUpdateDiscount(false)}
+                                                            className="px-4 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none"
+                                                        >
+                                                            <XMarkIcon width={20} height={20} color="#fff" radius="6" />
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="flex-grow">{product && product.discount}  %</span>
+                                                <button
+                                                    onClick={() => setUpdateDiscount(true)}
                                                     className="px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "                                                >
                                                     <PencilIcon width={20} height={20} color="#fff" radius="6" />
 

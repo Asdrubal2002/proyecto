@@ -240,6 +240,11 @@ class EditProductView(APIView):
             if not (data["tax"] == "undefined"):
                 product.tax = data["tax"]
                 product.save()
+        if data["discount"]:
+            if not (data["discount"] == "undefined"):
+                product.discount = data["discount"]
+                product.save()
+         
 
          
         return Response({"success": "post edited"})
