@@ -7,7 +7,9 @@ import {
     INVOICES_SUCCESS,
     INVOICES_FAIL,
     INVOICES_SUCCESS_DELETE,
-    INVOICES_FAIL_DELETE
+    INVOICES_FAIL_DELETE,
+    COUNT_USER_INVOICES_SUCCESS,
+    COUNT_USER_CARTS_INVOICES
 } from './types';
 
 import { setAlert } from './alert';
@@ -186,5 +188,54 @@ export const remove_invoice = (IdInvoice) => async dispatch => {
     } finally {
         // Cerrar la conexión de manera controlada si es necesario
         console.log("Proceso finalizado, conexión cerrada");
+    }
+}
+
+export const get_user_invoices_count = () => async dispatch => {
+    dispatch({
+        type: SET_LOADER_INVOICE,
+    });
+
+    try {
+        const accessToken = localStorage.getItem('access');
+
+        if (!accessToken) {
+            throw new Error('No hay token de acceso disponible');
+        }
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `JWT ${accessToken}`,
+            }
+        };
+
+        const res = await axios.get(`${apiUrl}/api/invoice/invoices_count`, config);
+        // Manejar la respuesta exitosa aquí si es necesario
+
+        if (res.status === 200) {
+            dispatch({
+                type: COUNT_USER_INVOICES_SUCCESS,
+                payload: res.data,
+            });
+        } else {
+            dispatch({
+                type: COUNT_USER_CARTS_INVOICES
+            });
+        }
+        dispatch({
+            type: REMOVE_LOADER_INVOICE,
+        });
+    } catch (error) {
+        // Manejar el error de autorización específicamente
+        if (error.response && error.response.status === 401) {
+            // Puedes realizar acciones específicas para manejar la falta de autorización aquí
+            // Por ejemplo, redireccionar a la página de inicio de sesión
+            // O mostrar un mensaje de error al usuario
+            // ...
+        }
+    } finally {
+        // Cerrar la conexión de manera controlada si es necesario
     }
 }

@@ -211,7 +211,7 @@ function ProductDetail({
                                             : <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description.slice(0, 150) + '...') }}></span>
                                         }
                                     </p>
-                                    {product.description && product.description.length > 150 && (
+                                    {product && product.description.length > 150 && (
                                         <button
                                             onClick={toggleDescription}
                                             className="text-blue-500 hover:underline mt-2"

@@ -139,9 +139,9 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
           </Transition>
         </Disclosure>
         <p className='font-medium text-sm'>
-          Por ejemplo, para una tienda llamada <strong className='text-yellow-400'>{values.name}</strong>, la ruta podría
+          Por ejemplo, para una tienda llamada <strong className='text-yellow-400'>{values.name}</strong>, el usuario podría
           ser: <strong className='text-yellow-400'>{values.name.toLowerCase().replace(/\s+/g, '_').replace(/[^\w]/g, '')}</strong>.
-          Ten en cuenta que la ruta no puede contener espacios, mayúsculas, símbolos. Es solo un ejemplo, puedes registrar la dirección que te guste para tu tienda bajo los parametros establecidos.
+          Ten en cuenta que el usuario no puede contener espacios, mayúsculas, símbolos. Es solo un ejemplo, puedes registrar la dirección que te guste para tu tienda bajo los parametros establecidos.
         </p>
       </div>
      <BotonNextStep nextStep={nextStep}/>

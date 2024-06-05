@@ -41,6 +41,24 @@ class UserInvoicesAPIView(APIView):
         # Retornar la lista de facturas en formato JSON
         return Response(response_data, status=status.HTTP_200_OK)
 
+class UserCountInvoicesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Obtener todas las facturas del usuario actual
+        user_invoices = Invoice.objects.filter(buyer__user=request.user).order_by(
+            "-created_at"
+        )
+
+        invoices_count = len(user_invoices)
+
+        response_data = {
+            "invoices_count": invoices_count,
+        }
+
+        # Retornar la lista de facturas en formato JSON
+        return Response(response_data, status=status.HTTP_200_OK)
+
 def send_invoice_email(invoice, user):
     subject = "Confirmación de pedido - Orden #{}".format(invoice.transaction_number)
     html_message = render_to_string("invoices/invoice_created_email.html", {"invoice": invoice})

@@ -4,19 +4,20 @@ import { connect } from 'react-redux';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import NoFoundCarts from './NoFoundCarts';
-import { CheckIcon, TrashIcon, DocumentCheckIcon, ArrowUpIcon, ChevronUpIcon, ChevronRightIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, TrashIcon, DocumentCheckIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline'
 import { InfinitySpin, Rings } from "react-loader-spinner";
-import { remove_cart } from '../../redux/actions/cart';
+import { get_user_carts, remove_cart } from '../../redux/actions/cart';
 
-function Cart({ isAuthenticated, carts, loading, remove_cart }) {
+
+
+function Cart({ isAuthenticated, carts, loading, remove_cart, get_user_carts }) {
   if (!isAuthenticated)
     return <Navigate to="/" />;
 
   useEffect(() => {
+    get_user_carts()
     window.scrollTo(0, 0);
   }, []);
-
-
 
   const [isRemovingCart, setIsRemovingCart] = useState(false);
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
             <div className="mx-auto max-w-2xl sm:text-center">
               <h2 className="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">Centro de compras</h2>
             </div>
-            {carts.map((cart) => (
+            {carts&&carts.map((cart) => (
               <div key={cart.id} className="mx-auto mt-10 max-w-2xl rounded-3xl sm:mt-10 lg:mx-0 lg:flex lg:max-w-none bg-stone-900">
                 <div className="p-8 sm:p-10 lg:flex-auto">
                   <div className="flex items-center">
@@ -56,8 +57,8 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
                           <BuildingStorefrontIcon width={20} height={20} color="#929292" />
                         </div>
                     }
-                    <Link to={`/store/${cart.store.slug}`} className="flex items-center flex-grow">
-                      <h3 className="text-2xl font-bold tracking-tight text-gray-300 mx-2">{cart.store.name}</h3>
+                    <Link to={`/store/${cart.store.slug}`} className="flex items-center flex-grow ">
+                      <h3 className="text-2xl font-bold tracking-tight text-gray-300 mx-2 hover:text-azul_corp">{cart.store.name}</h3>
                     </Link>
 
                     <button onClick={() => handleRemoveCart(cart.slug)} className="ml-2 text-gray-400" disabled={isRemovingCart}>
@@ -112,7 +113,7 @@ function Cart({ isAuthenticated, carts, loading, remove_cart }) {
 
               </div>
             ))}
-            {carts.length === 0 && <NoFoundCarts />}
+            {carts&&carts.length === 0 && <NoFoundCarts />}
           </div>
         </div>
       )}
@@ -126,4 +127,4 @@ const mapStateToProps = (state) => ({
   loading: state.Cart.loading_carts,
 });
 
-export default connect(mapStateToProps, { remove_cart })(Cart);
+export default connect(mapStateToProps, { remove_cart, get_user_carts })(Cart);

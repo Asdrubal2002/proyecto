@@ -5,11 +5,12 @@ import Navbar from '../components/navigation/Navbar';
 import Alerta from '../components/alert/Alerta';
 
 import { get_user_profile } from '../redux/actions/profile';
-import { get_user_carts } from '../redux/actions/cart';
+import { get_count_user_carts } from '../redux/actions/cart';
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { check_authenticated, load_user, refresh } from '../redux/actions/auth';
-import { get_user_invoices } from '../redux/actions/Invoice';
+import { get_user_invoices_count } from '../redux/actions/Invoice';
+
 
 const Layout = (props) => {
 
@@ -18,8 +19,8 @@ const Layout = (props) => {
         props.check_authenticated();
         props.load_user();
         props.get_user_profile();
-        props.get_user_carts()
-        props.get_user_invoices()
+        props.get_user_invoices_count()
+        props.get_count_user_carts()
     }, []);
 
     return (
@@ -40,6 +41,6 @@ export default connect(null, {
     load_user,
     refresh,
     get_user_profile,
-    get_user_carts,
-    get_user_invoices,
+    get_count_user_carts,
+    get_user_invoices_count
 })(Layout)

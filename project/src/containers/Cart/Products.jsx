@@ -13,9 +13,6 @@ import { get_user_location } from '../../redux/actions/profile';
 
 import {
   get_user_cart,
-  increment_item,
-  decrement_item,
-  remove_item
 } from '../../redux/actions/cart';
 import CartItem from '../../components/cart/CartItem';
 import { Rings } from 'react-loader-spinner';
@@ -24,8 +21,6 @@ import ProfileForm from '../Profile/forms/ProfileForm';
 import { get_shippings } from '../../redux/actions/shipping';
 import { add_invoice } from '../../redux/actions/Invoice';
 
-
-
 // ... Importaciones y componentes anteriores
 
 function Products({
@@ -33,9 +28,6 @@ function Products({
   get_user_cart,
   cart,
   get_user_location,
-  increment_item,
-  decrement_item,
-  remove_item,
   location,
   profile,
   loading,
@@ -107,9 +99,6 @@ function Products({
                 {/* Renderizar contenido de cada item 8:56:46*/}
                 <CartItem
                   item={item}
-                  increment_item={increment_item}
-                  decrement_item={decrement_item}
-                  remove_item={remove_item}
                   setRender={setRender}
                   render={render}
                 />
@@ -176,7 +165,6 @@ function Products({
     navigate('/invoices');
 
   }
-
 
   return (
     <Layout>
@@ -391,9 +379,6 @@ const mapStateToProps = state => ({
 })
 export default connect(mapStateToProps, {
   get_user_cart,
-  increment_item,
-  decrement_item,
-  remove_item,
   get_user_location,
   get_shippings,
   add_invoice

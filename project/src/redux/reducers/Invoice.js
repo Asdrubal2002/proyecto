@@ -6,12 +6,15 @@ import {
     INVOICES_SUCCESS,
     INVOICES_FAIL,
     INVOICES_SUCCESS_DELETE,
-    INVOICES_FAIL_DELETE
+    INVOICES_FAIL_DELETE,
+    COUNT_USER_INVOICES_SUCCESS,
+    COUNT_USER_CARTS_INVOICES
 } from "../actions/types";
 
 const initialState = {
     loading: false,
-    invoices: []
+    invoices: [],
+    counts_invoice: null,
 };
 
 export default function Invoice(state = initialState, action) {
@@ -57,6 +60,18 @@ export default function Invoice(state = initialState, action) {
             return {
                 ...state,
                 error: action.payload,
+            };
+
+
+        case COUNT_USER_INVOICES_SUCCESS:
+            return {
+                ...state,
+                counts_invoice: payload.invoices_count,
+            }
+        case COUNT_USER_CARTS_INVOICES:
+            return {
+                ...state,
+                counts_invoice: null,
             };
 
         default:

@@ -13,7 +13,7 @@ from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from django.db.models import F
-
+from apps.store.models import Store
 
 
 # Create your views here.
@@ -28,12 +28,25 @@ class view_user_carts(APIView):
 
         serializer = CartSerializer(carts, many=True)
 
+        # Devuelve la respuesta con la información y el conteo
+        response_data = {
+            "carts": serializer.data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+class count_user_carts(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        carts = Cart.objects.filter(user=user, is_active=True)
+        
         # Obtén el conteo de carros para el usuario
         cart_count = len(carts)
 
         # Devuelve la respuesta con la información y el conteo
         response_data = {
-            "carts": serializer.data,
             "cart_count": cart_count,
         }
 
@@ -172,7 +185,6 @@ class IncrementItemQuantity(APIView):
                 {"error": "Item de carrito no encontrado"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
 
 class DecrementItemQuantity(APIView):
     permission_classes = [IsAuthenticated]
@@ -317,7 +329,6 @@ class RemoveCartBySlug(APIView):
                 {"error": "Carrito no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
 
-
 class SynchCartView(APIView):
     def put(self, request, format=None):
         user = self.request.user
@@ -405,4 +416,30 @@ class SynchCartView(APIView):
             return Response(
                 {"error": "Something went wrong when synching cart"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+class ProductsCartViewStore(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, store_slug):
+        user = request.user
+
+        try:
+            # Busca la tienda con el slug dado
+            store = Store.objects.get(slug=store_slug)
+        except Store.DoesNotExist:
+            return Response(
+                {"error": "Tienda no encontrada"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            # Busca el carrito asociado al usuario y a la tienda
+            cart = Cart.objects.get(user=user, store=store)
+
+            # Serializa y devuelve el carrito
+            cart_serializer = CartSerializer(cart)
+            return Response(cart_serializer.data, status=status.HTTP_200_OK)
+        except Cart.DoesNotExist:
+            return Response(
+                {"error": "Carrito no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )

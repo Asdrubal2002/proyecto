@@ -10,7 +10,7 @@ import { useEffect, useState, Fragment } from "react";
 //import { get_products } from "../../redux/actions/products";
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 
-import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon, XMarkIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import LoadingStore from "../../components/store/LoadingStore";
 import { ConetenedorBanner, ConetenedorBanner1, ConetenedorInfo, ConetenedorInfo1, ConetenedorInfo2, ConetenedorProfile, ConetenedorProfile1, ConetenedorProfile2, ConetenedorProfile3, EspacioContenedor, Principal } from "../../components/store/styles/LoadingStore";
 import { BotonesMeGustaNOMegusta, ContenedorInfoUbication, ContenedorInfoUbication1, DescriptionStore, EspacioPhotos, Photo, StoreProfile, SeparadorVertical } from "./styles/StoreDetail";
@@ -38,6 +38,7 @@ import { HeartIcon as OutlineHeartIcon } from '@heroicons/react/24/outline';
 import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 import SearchForm from "../../components/searcher/SearchForm";
 import SearchProductosForm from "../../components/searcher/SearchProductosForm";
+import CartProductStore from "../Cart/CartProductStore";
 
 
 function classNames(...classes) {
@@ -71,7 +72,8 @@ const StoreDetail = ({
     get_stores_likes,
     likes,
     add_like_dislike_store,
-    userLiked
+    userLiked,
+    cart
 
 
 }) => {
@@ -79,11 +81,8 @@ const StoreDetail = ({
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('Comentar');
-    const [activeTab, setActiveTab] = useState(0);
-
-    const instagram = store && store.instagram
-    const facebook = store && store.facebook
-    const x_red_social = store && store.x_red_social
+   
+    const [open, setOpen] = useState(false);
 
 
     const handleHeartClick = async () => {
@@ -396,6 +395,17 @@ const StoreDetail = ({
                                             {/* Agrega el icono de búsqueda */}
                                             {count} Productos Registrados
                                         </h2>
+
+                                        <button
+                                            onClick={() => setOpen(true)}
+                                            className="relative text-white px-4 py-2 rounded-md hover:bg-azul_corp mx-2"
+                                        >
+                                            <ShoppingCartIcon className="h-8 w-8" />
+                                            <span className="absolute top-0 right-0 mt-1 mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold leading-none text-red-100 bg-red-600 rounded-full font-estilo_letra">
+                                                   {cart && cart.items ? cart.items.length : 0}
+                                                </span>
+                                        </button>
+
                                         <button
                                             type="button"
                                             className="p-2 text-gray-200 sm:ml-6 lg:hidden bg-gray-600 rounded-md"
@@ -512,11 +522,14 @@ const StoreDetail = ({
                                 </section>
                             </main>
                         </div>
+                        <CartProductStore open={open} setOpen={setOpen} storeSlug={storeSlug} />
                     </div>
+
                     <FooterStores store={store}
                     />
                 </>
             }
+
         </Layout>
     )
 }
@@ -535,7 +548,8 @@ const mapStateToProps = state => ({
     profile: state.Profile.profile,
     comments_count: state.Comments_Store.comments ? state.Comments_Store.comments.comments_count : 0,
     likes: state.Stores.likes ? state.Stores.likes.total_likes : 0,
-    userLiked: state.Stores.likes ? state.Stores.likes.user_liked : false
+    userLiked: state.Stores.likes ? state.Stores.likes.user_liked : false,
+    cart: state.Cart.cart,
 
 })
 

@@ -71,12 +71,12 @@ class Product(models.Model):
     def price_with_tax(self):
         return self.price * (1 + self.tax / 100)
     
-    @property
-    def formatted_price_with_discount(self):
-        # Calcular el precio con descuento
-        price_with_discount = self.price * (1 - self.discount / 100)
-        # Formatear el precio con descuento de la misma manera que el precio original y el precio con impuestos incluidos
-        return "{:,.2f}".format(price_with_discount)
+    # @property
+    # def formatted_price_with_discount(self):
+    #     # Calcular el precio con descuento
+    #     price_with_discount = self.price * (1 - self.discount / 100)
+    #     # Formatear el precio con descuento de la misma manera que el precio original y el precio con impuestos incluidos
+    #     return "{:,.2f}".format(price_with_discount)
         
     
     def check_stock_level(self):

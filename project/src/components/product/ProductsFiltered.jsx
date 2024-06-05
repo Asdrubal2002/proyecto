@@ -5,7 +5,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import { get_products_filtered, get_products_filtered_page } from "../../redux/actions/products";
 import Searcher from "../searcher/Searcher";
-import { FunnelIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, GiftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import CategoriesStoreMobile from "../../containers/Store/CategoriesStoreMobile";
 import CategoriesStore from "../../containers/Store/CategoriesStore";
@@ -14,6 +14,8 @@ import ProductListFiltered from "./ProductListFiltered";
 import SearchForm from "../searcher/SearchForm";
 import FooterStores from "../store/FooterStores";
 import LoadingCategoriesStores from "../store/LoadingCategoriesStores";
+import SearchProductosForm from "../searcher/SearchProductosForm";
+import CartProductStore from "../../containers/Cart/CartProductStore";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -29,7 +31,8 @@ const ProductsFiltered = ({
     categories,
     loading_categories,
     get_products_filtered_page,
-    store
+    store,
+    cart
 }) => {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
@@ -38,14 +41,15 @@ const ProductsFiltered = ({
     const name = query.get('name');
     const minPrice = query.get('minPrice');
     const maxPrice = query.get('maxPrice');
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         get_products_filtered(storeSlug, name, minPrice, maxPrice)
         window.scrollTo(0, 0);
-    }, [name,minPrice, maxPrice])
+    }, [name, minPrice, maxPrice])
 
 
-    
+
 
     return (
         <Layout>
@@ -95,7 +99,7 @@ const ProductsFiltered = ({
                                                     </ul>
                                                 </div>
                                                 <div className='m-4 '>
-                                                    <SearchForm storeSlug={storeSlug}/>
+                                                    <SearchForm storeSlug={storeSlug} />
 
                                                 </div>
                                             </Dialog.Panel>
@@ -108,9 +112,10 @@ const ProductsFiltered = ({
                 </Dialog>
             </Transition.Root>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
-                <div className="flex flex-col sm:flex-row  justify-between border-b border-gray-200 pb-6 pt-10">
+                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 pb-2 pt-10 ">
                     <div className="hidden sm:block">
-                        <Searcher className="flex-1" />
+                        {/* <Searcher className="flex-1" /> */}
+                        <SearchProductosForm storeSlug={storeSlug} />
                     </div>
                     <div className="flex flex-col sm:flex-row items-center mt-4 sm:mt-0">
                         <Link
@@ -118,9 +123,18 @@ const ProductsFiltered = ({
                             className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
                         >
                             {/* Agrega el icono de búsqueda */}
-                            {count} Productos filtrados
+                            {count} Productos filtrados {name}
 
                         </Link>
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="relative text-white px-4 py-2 rounded-md hover:bg-azul_corp mx-2"
+                        >
+                            <ShoppingCartIcon className="h-8 w-8" />
+                            <span className="absolute top-0 right-0 mt-1 mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold leading-none text-red-100 bg-red-600 rounded-full font-estilo_letra">
+                                {cart && cart.items ? cart.items.length : 0}
+                            </span>
+                        </button>
                         <button
                             type="button"
                             className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
@@ -140,7 +154,7 @@ const ProductsFiltered = ({
                                 </div>
                             </div>
                             <div className='pt-5 hidden lg:block'>
-                                <SearchForm storeSlug={storeSlug}/>
+                                <SearchForm storeSlug={storeSlug} />
 
                             </div>
                         </div>
@@ -170,7 +184,9 @@ const ProductsFiltered = ({
                     </div>
                 </section>
             </main>
-            <FooterStores store={store}/>
+            <CartProductStore open={open} setOpen={setOpen} storeSlug={storeSlug} />
+
+            <FooterStores store={store} />
 
         </Layout>
     )
@@ -185,6 +201,8 @@ const mapStateToProps = state => ({
     loading_products: state.Products.loading_products,
     loading_categories: state.Store_Categories_Products.loading_category_products,
     categories: state.Store_Categories_Products.categories,
+    cart: state.Cart.cart,
+
 })
 
 export default connect(mapStateToProps, {

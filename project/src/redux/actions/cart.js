@@ -22,7 +22,15 @@ import {
     SET_CARTS_LOADED,
     REMOVE_CARTS_LOADED,
     USER_CART_SUCCESS,
-    USER_CART_FAIL
+    USER_CART_FAIL,
+
+    USER_CART_SUCCESS_VIEW_FROM_STORE,
+    USER_CART_FAIL_VIEW_FROM_STORE,
+    SET_CART_VIEW_STORE_LOADING,
+    REMOVE_CART_VIEW_STORE_LOADING,
+
+    COUNT_USER_CARTS_SUCCESS,
+    COUNT_USER_CARTS_FAIL
 
 } from "./types";
 import { setAlert } from './alert';
@@ -77,6 +85,53 @@ export const get_user_carts = () => async dispatch => {
     }
 };
 
+
+// Acción para obtener el contero de tiendas del usuario
+export const get_count_user_carts = () => async dispatch => {
+    dispatch({
+        type: SET_CARTS_LOADED,
+    });
+    try {
+        const accessToken = localStorage.getItem('access');
+
+        if (!accessToken) {
+            // Si no hay token de acceso, puedes manejar la situación de no autenticación aquí
+            dispatch({
+                type: USER_CARTS_FAIL,
+            });
+            return;
+        }
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `JWT ${accessToken}`,
+            }
+        };
+
+        const res = await axios.get(`${apiUrl}/api/cart/count_user_carts/`, config);
+
+        dispatch({
+            type: COUNT_USER_CARTS_SUCCESS,
+            payload: res.data,
+        });
+        dispatch({
+            type: REMOVE_CARTS_LOADED,
+        });
+
+    } catch (err) {
+        dispatch({
+            type: COUNT_USER_CARTS_FAIL,
+        });
+        dispatch({
+            type: REMOVE_CARTS_LOADED,
+        });
+    }
+};
+
+
+
 export const add_item = (productOptionID) => async (dispatch) => {
     dispatch({
         type: SET_ADD_ITEM_LOADED,
@@ -102,7 +157,7 @@ export const add_item = (productOptionID) => async (dispatch) => {
         const res = await axios.post(`${apiUrl}/api/cart/add_to_cart/`, body, config);
         // Manejar la respuesta exitosa aquí si es necesario
 
-        if (res.status === 201 || res.status === 200 ) {
+        if (res.status === 201 || res.status === 200) {
             dispatch({
                 type: ADD_ITEM_SUCCESS,
                 payload: res.data,
@@ -229,7 +284,7 @@ export const increment_item = (itemId) => async dispatch => {
         } else {
             dispatch({
                 type: INCREMENT_ITEM_FAIL
-            }); 
+            });
         }
     } catch (error) {
         console.error("Error al agregar el producto al carrito:", error);
@@ -400,6 +455,49 @@ export const remove_cart = (cartSlug) => async dispatch => {
     }
 }
 
+
+export const get_user_cart_from_store = (store_slug) => async dispatch => {
+    dispatch({
+        type: SET_CART_VIEW_STORE_LOADING,
+    });
+    try {
+        const accessToken = localStorage.getItem('access');
+
+        if (!accessToken) {
+            // Si no hay token de acceso, puedes manejar la situación de no autenticación aquí
+            dispatch({
+                type: USER_CART_FAIL_VIEW_FROM_STORE,
+            });
+            return;
+        }
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `JWT ${accessToken}`,
+            }
+        };
+
+        const res = await axios.get(`${apiUrl}/api/cart/cart/${store_slug}/`, config);
+
+        dispatch({
+            type: USER_CART_SUCCESS_VIEW_FROM_STORE,
+            payload: res.data,
+        });
+        dispatch({
+            type: REMOVE_CART_VIEW_STORE_LOADING,
+        });
+
+    } catch (err) {
+        dispatch({
+            type: USER_CART_FAIL_VIEW_FROM_STORE,
+        });
+        dispatch({
+            type: REMOVE_CART_VIEW_STORE_LOADING,
+        });
+    }
+};
 
 
 

@@ -602,8 +602,8 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
 const mapStateToProps = (state) => ({
     isAuthenticated: state.Auth.isAuthenticated,
     user: state.Auth.user,
-    cart_count: state.Cart.carts.cart_count,
-    invoice_count: state.Invoice.invoices.invoices_count
+    cart_count: state.Cart.count_carts,
+    invoice_count: state.Invoice.counts_invoice
 });
 
 export default connect(mapStateToProps, {

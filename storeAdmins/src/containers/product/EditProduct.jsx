@@ -841,7 +841,7 @@ function EditProduct({
                                                             <td className="px-6 py-4 whitespace-normal" colSpan="5">
                                                                 <div className="text-sm text-gray-300">
                                                                     <p>
-                                                                        Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, ingredientes, etc.
+                                                                        Puedes registrar las distintas opciones disponibles y su cantidad para el producto. Por ejemplo, colores, tallas, sabores, unidades de medida, etc.
                                                                     </p>
                                                                     <p className='text-red-500'>
                                                                         <strong>
@@ -850,7 +850,7 @@ function EditProduct({
                                                                     </p>
                                                                     <hr className='my-4' />
                                                                     <p className='text-yellow-500'>
-                                                                        <strong>Opción:  </strong> Registra o Selecciona entre opciones como Colores, Pesos, etc.
+                                                                        <strong>Opción:  </strong> Registra o Selecciona entre opciones como Colores, peso, material, etc.
                                                                         <br />
                                                                         <strong>Cantidad:  </strong> Especifica la cantidad disponible.
                                                                         <br />

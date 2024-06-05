@@ -6,14 +6,14 @@ import { useEffect } from 'react';
 import { add_like_dislike_product, get_options, get_product_likes } from '../../redux/actions/products';
 import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
-import { add_item, get_user_carts } from '../../redux/actions/cart';
-import { ChatBubbleBottomCenterTextIcon, ChevronUpIcon, UserCircleIcon, CurrencyDollarIcon, CheckIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
+import { add_item, get_count_user_carts } from '../../redux/actions/cart';
+import { UserCircleIcon, CheckIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { Disclosure } from '@headlessui/react'
 import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
 import DOMPurify from 'dompurify'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
-import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon, InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as OutlineHeartIcon, ShoppingCartIcon, InformationCircleIcon, XMarkIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import Comments from './Components/Comments';
 import Options from './Components/Options';
 
@@ -39,9 +39,8 @@ function ProductModal({
     likes,
     add_like_dislike_product,
     userLiked,
-    cart_count,
-    get_user_carts,
-    closeModal
+    closeModal,
+    get_count_user_carts
 
 }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -84,7 +83,7 @@ function ProductModal({
         // Lógica para agregar el producto al carrito con la opción seleccionada
         await add_item(selectedOption.id)
         //navigate(`/store/${product.category.store.slug}`);
-        get_user_carts()
+        get_count_user_carts()
         closeModal();
     };
     const handleHeartClick = async () => {
@@ -146,7 +145,7 @@ function ProductModal({
                                     Este producto incluye un impuesto de {data.tax}%
                                 </p>
                             )}
-                            <p className="text-3xl text-gray-300 flex items-center font-bold my-4"><CurrencyDollarIcon className="w-8 h-8 text-green-500" /> {data && data.price_with_tax}</p>
+                            <p className="text-3xl text-gray-300 flex items-center font-bold my-4">$ {data && data.price_with_tax}</p>
                         </div>
 
                         <div className="mt-6 border-b border-gray-300 pb-4">
@@ -296,10 +295,6 @@ function ProductModal({
 
                 </div>
             </div>
-            <button onClick={closeModal} className="flex w-full py-2 px-4 text-white items-center justify-center font-semibold rounded-md shadow-md shadow-stone-700 hover:bg-stone-800 focus:outline-none">
-                <XMarkIcon className="h-6 w-6 " aria-hidden="true" />
-            </button>
-
         </div>
     )
 }
@@ -327,6 +322,6 @@ export default connect(mapStateToProps, {
     add_comment_product,
     get_product_likes,
     add_like_dislike_product,
-    get_user_carts
+    get_count_user_carts
 })(ProductModal)
 

@@ -5,7 +5,7 @@ import Layout from '../../hocs/Layout';
 import { Link, useParams } from 'react-router-dom';
 import ProductList from './ProductList';
 import LoadingStores from '../home/LoadingStores';
-import { BuildingStorefrontIcon, GiftIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { BuildingStorefrontIcon, GiftIcon, MagnifyingGlassIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { FunnelIcon } from '@heroicons/react/24/solid'
 
 import { Dialog, Menu, Transition } from '@headlessui/react'
@@ -17,6 +17,8 @@ import Searcher from '../searcher/Searcher';
 import ProductListByCategory from './ProductsListByCategory';
 import { GifIcon } from '@heroicons/react/24/solid';
 import SearchFormByCategory from '../searcher/SearchFormByCategory';
+import CartProductStore from '../../containers/Cart/CartProductStore';
+import SearchProductosForm from '../searcher/SearchProductosForm';
 
 
 
@@ -32,9 +34,11 @@ const ProductsByCategory = ({
   loading_categories,
   get_categories_products_store,
   categories,
+  cart
 }) => {
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
 
   const params = useParams();
@@ -111,15 +115,17 @@ const ProductsByCategory = ({
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
             <div className="flex flex-col sm:flex-row  justify-between border-b border-gray-200 pb-6 pt-10">
               <div className="hidden sm:block">
-                <Searcher className="flex-1" />
+                {/* <Searcher className="flex-1" /> */}
+                <SearchProductosForm storeSlug={storeSlug} />
+
               </div>
               <div className="flex flex-col sm:flex-row items-center mt-4 sm:mt-0">
                 <Link
                   to={`/store/${storeSlug}`}
-                  className="flex items-center text-lg font-semibold text-gray-300 mb-2 sm:mb-0 mr-4 sm:mr-6 lg:mr-0"
+                  className="flex items-center text-lg font-semibold text-gray-300"
                 >
                   {/* Agrega el icono de búsqueda */}
-                  {count} Productos - 
+                  {count} Productos -
                   <strong>
                     {' '}
                     {categorySlug
@@ -127,7 +133,17 @@ const ProductsByCategory = ({
                       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                       .join(' ')}
                   </strong>
+
                 </Link>
+                <button
+                  onClick={() => setOpen(true)}
+                  className="relative text-white px-4 py-2 rounded-md hover:bg-azul_corp mx-2"
+                >
+                  <ShoppingCartIcon className="h-8 w-8" />
+                  <span className="absolute top-0 right-0 mt-1 mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold leading-none text-red-100 bg-red-600 rounded-full font-estilo_letra">
+                    {cart && cart.items ? cart.items.length : 0}
+                  </span>
+                </button>
                 <button
                   type="button"
                   className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
@@ -179,6 +195,8 @@ const ProductsByCategory = ({
             </section>
           </main>
         </>
+        <CartProductStore open={open} setOpen={setOpen} storeSlug={storeSlug} />
+
       </div>
     </Layout>
   );
@@ -194,6 +212,7 @@ const mapStateToProps = state => ({
   loading_products: state.Products_By_Category.loading_products_by_category,
   loading_categories: state.Store_Categories_Products.loading_category_products,
   categories: state.Store_Categories_Products.categories,
+  cart: state.Cart.cart,
 
 });
 

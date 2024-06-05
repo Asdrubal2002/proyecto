@@ -38,7 +38,7 @@ function CreateProduct({
         // if (!editorContent.trim()) errors.description = 'La descripción es obligatoria'; // Validar la descripción
         if (!data.category) errors.category = 'La categoría es obligatoria';
         if (!data.price) errors.price = 'El precio es obligatorio';
-        else if (!/^\d+(\.\d{1,2})?$/.test(data.price)) errors.price = 'El precio debe ser un número entero o decimal.';
+        else if (!/^\d+(\.\d{1,2})?$/.test(data.price)) errors.price = 'El precio debe ser un número entero sin puntos ni comas.';
         if (data.tax && !/^\d+$/.test(data.tax)) errors.tax = 'El Impuesto debe ser un número entero.';
 
         if (Object.keys(errors).length > 0) {

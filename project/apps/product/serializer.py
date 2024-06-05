@@ -22,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
     formatted_price = serializers.SerializerMethodField()
     price_with_tax = serializers.SerializerMethodField()
     is_low_stock_alert = serializers.BooleanField(read_only=True)
-    formatted_price_with_discount = serializers.SerializerMethodField()
+    #formatted_price_with_discount = serializers.SerializerMethodField()
 
 
 
@@ -44,7 +44,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'price_with_tax',  # Incluir el campo del precio con impuestos
             'is_low_stock_alert',  # Incluir el campo is_low_stock_alert
             'discount',
-            'formatted_price_with_discount',
+            # 'formatted_price_with_discount',
         ]
 
     def get_formatted_price(self, obj):
@@ -59,11 +59,11 @@ class ProductSerializer(serializers.ModelSerializer):
         price_with_tax = price * (1 + tax)
         return "{:,.2f}".format(price_with_tax)  # Formatear el precio con impuestos
     
-    def get_formatted_price_with_discount(self, obj):
-        # Calcular el precio con descuento
-        price_with_discount = obj.price * (1 - obj.discount / 100)
-        # Formatear el precio con descuento de la misma manera que el precio original
-        return "{:,.2f}".format(price_with_discount)
+    # def get_formatted_price_with_discount(self, obj):
+    #     # Calcular el precio con descuento
+    #     price_with_discount = obj.price * (1 - obj.discount / 100)
+    #     # Formatear el precio con descuento de la misma manera que el precio original
+    #     return "{:,.2f}".format(price_with_discount)
 
 class ProductOptionSerializer(serializers.ModelSerializer):
     option = OptionSerializer()  

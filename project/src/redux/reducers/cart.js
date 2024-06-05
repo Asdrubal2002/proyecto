@@ -18,7 +18,15 @@ import {
     SET_CARTS_LOADED,
     REMOVE_CARTS_LOADED,
     USER_CART_SUCCESS,
-    USER_CART_FAIL
+    USER_CART_FAIL,
+
+    USER_CART_SUCCESS_VIEW_FROM_STORE,
+    USER_CART_FAIL_VIEW_FROM_STORE,
+    SET_CART_VIEW_STORE_LOADING,
+    REMOVE_CART_VIEW_STORE_LOADING,
+
+    COUNT_USER_CARTS_SUCCESS,
+    COUNT_USER_CARTS_FAIL
 } from '../actions/types';
 
 const initialState = {
@@ -27,6 +35,7 @@ const initialState = {
     loading_to_car: false,
     loading_carts: false,
     error: null,
+    count_carts: null
 };
 
 export default function Cart(state = initialState, action) {
@@ -135,6 +144,39 @@ export default function Cart(state = initialState, action) {
                 ...state
             };
 
+        case USER_CART_SUCCESS_VIEW_FROM_STORE:
+            return {
+                ...state,
+                cart: action.payload,
+            }
+        case USER_CART_FAIL_VIEW_FROM_STORE:
+            return {
+                ...state,
+                error: action.payload,
+            };
+
+        case SET_CART_VIEW_STORE_LOADING:
+            return {
+                ...state,
+                loading_carts: true,
+            };
+
+        case REMOVE_CART_VIEW_STORE_LOADING:
+            return {
+                ...state,
+                loading_carts: false,
+            };
+
+        case COUNT_USER_CARTS_SUCCESS:
+            return {
+                ...state,
+                count_carts: payload.cart_count,
+            }
+        case COUNT_USER_CARTS_FAIL:
+            return {
+                ...state,
+                count_carts: null,
+            };
 
         default:
             return state;
