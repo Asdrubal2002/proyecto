@@ -8,7 +8,7 @@ function ProductList({ products, get_products_list_page, storeSlug, count }) {
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-        window.scrollTo(0, 550);
+        window.scrollTo(0, 520);
         get_products_list_page(storeSlug, newPage);
     };
 
@@ -16,7 +16,7 @@ function ProductList({ products, get_products_list_page, storeSlug, count }) {
         <div className="mx-auto max-w-2xl lg:max-w-7xl lg:px-8 py-4">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 gap-2">
                 {products && products.map((product, index) => (
-                    <ProductCard data={product} key={index} index={index} />
+                    <ProductCard data={product} key={index} index={index} storeSlug={storeSlug}/>
                 ))}
             </div>
             <PaginationProducts

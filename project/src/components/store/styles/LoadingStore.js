@@ -42,9 +42,6 @@ export const ConetenedorProfile = tw.div`
     md:grid 
     md:gap-6 
     relative 
-    flex 
-    space-x-22 
-    pt-4
 `;
 
 export const ConetenedorProfile1 = tw.div`

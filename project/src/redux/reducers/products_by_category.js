@@ -2,7 +2,9 @@ import {
     GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_SUCCESS,
     GET_PRODUCTS_LIST_BY_CATEGORIES_STORE_FAIL,
     SET_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
-    REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING
+    REMOVE_PRODUCTS_LIST_BY_CATEGORIES_STORE_LOADING,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_SUCCESS,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -43,6 +45,27 @@ export default function Products_By_Category(state = initialState, action) {
                 next: null,
                 previous: null
             }
+
+
+
+        case GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_SUCCESS:
+            return {
+                ...state,
+                products: payload.results.products,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous
+            }
+        case GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL:
+            return {
+                ...state,
+                products: null,
+                count: null,
+                next: null,
+                previous: null
+            }
+
+
         default:
             return state
     }

@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import ProductCard from './ProductCard'
 import PaginationProducts from '../pagination/PaginationProducts'
 
-function ProductListFiltered({ products, get_products_filtered_page, storeSlug, name, minPrice, maxPrice, count }) {
+function ProductListFilteredOrder({ products, get_products_filtered_order_page, storeSlug, name, minPrice, maxPrice, count, orderBy }) {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 24; // o cualquier otro número que prefieras
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
         window.scrollTo(0, 0);
-        get_products_filtered_page(storeSlug, name, minPrice, maxPrice, newPage);
+        get_products_filtered_order_page(storeSlug, name, minPrice, maxPrice, orderBy, newPage);
     };
 
     return (
@@ -29,4 +29,4 @@ function ProductListFiltered({ products, get_products_filtered_page, storeSlug, 
     )
 }
 
-export default ProductListFiltered
+export default ProductListFilteredOrder

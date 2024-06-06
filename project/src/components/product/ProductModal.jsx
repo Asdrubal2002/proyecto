@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { add_like_dislike_product, get_options, get_product_likes } from '../../redux/actions/products';
 import { useState, useRef } from 'react';
 import { Rings } from 'react-loader-spinner';
-import { add_item, get_count_user_carts } from '../../redux/actions/cart';
+import { add_item, get_count_user_carts, get_user_cart_from_store } from '../../redux/actions/cart';
 import { UserCircleIcon, CheckIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { Disclosure } from '@headlessui/react'
 import { add_comment_product, delete_comment_product, edit_comment_prodcut, get_product_comments } from '../../redux/actions/comments_products';
@@ -40,7 +40,9 @@ function ProductModal({
     add_like_dislike_product,
     userLiked,
     closeModal,
-    get_count_user_carts
+    get_count_user_carts,
+    get_user_cart_from_store,
+    storeSlug
 
 }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -58,7 +60,7 @@ function ProductModal({
 
     useEffect(() => {
         get_options(data.slugProduct)
-        get_product_comments(data.slugProduct)
+        
         get_product_likes(data.slugProduct)
     }, [])
 
@@ -84,6 +86,7 @@ function ProductModal({
         await add_item(selectedOption.id)
         //navigate(`/store/${product.category.store.slug}`);
         get_count_user_carts()
+        get_user_cart_from_store(storeSlug)
         closeModal();
     };
     const handleHeartClick = async () => {
@@ -99,9 +102,7 @@ function ProductModal({
 
     const handleComments = async (e) => {
         e.stopPropagation();
-        // Aquí pued2es llamar a la función deseada al hacer clic en el icono del corazón
-        console.log("asd", data.slugProduct)
-        //await 
+        get_product_comments(data.slugProduct)
     };
 
     const handleComment = () => {
@@ -322,6 +323,7 @@ export default connect(mapStateToProps, {
     add_comment_product,
     get_product_likes,
     add_like_dislike_product,
-    get_count_user_carts
+    get_count_user_carts,
+    get_user_cart_from_store
 })(ProductModal)
 

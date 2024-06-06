@@ -3,19 +3,24 @@ import React, { useEffect, useRef, useState, Fragment } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 
 import { connect } from "react-redux";
-import { get_products_filtered, get_products_filtered_page } from "../../redux/actions/products";
+import { get_products_filtered, get_products_filtered_order, get_products_filtered_order_page, get_products_filtered_page } from "../../redux/actions/products";
 import Searcher from "../searcher/Searcher";
-import { FunnelIcon, GiftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ArrowTrendingDownIcon, ArrowTrendingUpIcon, FunnelIcon, GiftIcon, MagnifyingGlassIcon, ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import CategoriesStoreMobile from "../../containers/Store/CategoriesStoreMobile";
 import CategoriesStore from "../../containers/Store/CategoriesStore";
-import LoadingStores from "../home/LoadingStores";
+import Loader from "../home/Loader";
 import ProductListFiltered from "./ProductListFiltered";
 import SearchForm from "../searcher/SearchForm";
 import FooterStores from "../store/FooterStores";
 import LoadingCategoriesStores from "../store/LoadingCategoriesStores";
 import SearchProductosForm from "../searcher/SearchProductosForm";
 import CartProductStore from "../../containers/Cart/CartProductStore";
+import ShoppingCartButton from "./Components/ShoppingCartButton";
+import CustomButton from "./Components/CustomButton";
+import ProductListFilteredOrder from "./ProductListFilteredOrder";
+
+
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -32,9 +37,12 @@ const ProductsFiltered = ({
     loading_categories,
     get_products_filtered_page,
     store,
-    cart
+    cart,
+    get_products_filtered_order,
+    get_products_filtered_order_page
 }) => {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+    const [orderBy, setOrderBy] = useState(null);
 
     const { storeSlug } = useParams();
     const query = useQuery();
@@ -49,7 +57,17 @@ const ProductsFiltered = ({
     }, [name, minPrice, maxPrice])
 
 
+    const handleSortAsc = () => {
+        setOrderBy('price_asc')
+        get_products_filtered_order(storeSlug, name, minPrice, maxPrice, 'price_asc')
+    };
 
+    const handleSortDesc = () => {
+        setOrderBy('price_desc')
+        get_products_filtered_order(storeSlug, name, minPrice, maxPrice, 'price_desc')
+
+
+    };
 
     return (
         <Layout>
@@ -89,6 +107,17 @@ const ProductsFiltered = ({
                                             leaveTo="translate-x-full"
                                         >
                                             <Dialog.Panel className="ml-auto w-full max-w-xs h-full flex-col overflow-y-auto bg-stone-800 py-4 pb-12 shadow-xl">
+                                                <div className="flex items-center justify-between mx-6 mb-6">
+                                                    <h2 className="text-lg font-semibold font-estilo_letra">Categorias </h2>
+                                                    <button
+                                                        type="button"
+                                                        className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                                                        onClick={() => setMobileFiltersOpen(false)}
+                                                    >
+                                                        <span className="absolute -inset-0.5" />
+                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                    </button>
+                                                </div>
                                                 <div className="px-4">
                                                     <ul role="list" className="space-y-4 pb-6 text-sm font-medium text-gray-200">
                                                         {loading_categories ? (
@@ -100,7 +129,6 @@ const ProductsFiltered = ({
                                                 </div>
                                                 <div className='m-4 '>
                                                     <SearchForm storeSlug={storeSlug} />
-
                                                 </div>
                                             </Dialog.Panel>
                                         </Transition.Child>
@@ -126,23 +154,25 @@ const ProductsFiltered = ({
                             {count} Productos filtrados {name}
 
                         </Link>
-                        <button
-                            onClick={() => setOpen(true)}
-                            className="relative text-white px-4 py-2 rounded-md hover:bg-azul_corp mx-2"
-                        >
-                            <ShoppingCartIcon className="h-8 w-8" />
-                            <span className="absolute top-0 right-0 mt-1 mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold leading-none text-red-100 bg-red-600 rounded-full font-estilo_letra">
-                                {cart && cart.items ? cart.items.length : 0}
-                            </span>
-                        </button>
-                        <button
-                            type="button"
-                            className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
-                            onClick={() => setMobileFiltersOpen(true)}
-                        >
-                            <span className="sr-only">Filters</span>
-                            <FunnelIcon className="h-5 w-5 " aria-hidden="true" />
-                        </button>
+                        <div className='flex'>
+                            <button
+                                onClick={handleSortAsc}
+                                className="relative text-white px-2 py-2 rounded-md hover:text-gray-600 "
+                            >
+                                <ArrowTrendingDownIcon className="h-7 w-7" aria-hidden="true" />
+                            </button>
+                            <button
+                                onClick={handleSortDesc}
+                                className="relative text-white px-2 py-2 rounded-md hover:text-gray-600 "
+                            >
+                                <ArrowTrendingUpIcon className="h-7 w-7" aria-hidden="true" />
+                            </button>
+
+                            <ShoppingCartButton setOpen={setOpen} cart={cart} />
+
+                            <CustomButton setMobileFiltersOpen={setMobileFiltersOpen} />
+                        </div>
+
                     </div>
                 </div>
                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
@@ -155,24 +185,38 @@ const ProductsFiltered = ({
                             </div>
                             <div className='pt-5 hidden lg:block'>
                                 <SearchForm storeSlug={storeSlug} />
-
                             </div>
                         </div>
                         <div className="lg:col-span-3">
                             {loading_products ? (
-                                <LoadingStores />
+                                <Loader />
                             ) : (
                                 <>
                                     {products && products.length > 0 ? (
-                                        <ProductListFiltered
-                                            products={products}
-                                            get_products_filtered_page={get_products_filtered_page}
-                                            storeSlug={storeSlug}
-                                            name={name}
-                                            minPrice={minPrice}
-                                            maxPrice={maxPrice}
-                                            count={count}
-                                        />
+                                        <>
+                                            {
+                                                orderBy ? <>
+                                                    <ProductListFilteredOrder
+                                                        products={products}
+                                                        get_products_filtered_order_page={get_products_filtered_order_page}
+                                                        storeSlug={storeSlug}
+                                                        name={name}
+                                                        minPrice={minPrice}
+                                                        maxPrice={maxPrice}
+                                                        count={count}
+                                                        orderBy={orderBy}
+                                                    />
+                                                </> : <ProductListFiltered
+                                                    products={products}
+                                                    get_products_filtered_page={get_products_filtered_page}
+                                                    storeSlug={storeSlug}
+                                                    name={name}
+                                                    minPrice={minPrice}
+                                                    maxPrice={maxPrice}
+                                                    count={count}
+                                                />
+                                            }
+                                        </>
                                     ) : (
                                         <div className="bg-gray-800 text-gray-200 rounded-md p-4">
                                             <p className="text-center text-gray-300 mb-2">No hay productos para esta busqueda.</p>
@@ -207,5 +251,7 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
     get_products_filtered,
-    get_products_filtered_page
+    get_products_filtered_page,
+    get_products_filtered_order,
+    get_products_filtered_order_page
 })(ProductsFiltered)

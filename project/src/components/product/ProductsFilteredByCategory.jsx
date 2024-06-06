@@ -5,15 +5,19 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import { get_products_filtered_category, get_products_filtered_category_page } from "../../redux/actions/products";
 import Searcher from "../searcher/Searcher";
-import { FunnelIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, GiftIcon, MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import CategoriesStoreMobile from "../../containers/Store/CategoriesStoreMobile";
 import CategoriesStore from "../../containers/Store/CategoriesStore";
-import LoadingStores from "../home/LoadingStores";
+import Loader from "../home/Loader";
 import FooterStores from "../store/FooterStores";
 import LoadingCategoriesStores from "../store/LoadingCategoriesStores";
 import ProductListFilteredByCategory from "./ProductListFilteredByCategory";
 import SearchFormByCategory from "../searcher/SearchFormByCategory";
+import SearchProductosForm from "../searcher/SearchProductosForm";
+import CartProductStore from "../../containers/Cart/CartProductStore";
+import ShoppingCartButton from "./Components/ShoppingCartButton";
+import CustomButton from "./Components/CustomButton";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -29,9 +33,12 @@ const ProductsFilteredByCategory = ({
     loading_products,
     categories,
     loading_categories,
-    store
+    store,
+    cart
 }) => {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+
 
     const { storeSlug } = useParams();
     const { categorySlug } = useParams();
@@ -105,7 +112,7 @@ const ProductsFilteredByCategory = ({
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
                 <div className="flex flex-col sm:flex-row  justify-between border-b border-gray-200 pb-6 pt-10">
                     <div className="hidden sm:block">
-                        <Searcher className="flex-1" />
+                        <SearchProductosForm storeSlug={storeSlug} />
                     </div>
                     <div className="flex flex-col sm:flex-row items-center mt-4 sm:mt-0">
                         <Link
@@ -114,16 +121,11 @@ const ProductsFilteredByCategory = ({
                         >
                             {/* Agrega el icono de búsqueda */}
                             {count} Productos filtrados
-
                         </Link>
-                        <button
-                            type="button"
-                            className="p-2 text-gray-200  bg-gray-600 rounded-md sm:hidden"
-                            onClick={() => setMobileFiltersOpen(true)}
-                        >
-                            <span className="sr-only">Filters</span>
-                            <FunnelIcon className="h-5 w-5 " aria-hidden="true" />
-                        </button>
+                        <div className='flex'>
+                            <ShoppingCartButton setOpen={setOpen} cart={cart} />
+                            <CustomButton setMobileFiltersOpen={setMobileFiltersOpen} />
+                        </div>
                     </div>
                 </div>
                 <section aria-labelledby="products-heading" className="pb-24 pt-6">
@@ -135,12 +137,12 @@ const ProductsFilteredByCategory = ({
                                 </div>
                             </div>
                             <div className='pt-5 hidden lg:block'>
-                                <SearchFormByCategory storeSlug={storeSlug}  categorySlug={categorySlug}/>
+                                <SearchFormByCategory storeSlug={storeSlug} categorySlug={categorySlug} />
                             </div>
                         </div>
                         <div className="lg:col-span-3">
                             {loading_products ? (
-                                <LoadingStores />
+                                <Loader />
                             ) : (
                                 <>
                                     {products && products.length > 0 ? (
@@ -165,6 +167,8 @@ const ProductsFilteredByCategory = ({
                     </div>
                 </section>
             </main>
+            <CartProductStore open={open} setOpen={setOpen} storeSlug={storeSlug} />
+
             <FooterStores store={store} />
 
         </Layout>
@@ -179,6 +183,8 @@ const mapStateToProps = state => ({
     loading_products: state.Products.loading_products,
     loading_categories: state.Store_Categories_Products.loading_category_products,
     categories: state.Store_Categories_Products.categories,
+    cart: state.Cart.cart,
+
 })
 
 export default connect(mapStateToProps, {

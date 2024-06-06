@@ -17,7 +17,7 @@ import { add_item } from '../../redux/actions/cart';
 import { Rings } from 'react-loader-spinner';
 import { Helmet } from 'react-helmet';
 import ProductCard from './ProductCard';
-import LoadingStores from '../home/LoadingStores';
+import Loader from '../home/Loader';
 
 import { get_product_comments, add_comment_product, delete_comment_product, edit_comment_prodcut } from '../../redux/actions/comments_products';
 import { CommentsProduct } from './CommentsProduct';
@@ -355,7 +355,7 @@ function ProductDetail({
                                 Productos relacionados en venta de {product && product.category.store.name}
                             </p>
                         </div>
-                        {loading_products ? <LoadingStores /> :
+                        {loading_products ? <Loader /> :
                             <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-4">
                                 {related_products && related_products.length > 0 ? (
                                     related_products.map((product, index) => (

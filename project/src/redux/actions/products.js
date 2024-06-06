@@ -25,8 +25,14 @@ import {
     GET_PRDUCTS_LIKED_FAIL,
     GET_FILTERED_PRODUCTS_SUCCESS,
     GET_FILTERED_PRODUCTS_FAIL,
-    GET_FILTERED_PRODUCTS_BY_CATEGORIES_SUCCESS,    
-    GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL
+    GET_FILTERED_PRODUCTS_BY_CATEGORIES_SUCCESS,
+    GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL,
+    GET_PRODUCTS_ORDER_BY_SUCCESS,
+    GET_PRODUCTS_ORDER_BY_FAIL,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_SUCCESS,
+    GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL,
+    GET_FILTERED_PRODUCTS_ORDER_SUCCESS,
+    GET_FILTERED_PRODUCTS_ORDER_FAIL
 } from './types';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
@@ -496,7 +502,6 @@ export const get_products_filtered_category = (storeSlug, categorySlug, name, pr
     }
 }
 
-
 export const get_products_filtered_category_page = (storeSlug, categorySlug, name, price_min, price_max, page) => async dispatch => {
     dispatch({
         type: SET_PRODUCTS_LOADING
@@ -534,8 +539,226 @@ export const get_products_filtered_category_page = (storeSlug, categorySlug, nam
     }
 }
 
+export const get_products_order = (storeSlug, order_by) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products/${storeSlug}/${order_by}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_ORDER_BY_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_ORDER_BY_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_ORDER_BY_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}
+
+export const get_products_order_list_page = (storeSlug, order_by, page) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products/${storeSlug}/${order_by}?p=${page}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_ORDER_BY_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_ORDER_BY_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_ORDER_BY_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}
+
+export const get_products_by_category_order = (storeSlug, categorySlug, order_by) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products/${storeSlug}/${categorySlug}/${order_by}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}
+
+export const get_products_by_category_order_page = (storeSlug, categorySlug, order_by, page) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products/${storeSlug}/${categorySlug}/${order_by}?p=${page}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_PRODUCTS_LIST_BY_CATEGORIES_ORDER_STORE_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}
 
 
+export const get_products_filtered_order = (storeSlug, name, price_min, price_max, order_by) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products-filtered/${storeSlug}/?name=${name}&price_min=${price_min}&price_max=${price_max}&order_by=${order_by}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_FILTERED_PRODUCTS_ORDER_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_FILTERED_PRODUCTS_ORDER_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_FILTERED_PRODUCTS_ORDER_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}
 
 
+export const get_products_filtered_order_page = (storeSlug, name, price_min, price_max, order_by, page) => async dispatch => {
+    dispatch({
+        type: SET_PRODUCTS_LOADING
+    });
 
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/product/products-filtered/${storeSlug}/?name=${name}&order_by=${order_by}&p=${page}&price_max=${price_max}&price_min=${price_min}`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_FILTERED_PRODUCTS_ORDER_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_FILTERED_PRODUCTS_ORDER_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_FILTERED_PRODUCTS_ORDER_FAIL
+        });
+        dispatch({
+            type: REMOVE_PRODUCTS_LOADING
+        });
+    }
+}

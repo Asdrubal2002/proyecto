@@ -11,17 +11,18 @@ import { connect } from 'react-redux';
 import { check_authenticated, load_user, refresh } from '../redux/actions/auth';
 import { get_user_invoices_count } from '../redux/actions/Invoice';
 
-
 const Layout = (props) => {
 
     useEffect(() => {
-        props.refresh();
-        props.check_authenticated();
-        props.load_user();
+        if (!props.isAuthenticated) {
+            props.refresh();
+            props.check_authenticated();
+            props.load_user();
+        }
         props.get_user_profile();
-        props.get_user_invoices_count()
-        props.get_count_user_carts()
-    }, []);
+        props.get_user_invoices_count();
+        props.get_count_user_carts();
+    }, [props.isAuthenticated]);
 
     return (
         <div>
@@ -31,16 +32,19 @@ const Layout = (props) => {
             </div>
             <ToastContainer autoClose={5000} />
             {props.children}
-            
         </div>
-    )
+    );
 }
 
-export default connect(null, {
+const mapStateToProps = state => ({
+    isAuthenticated: state.Auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {
     check_authenticated,
     load_user,
     refresh,
     get_user_profile,
     get_count_user_carts,
     get_user_invoices_count
-})(Layout)
+})(Layout);

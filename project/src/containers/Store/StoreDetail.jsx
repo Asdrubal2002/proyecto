@@ -10,7 +10,7 @@ import { useEffect, useState, Fragment } from "react";
 //import { get_products } from "../../redux/actions/products";
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 
-import { PhotoIcon, ClockIcon, MapIcon, GlobeAmericasIcon, CurrencyDollarIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ExclamationCircleIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon, XMarkIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, PaperAirplaneIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, MinusIcon, PlusIcon, UserCircleIcon, PencilIcon, TrashIcon, GifIcon, GiftIcon, XMarkIcon, ShoppingCartIcon, MagnifyingGlassIcon, ArrowLongDownIcon, ArrowLongUpIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from "@heroicons/react/24/outline";
 import LoadingStore from "../../components/store/LoadingStore";
 import { ConetenedorBanner, ConetenedorBanner1, ConetenedorInfo, ConetenedorInfo1, ConetenedorInfo2, ConetenedorProfile, ConetenedorProfile1, ConetenedorProfile2, ConetenedorProfile3, EspacioContenedor, Principal } from "../../components/store/styles/LoadingStore";
 import { BotonesMeGustaNOMegusta, ContenedorInfoUbication, ContenedorInfoUbication1, DescriptionStore, EspacioPhotos, Photo, StoreProfile, SeparadorVertical } from "./styles/StoreDetail";
@@ -21,8 +21,8 @@ import { ChevronDownIcon, FunnelIcon, Squares2X2Icon } from '@heroicons/react/24
 import { get_categories_products_store } from "../../redux/actions/product_categories";
 import LoadingCategoriesStores from "../../components/store/LoadingCategoriesStores";
 
-import { get_products, get_products_list_page } from "../../redux/actions/products";
-import LoadingStores from "../../components/home/LoadingStores";
+import { get_products, get_products_list_page, get_products_order, get_products_order_list_page } from "../../redux/actions/products";
+import Loader from "../../components/home/Loader";
 import ProductList from "../../components/product/ProductList";
 import Searcher from "../../components/searcher/Searcher";
 import { Helmet } from "react-helmet";
@@ -39,6 +39,10 @@ import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 import SearchForm from "../../components/searcher/SearchForm";
 import SearchProductosForm from "../../components/searcher/SearchProductosForm";
 import CartProductStore from "../Cart/CartProductStore";
+import ShoppingCartButton from "../../components/product/Components/ShoppingCartButton";
+import ProductListOrder from "../../components/product/ProductListOrder";
+import CustomButton from "../../components/product/Components/CustomButton";
+
 
 
 function classNames(...classes) {
@@ -73,7 +77,9 @@ const StoreDetail = ({
     likes,
     add_like_dislike_store,
     userLiked,
-    cart
+    cart,
+    get_products_order,
+    get_products_order_list_page
 
 
 }) => {
@@ -81,8 +87,9 @@ const StoreDetail = ({
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const textareaRef = useRef(null);
     const [buttonText, setButtonText] = useState('Comentar');
-   
+
     const [open, setOpen] = useState(false);
+    const [orderBy, setOrderBy] = useState(null);
 
 
     const handleHeartClick = async () => {
@@ -138,8 +145,16 @@ const StoreDetail = ({
         }
     };
 
+    const handleSortAsc = () => {
+        setOrderBy('price_asc')
+        get_products_order(storeSlug, 'price_asc')
+    };
 
+    const handleSortDesc = () => {
+        setOrderBy('price_desc')
+        get_products_order(storeSlug, 'price_desc')
 
+    };
 
     return (
         <Layout>
@@ -281,16 +296,16 @@ const StoreDetail = ({
                                                         >
                                                             <Dialog.Panel className="ml-auto w-full max-w-xs h-full flex-col overflow-y-auto bg-stone-800 py-4 pb-12 shadow-xl">
                                                                 <>
-                                                                    <div className="flex items-center justify-between m-4">
-                                                                        <h2 className="text-lg font-semibold">Categorias</h2>
+
+                                                                    <div className="flex items-center justify-between mx-6 mb-6 ">
+                                                                        <h2 className="text-lg font-semibold font-estilo_letra">Categorias </h2>
                                                                         <button
                                                                             type="button"
                                                                             className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400"
                                                                             onClick={() => setMobileFiltersOpen(false)}
                                                                         >
                                                                             <span className="absolute -inset-0.5" />
-                                                                            <span className="sr-only">Cerrar menú</span>
-                                                                            <XMarkIcon className="h-8 w-8" aria-hidden="true" />
+                                                                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                                                         </button>
                                                                     </div>
                                                                     <div className="px-4">
@@ -308,7 +323,7 @@ const StoreDetail = ({
                                                                     <div className="flex items-center m-4">
                                                                         <p className="ml-1 font-semibold ">{comments_count} Comentarios sobre {store && store.name}</p>
                                                                     </div>
-                                                                    <div className="m-4">
+                                                                    <div className="m-4 font-estilo_letra">
                                                                         {isAuthenticated ?
                                                                             <div>
                                                                                 {profile && profile.firs_name == null ? (
@@ -381,51 +396,46 @@ const StoreDetail = ({
                                     </div>
                                 </Dialog>
                             </Transition.Root>
-                            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 pb-6 pt-10">
+                            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 font-estilo_letra">
+                                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 pt-10">
                                     <div className="hidden sm:block">
                                         {/* <Searcher className="flex-1" /> */}
-
                                         <SearchProductosForm storeSlug={storeSlug} />
-
-
                                     </div>
                                     <div className="flex justify-between items-center mt-2 sm:mt-0">
-                                        <h2 className="flex items-center text-lg md:text-xl text-gray-800 dark:text-white mb-2 sm:mb-0 font-estilo_letra">
+                                        <h2 className="flex items-center text-lg md:text-xl text-gray-200 lg:mx-2">
                                             {/* Agrega el icono de búsqueda */}
-                                            {count} Productos Registrados
+                                            {count} Productos
                                         </h2>
 
-                                        <button
-                                            onClick={() => setOpen(true)}
-                                            className="relative text-white px-4 py-2 rounded-md hover:bg-azul_corp mx-2"
-                                        >
-                                            <ShoppingCartIcon className="h-8 w-8" />
-                                            <span className="absolute top-0 right-0 mt-1 mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold leading-none text-red-100 bg-red-600 rounded-full font-estilo_letra">
-                                                   {cart && cart.items ? cart.items.length : 0}
-                                                </span>
-                                        </button>
 
                                         <button
-                                            type="button"
-                                            className="p-2 text-gray-200 sm:ml-6 lg:hidden bg-gray-600 rounded-md"
-                                            onClick={() => setMobileFiltersOpen(true)}
+                                            onClick={handleSortAsc}
+                                            className="relative text-white px-2 py-2 rounded-md hover:text-gray-600 "
                                         >
-                                            <span className="sr-only">Filters</span>
-                                            <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+                                            <ArrowTrendingDownIcon className="h-7 w-7" aria-hidden="true" />
                                         </button>
+                                        <button
+                                            onClick={handleSortDesc}
+                                            className="relative text-white px-2 py-2 rounded-md hover:text-gray-600 "
+                                        >
+                                            <ArrowTrendingUpIcon className="h-7 w-7" aria-hidden="true" />
+                                        </button>
+
+                                        <ShoppingCartButton setOpen={setOpen} cart={cart} />
+
+                                        <CustomButton setMobileFiltersOpen={setMobileFiltersOpen} />
                                     </div>
                                 </div>
-                                <section aria-labelledby="products-heading" className="pb-24 pt-6">
-                                    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                                <section aria-labelledby="products-heading" className="pb-12 pt-6">
+                                    <div className="grid grid-cols-1 gap-x-8 gap-y-2 lg:grid-cols-4">
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
                                             <p className="py-2 rounded-md text-md font-bold hidden sm:block font-estilo_letra">
                                                 Categorias disponibles
                                             </p>
-
-                                            <div className="grid grid-cols-1 gap-y-8">
+                                            <div className="grid grid-cols-1 gap-y-6">
                                                 {/* Contenido de la primera fila */}
                                                 <div className="container mx-auto px-2 py-2">
                                                     <CategoriesStore categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
@@ -505,11 +515,17 @@ const StoreDetail = ({
                                         {/* Segunda columna */}
                                         <div className="lg:col-span-3">
                                             {loading_products ?
-                                                <LoadingStores /> :
+                                                <Loader /> :
                                                 <>
                                                     {
                                                         products && products.length > 0 ? (
-                                                            <ProductList products={products && products} get_products_list_page={get_products_list_page} storeSlug={storeSlug} count={count && count} />
+                                                            <>
+                                                                {orderBy ?
+                                                                    <ProductListOrder products={products && products} get_products_order_list_page={get_products_order_list_page} storeSlug={storeSlug} count={count && count} orderBy={orderBy} />
+                                                                    :
+                                                                    <ProductList products={products && products} get_products_list_page={get_products_list_page} storeSlug={storeSlug} count={count && count} />
+                                                                }
+                                                            </>
                                                         ) : (
                                                             <div className="bg-gray-800 text-gray-200 rounded-md p-4">
                                                                 <p className="text-center text-gray-300 mb-2">No hay productos para esta tienda.</p>
@@ -524,12 +540,10 @@ const StoreDetail = ({
                         </div>
                         <CartProductStore open={open} setOpen={setOpen} storeSlug={storeSlug} />
                     </div>
-
                     <FooterStores store={store}
                     />
                 </>
             }
-
         </Layout>
     )
 }
@@ -564,5 +578,7 @@ export default connect(mapStateToProps, {
     delete_comment_store,
     edit_comment_store,
     get_stores_likes,
-    add_like_dislike_store
+    add_like_dislike_store,
+    get_products_order,
+    get_products_order_list_page
 })(StoreDetail)

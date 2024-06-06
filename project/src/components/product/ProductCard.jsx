@@ -12,7 +12,7 @@ import LazyLoad from 'react-lazyload'; // Importa el componente LazyLoad
 import { add_like_dislike_product } from '../../redux/actions/products';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
-function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
+function dataCard({ data, index, isAuthenticated, add_like_dislike_product, storeSlug }) {
 
   const [open, setOpen] = useState(false)
   const [showBubble, setShowBubble] = useState(false);
@@ -27,7 +27,6 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
 
   const handleButtonClick = (slug, e) => {
     e.stopPropagation();
-    console.log(`Selected product slug: ${slug}`);
     add_like_dislike_product(slug)
     // Aquí puedes agregar la lógica adicional que desees
 
@@ -110,7 +109,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
 
 
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10 " onClose={setOpen}>
+        <Dialog as="div" className="relative z-[100] " onClose={setOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -142,7 +141,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product }) {
                     <span className="sr-only">Close</span>
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
-                  <ProductModal data={data} isAuthenticated={isAuthenticated} closeModal={() => setOpen(false)}/>
+                  <ProductModal data={data} isAuthenticated={isAuthenticated} closeModal={() => setOpen(false)} storeSlug={storeSlug}/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

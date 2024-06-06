@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Popover, Tab, Transition, Menu } from '@headlessui/react'
-import { BanknotesIcon, Bars3Icon, BuildingStorefrontIcon, ClipboardDocumentCheckIcon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { BanknotesIcon, Bars3Icon, BuildingStorefrontIcon, ClipboardDocumentCheckIcon, MagnifyingGlassIcon, ShoppingBagIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, NavLink } from 'react-router-dom'
 
 import { logout } from "../../redux/actions/auth"
@@ -152,7 +152,7 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                             <div className="fixed inset-0 bg-black bg-opacity-25" />
                         </Transition.Child>
 
-                        <div className="fixed inset-0 z-[100] flex">
+                        <div className="fixed inset-0 z-100 flex">
                             <Transition.Child
                                 as={Fragment}
                                 enter="transition ease-in-out duration-300 transform"
@@ -283,14 +283,13 @@ function Navbar({ isAuthenticated, user, logout, cart_count, invoice_count }) {
                             <Contenedor2>
                                 <button
                                     type="button"
-                                    className="relative rounded-md bg-stone-800 p-2 text-gray-100 lg:hidden"
+                                    className="relative rounded-full bg-stone-800 p-2 text-gray-100 lg:hidden"
                                     onClick={() => setOpen(true)}
                                 >
                                     <span className="absolute -inset-0.5" />
                                     <span className="sr-only">Open menu</span>
-                                    <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+                                    <UserIcon className="h-6 w-6" aria-hidden="true" />
                                 </button>
-
                                 {/* Logo */}
                                 <div className="ml-4 flex lg:ml-0">
                                     <Link to="/">

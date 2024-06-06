@@ -20,7 +20,11 @@ import {
     GET_FILTERED_PRODUCTS_SUCCESS,
     GET_FILTERED_PRODUCTS_FAIL,
     GET_FILTERED_PRODUCTS_BY_CATEGORIES_SUCCESS,
-    GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL
+    GET_FILTERED_BY_CATEGORIES_PRODUCTS_FAIL,
+    GET_PRODUCTS_ORDER_BY_SUCCESS,
+    GET_PRODUCTS_ORDER_BY_FAIL,
+    GET_FILTERED_PRODUCTS_ORDER_SUCCESS,
+    GET_FILTERED_PRODUCTS_ORDER_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -78,26 +82,21 @@ export default function Products(state = initialState, action) {
                 ...state,
                 product: payload.product
             }
-
         case GET_PRODUCT_FAIL:
             return {
                 ...state,
                 product: null,
             }
-
-
         case GET_OPTIONS_SUCCESS:
             return {
                 ...state,
                 options: payload.options
             }
-
         case GET_OPTIONS_FAIL:
             return {
                 ...state,
                 options: null,
             }
-
         case GET_PRODUCTS_SUCCESS:
             return {
                 ...state,
@@ -114,19 +113,16 @@ export default function Products(state = initialState, action) {
                 next: null,
                 previous: null
             }
-
         case GET_PRODUCT_LIKES_DISLIKE_SUCCESS:
             return {
                 ...state,
                 likes: payload
             }
-
         case GET_PRODUCT_LIKES_DISLIKE_FAIL:
             return {
                 ...state,
                 likes: null,
             }
-
         case ADD_PRODUCT_LIKES_DISLIKE_SUCCESS:
             return {
                 ...state,
@@ -192,6 +188,42 @@ export default function Products(state = initialState, action) {
                 next: null,
                 previous: null
             }
+
+        case GET_PRODUCTS_ORDER_BY_SUCCESS:
+            return {
+                ...state,
+                products: payload.results.products,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous
+            }
+        case GET_PRODUCTS_ORDER_BY_FAIL:
+            return {
+                ...state,
+                products: null,
+                count: null,
+                next: null,
+                previous: null
+            }
+            
+            
+        case GET_FILTERED_PRODUCTS_ORDER_SUCCESS:
+            return {
+                ...state,
+                products: payload.results,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous
+            }
+        case GET_FILTERED_PRODUCTS_ORDER_FAIL:
+            return {
+                ...state,
+                products: null,
+                count: null,
+                next: null,
+                previous: null
+            }
+
 
         default:
             return state

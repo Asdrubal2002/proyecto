@@ -13,10 +13,10 @@ function ProductListFilteredByCategory({ products, get_products_filtered_categor
     };
 
     return (
-        <div className="mx-auto max-w-2xl lg:max-w-7xl lg:px-8 py-4">
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 gap-2">
+        <div className="mx-auto max-w-2xl lg:max-w-7xl lg:px-8 py-2">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 {products && products.map((product, index) => (
-                    <ProductCard data={product} key={index} index={index} />
+                    <ProductCard data={product} key={index} index={index} storeSlug={storeSlug}/>
                 ))}
             </div>
             <PaginationProducts 

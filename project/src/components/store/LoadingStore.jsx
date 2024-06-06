@@ -36,6 +36,9 @@ export default function LoadingStore() {
                                     <ConetenedorInfo3/>
                                 </ConetenedorInfo2>
                                 {/* Store description */}
+                                <div className='bg-red-500'>
+
+                                </div>
                                 <ConetenedorInfo4/>
                                 <ConetenedorInfo4/>
                                 <ConetenedorInfo4/>

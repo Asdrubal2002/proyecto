@@ -52,7 +52,7 @@ class UnaccentUpper(Func):
 class ListProductsByCategoryView(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, storeSlug, categorySlug, format=None):
+    def get(self, request, storeSlug, categorySlug, order_by=None, format=None):
         # Obtener la tienda o devolver un 404 si no se encuentra
         store = get_object_or_404(Store, slug=storeSlug)
 
@@ -60,7 +60,15 @@ class ListProductsByCategoryView(APIView):
         category = get_object_or_404(Category, store=store, slug=categorySlug)
 
         # Filtrar los productos por categoría y por si están activos
-        products = Product.objects.filter(category=category, is_active=True).order_by('date_created')
+        products = Product.objects.filter(category=category, is_active=True)
+
+        # Ordenar los productos según el parámetro order_by
+        if order_by == 'price_asc':
+            products = products.order_by('price')
+        elif order_by == 'price_desc':
+            products = products.order_by('-price')
+        else:
+            products = products.order_by('date_created')
 
         paginator = LargeSetPagination()
         results = paginator.paginate_queryset(products, request)
@@ -70,7 +78,7 @@ class ListProductsByCategoryView(APIView):
         return paginator.get_paginated_response({"products": products_serialized.data})
 
 class ProductsByStore(APIView):
-    def get(self, request, storeSlug, format=None):
+    def get(self, request, storeSlug, order_by=None, format=None):
         store = get_object_or_404(Store, slug=storeSlug)
 
         # Obtener todas las categorías activas de esa tienda
@@ -81,7 +89,15 @@ class ProductsByStore(APIView):
         products = Product.objects.filter(
             category__in=active_categories,
             is_active=True,
-        ).order_by("-date_created")
+        )
+
+        # Ordenar los productos según el parámetro order_by
+        if order_by == 'price_asc':
+            products = products.order_by('price')  # Orden ascendente por precio
+        elif order_by == 'price_desc':
+            products = products.order_by('-price')  # Orden descendente por precio
+        else:
+            products = products.order_by("-date_created")  # Por defecto, ordenar por fecha de creación
 
         # Filtrar los productos para excluir aquellos que pertenecen a
         # categorías padres que estén desactivadas
@@ -103,6 +119,7 @@ class ProductsByStore(APIView):
         # Devolver la lista de productos serializados
         return paginator.get_paginated_response({"products": products_serialized.data})
 
+        
 class SearchProductInView(APIView):
     def get(self, request, format=None):
         slugCategory = request.query_params.get("c")
@@ -524,6 +541,8 @@ class DeleteOptionAPIView(APIView):
         return Response({'message': 'La opción se eliminó correctamente.'}, status=status.HTTP_204_NO_CONTENT)
     
 class ProductListViewFiltered(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request, storeSlug, categorySlug=None, format=None):
         queryset = Product.objects.filter(is_active=True, category__is_active=True)
         store_slug = self.kwargs.get('storeSlug')
@@ -532,6 +551,17 @@ class ProductListViewFiltered(APIView):
 
         # Aplicar filtros adicionales según sea necesario
         filtered_queryset = self.filter_queryset(queryset)
+
+        # Obtener el parámetro de ordenación de la solicitud
+        order_by = request.query_params.get('order_by', 'date_created_desc')
+        if order_by == 'price_asc':
+            filtered_queryset = filtered_queryset.order_by('price')
+        elif order_by == 'price_desc':
+            filtered_queryset = filtered_queryset.order_by('-price')
+        elif order_by == 'date_created_asc':
+            filtered_queryset = filtered_queryset.order_by('date_created')
+        else:  # Por defecto ordenar por fecha de creación descendente
+            filtered_queryset = filtered_queryset.order_by('-date_created')
 
         paginator = LargeSetPagination()
         results = paginator.paginate_queryset(filtered_queryset, request)
@@ -570,6 +600,7 @@ class ProductListViewFiltered(APIView):
             queryset = queryset.filter(price__lte=price_max_filter)
 
         return queryset
+
 
 class UpdateOptionAPIView(APIView):
     permission_classes = (IsAuthenticated,)

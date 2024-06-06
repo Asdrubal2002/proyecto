@@ -10,7 +10,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { FunnelIcon } from '@heroicons/react/24/solid'
 
-import LoadingStores from "../../components/home/LoadingStores";
+import Loader from "../../components/home/Loader";
 import { Helmet } from "react-helmet";
 import { InfinitySpin, Rings } from "react-loader-spinner";
 import Sidebar from "./Sidebar/Sidebar";
@@ -103,9 +103,9 @@ const Mall = ({
                                                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                             </button>
                                         </div>
-                                        <LoadingStores />
-                                        <LoadingStores />
-                                        <LoadingStores />
+                                        <Loader />
+                                        <Loader />
+                                        <Loader />
                                     </Dialog.Panel>
                                 </Transition.Child>
                             </div>
