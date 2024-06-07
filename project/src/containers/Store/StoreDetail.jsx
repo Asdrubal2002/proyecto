@@ -432,12 +432,12 @@ const StoreDetail = ({
                                         {/* Primera columna */}
                                         <div className="lg:col-span-1">
                                             {/* Primera fila */}
-                                            <p className="py-2 rounded-md text-md font-bold hidden sm:block font-estilo_letra">
+                                            {/* <p className="py-2 rounded-md text-md font-bold hidden sm:block font-estilo_letra">
                                                 Categorias disponibles
-                                            </p>
+                                            </p> */}
                                             <div className="grid grid-cols-1 gap-y-6">
                                                 {/* Contenido de la primera fila */}
-                                                <div className="container mx-auto px-2 py-2">
+                                                <div className="container mx-auto px-2">
                                                     <CategoriesStore categories={categories} loading_categories={loading_categories} storeSlug={storeSlug} />
                                                 </div>
                                                 <div className="hidden sm:block">
@@ -449,7 +449,7 @@ const StoreDetail = ({
                                                 {isAuthenticated ?
                                                     <div>
                                                         {profile && profile.firs_name == null ? (
-                                                            <div className="bg-stone-800 text-gray-100 rounded-md">
+                                                            <div className="bg-stone-800 text-gray-100 rounded-md hidden sm:block">
                                                                 <p className="text-center text-gray-200 mb-2 font-sm text-md">No puedes comentar, no tienes perfil creado.</p>
                                                                 <Link to={'/dashboard'} className="flex items-center justify-center text-sm font-medium text-white mt-2 bg-azul_corp p-2 rounded-b-md">
                                                                     <UserCircleIcon className="h-4 w-4 mr-1" aria-hidden="true" />

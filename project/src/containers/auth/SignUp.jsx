@@ -39,7 +39,7 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
     const expresiones = {
         correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
         clave:
-            /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/, // 8 a 16 digitos.
+            /^(?=(?:\D*\d){3}\D*$)[\d\w\S]{4}$/
     };
 
     const validarPassword2 = () => {
@@ -74,7 +74,6 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
             changeMail({ campo: "", valido: null });
             changePass({ campo: "", valido: null });
             changePass2({ campo: "", valido: null });
-
             // ...
         } else {
             cambiarFormularioValido(false);
@@ -125,20 +124,20 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                             <ComponenteInput
                                 estado={password}
                                 cambiarEstado={changePass}
-                                placeholder="Contraseña"
+                                placeholder="Clave"
                                 tipo="password"
-                                numero="20"
+                                numero="4"
                                 label=""
                                 name="password"
-                                leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
+                                leyendaError="La contraseña debe tener exactamente 4 caracteres, incluyendo tres números y una letra mayúscula o minúscula o carácter no alfanumérico (símbolo)."
                                 expresionRegular={expresiones.clave}
                             />
                             <ComponenteInput
                                 estado={re_password}
                                 cambiarEstado={changePass2}
                                 tipo="password"
-                                numero="20"
-                                placeholder="Confirma tu contraseña"
+                                numero="4"
+                                placeholder="Confirma tu clave"
                                 label=""
                                 name="re_password"
                                 leyendaError="Ambas contraseñas deben ser iguales."
@@ -172,6 +171,13 @@ const SignUp = ({ signup, loading, isAuthenticated }) => {
                                     .
                                 </Switch.Label>
                             </Switch.Group>
+                            <div className="flex items-center justify-between lg:hidden">
+                                <div className="text-sm">
+                                    <Link to="/login" className="font-medium text-azul_corp_ho hover:text-azul_corp">
+                                      Iniciar Sesión
+                                    </Link>
+                                </div>
+                            </div>
                             <div>
                                 {loading ? (
                                     <Boton type="submit">

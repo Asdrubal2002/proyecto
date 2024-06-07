@@ -5,7 +5,7 @@ import { Rings } from 'react-loader-spinner';
 
 function SetnewPass({ change_password_set, loading }) {
     const expresiones = {
-        clave: /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/, // 8 a 16 digitos.
+        clave:  /^(?=(?:\D*\d){3}\D*$)[\d\w\S]{4}$/, // 8 a 16 digitos.
     };
 
     const [formData, setFormData] = useState({
@@ -33,7 +33,7 @@ function SetnewPass({ change_password_set, loading }) {
             errors[name] = `El campo ${name.replace('_', ' ')} es obligatorio.`;
         } else if (name === 'new_password' && !expresiones.clave.test(value)) {
             errors.new_password =
-                'La contraseña debe contener al menos un dígito, un carácter especial, una letra mayúscula, una letra minúscula y tener entre 8 y 16 caracteres.';
+                'La contraseña debe tener exactamente 4 caracteres, incluyendo tres números y una letra mayúscula o minúscula o carácter no alfanumérico (símbolo).';
         } else {
             errors[name] = '';
         }
@@ -86,7 +86,7 @@ function SetnewPass({ change_password_set, loading }) {
                     name="new_password"
                     value={formData.new_password}
                     onChange={handleChange}
-                    placeholder="Nueva contraseña *"
+                    placeholder="Nueva clave *"
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.new_password && <p className="text-red-500 text-sm">{formErrors.new_password}</p>}
@@ -98,7 +98,7 @@ function SetnewPass({ change_password_set, loading }) {
                     name="re_new_password"
                     value={formData.re_new_password}
                     onChange={handleChange}
-                    placeholder="Repetir nueva contraseña *"
+                    placeholder="Confirmar nueva clave *"
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.re_new_password && <p className="text-red-500 text-sm">{formErrors.re_new_password}</p>}
@@ -110,7 +110,7 @@ function SetnewPass({ change_password_set, loading }) {
                     name="current_password"
                     value={formData.current_password}
                     onChange={handleChange}
-                    placeholder="Contraseña actual *"
+                    placeholder="Clave actual *"
                     className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-200 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
                 />
                 {formErrors.current_password && <p className="text-red-500 text-sm">{formErrors.current_password}</p>}
@@ -123,7 +123,7 @@ function SetnewPass({ change_password_set, loading }) {
                     <Rings width={20} height={20} color="#fff" radius="6" />
                 ) : (
                     <>
-                        Guardar Nueva contraseña
+                        Guardar Nueva clave
                     </>
                 )}
             </button>

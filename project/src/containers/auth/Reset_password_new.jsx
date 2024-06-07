@@ -22,7 +22,7 @@ const Reset_password_new = ({ reset_password_confirm, loading }) => {
 
     const expresiones = {
         clave:
-            /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/, // 8 a 16 digitos.
+             /^(?=(?:\D*\d){3}\D*$)[\d\w\S]{4}$/
     };
 
     const [formularioValido, cambiarFormularioValido] = useState(null);
@@ -101,17 +101,17 @@ const Reset_password_new = ({ reset_password_confirm, loading }) => {
                                 cambiarEstado={changePassNew}
                                 placeholder="Nueva Contraseña"
                                 tipo="password"
-                                numero="20"
+                                numero="4"
                                 label=""
                                 name="new_password"
-                                leyendaError="La contraseña debe tener al entre 8 y 16 caracteres, al menos un número, una minúscula, una mayúscula y al menos un carácter no alfanumérico (símbolo)."
+                                leyendaError="La contraseña debe tener exactamente 4 caracteres, incluyendo tres números y una letra mayúscula o minúscula o carácter no alfanumérico (símbolo)."
                                 expresionRegular={expresiones.clave}
                             />
                             <ComponenteInput
                                 estado={re_new_password}
                                 cambiarEstado={changePass2New}
                                 tipo="password"
-                                numero="20"
+                                numero="4"
                                 placeholder="Confirma tu contraseña"
                                 label=""
                                 name="re_new_password"

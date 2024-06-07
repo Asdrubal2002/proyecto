@@ -11,7 +11,7 @@ import { Rings } from "react-loader-spinner";
 
 import { reset_password } from "../../redux/actions/auth";
 
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import ImagesForms from "./components/ImagesForms";
 
@@ -67,47 +67,52 @@ const Reset_password = ({ reset_password, loading }) => {
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
             <ImagesForms title="¡Recupera tu cuenta!">
-            <ContenedorFormulario>
-                        <ContenedorFormulario2>
-                            <Formulario onSubmit={onSubmit}>
-                                <ComponenteInput
-                                    estado={email}
-                                    cambiarEstado={changeMail}
-                                    placeholder="Correo Electrónico"
-                                    tipo="text"
-                                    numero="40"
-                                    label=""
-                                    name="email"
-                                    leyendaError="Digita el correo que registraste"
-                                    expresionRegular={expresiones.correo}
-                                />
+                <ContenedorFormulario>
+                    <ContenedorFormulario2>
+                        <Formulario onSubmit={onSubmit}>
+                            <ComponenteInput
+                                estado={email}
+                                cambiarEstado={changeMail}
+                                placeholder="Correo Electrónico"
+                                tipo="text"
+                                numero="40"
+                                label=""
+                                name="email"
+                                leyendaError="Digita el correo que registraste"
+                                expresionRegular={expresiones.correo}
+                            />
 
-                                {/* <div className="flex items-center justify-between">
-                                </div> */}
-                                <div>
-                                    {loading ? (
-                                        <Boton type="submit">
-                                            <Rings width={20} height={20} color="#fff" radius="6" />
-                                        </Boton>
-                                    ) : (
-                                        <Boton type="submit">Recuperar mi contraseña</Boton>
-                                    )}
+                            <div className="flex items-center justify-between lg:hidden">
+                                <div className="text-sm">
+                                    <Link to="/login" className="font-medium text-azul_corp_ho hover:text-azul_corp">
+                                        Iniciar Sesión
+                                    </Link>
                                 </div>
-                            </Formulario>
-                            <div className="mt-6">
-                                {formularioValido === false && (
-                                    <MensajeError>
-                                        <p className="flex">
-                                            <b className="h-5 w-5 mr-2">
-                                                <InformationCircleIcon />
-                                            </b>
-                                            Por favor escribe tu correo electrónico registrado.
-                                        </p>
-                                    </MensajeError>
+                            </div>
+                            <div>
+                                {loading ? (
+                                    <Boton type="submit">
+                                        <Rings width={20} height={20} color="#fff" radius="6" />
+                                    </Boton>
+                                ) : (
+                                    <Boton type="submit">Recuperar mi contraseña</Boton>
                                 )}
                             </div>
-                        </ContenedorFormulario2>
-                    </ContenedorFormulario>
+                        </Formulario>
+                        <div className="mt-6">
+                            {formularioValido === false && (
+                                <MensajeError>
+                                    <p className="flex">
+                                        <b className="h-5 w-5 mr-2">
+                                            <InformationCircleIcon />
+                                        </b>
+                                        Por favor escribe tu correo electrónico registrado.
+                                    </p>
+                                </MensajeError>
+                            )}
+                        </div>
+                    </ContenedorFormulario2>
+                </ContenedorFormulario>
 
             </ImagesForms>
 

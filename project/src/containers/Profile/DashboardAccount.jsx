@@ -44,7 +44,7 @@ function DashboardAccount({
                                         {({ open }) => (
                                             <>
                                                 <Disclosure.Button className="flex w-full justify-between rounded-lg bg-gray-800 px-4 py-2 text-left text-sm font-medium text-gray-200 hover:bg-gray-700 ">
-                                                    <span>Cambiar contraseña</span>
+                                                    <span>Cambiar clave</span>
                                                     <ChevronUpIcon
                                                         className={`${open ? 'rotate-180 transform' : ''
                                                             } h-5 w-5 text-gray-500`}

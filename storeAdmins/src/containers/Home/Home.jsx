@@ -60,8 +60,8 @@ function Home({
       newErrors.password = '';
       if (!value.trim()) {
         newErrors.password = 'Por favor, ingresa tu contraseña';
-      } else if (value.length < 8) {
-        newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
+      } else if (value.length < 4) {
+        newErrors.password = 'La contraseña debe tener al menos 4 caracteres';
       }
     }
 
@@ -84,7 +84,7 @@ function Home({
     if (!formData.password.trim()) {
       newErrors.password = 'Por favor, ingresa tu contraseña';
       formIsValid = false;
-    } else if (formData.password.length < 8) {
+    } else if (formData.password.length < 4) {
       newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
       formIsValid = false;
     }

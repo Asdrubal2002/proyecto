@@ -27,7 +27,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
   const expresiones = {
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
     clave:
-      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/, // 8 a 16 digitos.
+      /^(?=(?:\D*\d){3}\D*$)[\d\w\S]{4}$/
   };
 
   const [formularioValido, cambiarFormularioValido] = useState(null);
@@ -47,9 +47,6 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
   };
 
   if (activated) return <Navigate to="/" replace={true} />;
-
-
-
 
   return (
     <Layout>
@@ -96,14 +93,21 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
               <ComponenteInput
                 estado={password}
                 cambiarEstado={changePass}
-                placeholder="Contraseña"
+                placeholder="Clave"
                 tipo="password"
-                numero="20"
+                numero="4"
                 label=""
                 name="password"
                 leyendaError="Digita la contraseña que registraste"
                 expresionRegular={expresiones.clave}
               />
+              <div className="flex items-center justify-between lg:hidden">
+                <div className="text-sm">
+                  <Link to="/signup" className="font-medium text-azul_corp_ho hover:text-azul_corp">
+                    Crear cuenta
+                  </Link>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <div className="text-sm">
                   <Link to="/reset_password" className="font-medium text-azul_corp_ho hover:text-azul_corp">
@@ -111,6 +115,7 @@ const SignIn = ({ login, loading, isAuthenticated }) => {
                   </Link>
                 </div>
               </div>
+              
               <div>
                 {loading ? (
                   <Boton type="submit">
