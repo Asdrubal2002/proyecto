@@ -55,6 +55,8 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_seller = models.BooleanField(default=False)  # Nuevo campo para identificar si el usuario es vendedor
     photo = models.ImageField(upload_to=user_directory_path_profile, blank=True)
     is_primary_store_admin = models.BooleanField(default=False)
+    failed_login_attempts = models.IntegerField(default=0)  # Nuevo campo para contar los intentos de inicio de sesión fallidos
+
 
     objects = UserAccountManager()
 

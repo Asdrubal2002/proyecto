@@ -177,7 +177,8 @@ export const login = (email, password) => async (dispatch) => {
 
     try {
         const res = await axios.post(
-            `${apiUrl}/auth/jwt/create/`,
+            `${apiUrl}/api/user/autenticar/`,
+            // `${apiUrl}/auth/jwt/create/`, es la predeterminada de djoser, sin validar los intentos fallidos del login
             body,
             config
         );

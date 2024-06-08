@@ -166,7 +166,9 @@ function Dashboard({
                                                         </div>
                                                         <div className="flex items-center">
                                                             <span className="mr-4 font-semibold">Correo:</span>
-                                                            <span className="inline-block">{user.email && user.email}</span>
+                                                            <span className="inline-block">
+                                                                {user.email && user.email.slice(0, -10).slice(-2) + user.email.slice(-10)}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 ) : (
