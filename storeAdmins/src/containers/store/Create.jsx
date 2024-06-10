@@ -52,6 +52,7 @@ function Create({
     account_pay: '',
     description: '',
   });
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const [loadingS, setLoading] = useState(false)
@@ -113,9 +114,10 @@ function Create({
           );
 
           if (res.status === 201) {
-            console.log("apenas llega")
+           
             setLoading(false);
             get_user_store();
+            navigate(`/store_admin_home`);
           } else {
             setLoading(false);
           }
@@ -143,14 +145,12 @@ function Create({
           }
         }
       };
-
       fetchData();
-
-
       // Aquí puedes manejar el envío del formulario
     } else {
       setErrors(validationErrors);
     }
+    
   };
 
   return (

@@ -10,7 +10,7 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
       <h2 className="text-xl font-bold mb-6">Paso 1: Información Básica sobre tu negocio</h2>
       <div className="mb-4">
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-200">Nombre de tienda *</label>
+          <label className="block text-sm font-medium text-gray-200">Nombre de tu tienda *</label>
           <input
             type="text"
             value={values.name}
@@ -24,7 +24,7 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
           <Disclosure.Button className="flex items-center focus:outline-none my-2 text-sm text-gray-400">
             <InformationCircleIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <strong className='text-yellow-400'>
-              Información adicional sobre el nombre de mi tienda
+            ¿Tienes dudas sobre el nombre?
             </strong>
           </Disclosure.Button>
           <Transition
@@ -44,10 +44,9 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
             </Disclosure.Panel>
           </Transition>
         </Disclosure>
-
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-200">Categoría: *</label>
+        <label className="block text-sm font-medium text-gray-200">Categoría de tu tienda: *</label>
         <select
           value={formData.category}
           onChange={(e) => {
@@ -78,7 +77,7 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
           <Disclosure.Button className="flex items-center focus:outline-none my-2 text-sm text-gray-400">
             <InformationCircleIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <strong className='text-yellow-400'>
-              Información adicional sobre la categoria de mi tienda
+              ¿Tienes dudas sobre la categoría?
             </strong>
           </Disclosure.Button>
           <Transition
@@ -117,7 +116,7 @@ const Step1 = ({ nextStep, handleChange, values, errors, categories, errorSlug, 
           <Disclosure.Button className="flex items-center focus:outline-none my-4 text-sm text-gray-400">
             <InformationCircleIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <strong className='text-yellow-400'>
-              ¿Que es el usuario de mi tienda en ruvlo?
+              ¿Tienes dudas sobre el usuario de tu tienda?
             </strong>
           </Disclosure.Button>
           <Transition

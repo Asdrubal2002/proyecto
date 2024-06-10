@@ -68,7 +68,7 @@ const Step3 = ({ nextStep, prevStep, handleChange, values, errors, cities, setFo
     <div className="p-4 transition-opacity duration-500 ease-in-out opacity-100">
       <h2 className="text-xl font-bold mb-4">Paso 3: Información Adicional</h2>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-200">Horario: *</label>
+        <label className="block text-sm font-medium text-gray-200">Horario de servicio: *</label>
         <input
           type="text"
           value={values.schedule}

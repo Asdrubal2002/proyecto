@@ -8,6 +8,27 @@ import { ArrowDownIcon, ArrowUpIcon, CheckIcon, InformationCircleIcon, PencilSqu
 import { Link } from 'react-router-dom';
 import Create from '../store/Create';
 
+const steps = [
+    {
+        id: 1,
+        step: 'Paso 1',
+        title: 'Crear la categoría padre',
+        description: 'Comienza nombrando una categoría principal y márcala como categoría padre. Por ejemplo, podrías usar "Tecnología".',
+    },
+    {
+        id: 2,
+        step: 'Paso 2',
+        title: 'Guardar la categoría padre',
+        description: 'Guarda la categoría padre que acabas de crear. Una vez guardada, aparecerá en el selector de categorías padre.',
+    },
+    {
+        id: 3,
+        step: 'Paso 3',
+        title: 'Crear subcategorías',
+        description: 'Ahora es el momento de crear subcategorías. Escribe el nombre de la subcategoría y selecciona a qué categoría padre pertenece. Por ejemplo, "Celulares" como subcategoría de "Tecnología".',
+    },
+    // More steps...
+];
 
 
 function FormCategories({
@@ -33,9 +54,9 @@ function FormCategories({
     const [editingCategoryId, setEditingCategoryId] = useState(null);
     const [messageEdit, setMessageEdit] = useState(false);
     const [expandedCategories, setExpandedCategories] = useState([]);
+    const [openHelp, setOpenHelp] = useState(false)
 
     const [parentEnabled, setParentEnabled] = useState(true); // Estado para habilitar o deshabilitar el campo parent
-
 
     useEffect(() => {
         get_categories()
@@ -77,11 +98,12 @@ function FormCategories({
         } else {
             // Llamar a la función para crear una nueva categoría
             await create_category(formData.name, slug, formData.parent)
+
             get_categories()
 
         }
-
         // Aquí puedes agregar lógica adicional después de enviar el formulario si es necesario
+        setFormData(initialFormData)
     };
 
 
@@ -144,7 +166,6 @@ function FormCategories({
         category.name.toLowerCase().includes(categoryFilter.toLowerCase())
     ) : [];
 
-
     return (
         <>
             <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
@@ -152,10 +173,12 @@ function FormCategories({
 
                     <div className="flex items-center">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2 flex-grow">Nombre:</label>
-                        <Link to={'/help'} className='flex text-gray-400'>
+                        <div
+                            onClick={e => setOpenHelp(true)}
+                            className='flex text-gray-400'>
                             <InformationCircleIcon className="w-5 h-5 " />
-                            <p className='font-semibold text-sm '>Necesitas ayuda</p> 
-                        </Link>
+                            <p className='font-semibold text-sm cursor-pointer'>Necesitas ayuda</p>
+                        </div>
                     </div>
 
                     <input
@@ -174,8 +197,8 @@ function FormCategories({
                 </div>
                 <div className="mb-4">
                     <div className="flex items-center">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Categoría Padre:</label>
-                       
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2">Selecciona la categoría Padre:</label>
+
                     </div>
 
                     <select
@@ -413,6 +436,70 @@ function FormCategories({
                     </div>
                 </Dialog>
             </Transition.Root>
+
+            <Transition.Root show={openHelp} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpenHelp}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                    <div className="py-6 sm:py-6">
+                                        <div className="mx-auto max-w-7xl px-6 lg:px-8 text-gray-200">
+                                            <div className="mx-auto max-w-2xl lg:mx-0">
+                                                <h2 className="text-3xl font-bold tracking-tight  sm:text-4xl">¿Como crear categorías?</h2>
+                                            </div>
+                                            <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-6 pt-6 sm:mt-2 sm:pt-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                                                {steps.map((post) => (
+                                                    <article key={post.id} className="flex max-w-xl flex-col items-start justify-between">
+                                                        <div className="flex items-center text-xs">
+                                                            <div
+
+                                                                className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
+                                                            >
+                                                                {post.step}
+                                                            </div>
+                                                        </div>
+                                                        <div className="group relative">
+                                                            <h3 className="mt-3 text-lg font-semibold leading-6  ">
+                                                                <a href={post.href}>
+                                                                    <span className="absolute inset-0" />
+                                                                    {post.title}
+                                                                </a>
+                                                            </h3>
+                                                            <p className="mt-5 text-sm leading-6 ">{post.description}</p>
+                                                        </div>
+
+                                                    </article>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+
 
 
         </>

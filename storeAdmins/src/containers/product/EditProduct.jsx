@@ -75,7 +75,7 @@ function EditProduct({
         category: '',
         price: '',
         tax: '',
-        discount:'',
+        discount: '',
         optionPr: '',
         quantity: ''
 
@@ -105,7 +105,7 @@ function EditProduct({
         setUpadteTax(false)
         setUpdateDiscount(false)
         setEditOptionData(null); // Reinicia el estado de edición
-        
+
     }
 
     const onSubmit = e => {
@@ -696,7 +696,7 @@ function EditProduct({
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
                                         <p className='flex'>
-                                           % Impuesto
+                                            % Impuesto
                                         </p>
                                     </dt>
                                     <dd className="mt-1 flex text-sm text-gray-300 sm:col-span-2 sm:mt-0">
@@ -752,10 +752,10 @@ function EditProduct({
                                     </dd>
                                 </div>
 
-                                
 
-                                  {/* Descuento */}
-                                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+
+                                {/* Descuento */}
+                                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
                                         <p className='flex'>
                                             % Descuesto
@@ -1166,9 +1166,22 @@ function EditProduct({
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
                                     {/* <h2 className="text-lg font-medium leading-6 text-gray-800">crear tu producto</h2> */}
-
+                                    <div className='flex mb-4'>
+                                        <p className='text-sm'>
+                                            Aquí puedes crear las categorías que necesites.
+                                            
+                                        </p>
+                                        <button
+                                            type="button"
+                                            className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
+                                            onClick={() => setOpenAddCategory(false)}
+                                        >
+                                            <span className="sr-only">Close</span>
+                                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                        </button>
+                                    </div>
                                     <FormCategories />
 
                                 </Dialog.Panel>

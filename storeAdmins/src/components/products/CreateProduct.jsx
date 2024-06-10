@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
-import { PencilSquareIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, PlusIcon, MinusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import FormCategories from '../../containers/categories/FormCategories'
 import axios from "axios"
 import { get_products } from '../../redux/actions/products/products'
@@ -20,9 +20,6 @@ function CreateProduct({
     const [formCanBeSubmitted, setFormCanBeSubmitted] = useState(true);
     const [loading, setLoading] = useState(false)
     const [description, setDescription] = useState('');
-
-
-
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -85,8 +82,6 @@ function CreateProduct({
         setOpen(false);
     }
 
-
-
     const handleCategoryChange = e => {
         setSelectedCategory(e.target.value);
     };
@@ -131,88 +126,122 @@ function CreateProduct({
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
                                     <div className='py-4'>
                                         <Disclosure>
-                                            <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-azul_corp rounded-lg text-sm p-4 mb-2">
-                                                <span>¿Necesitas una nueva categoría?</span>
-                                                <PlusIcon className="ml-1" width={10} height={10} color="#fff" radius="6" />
-                                            </Disclosure.Button>
+                                            <div className='flex'>
+                                                <Disclosure.Button className="flex items-center justify-center py-2 text-gray-300 bg-azul_corp rounded-lg text-sm p-4 mb-2">
+                                                    <span>¿Necesitas una nueva categoría?</span>
+                                                    <PlusIcon className="ml-1" width={10} height={10} color="#fff" radius="6" />
+                                                </Disclosure.Button>
+                                                <button
+                                                    type="button"
+                                                    className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
+                                                    onClick={() => setOpen(false)}
+                                                >
+                                                    <span className="sr-only">Close</span>
+                                                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                </button>
+                                            </div>
+
 
                                             <Disclosure.Panel className="text-gray-500">
                                                 <FormCategories />
                                             </Disclosure.Panel>
                                         </Disclosure>
                                     </div>
-                                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                                        <input
-                                            name='name'
-                                            type='text'
-                                            placeholder='Nuevo nombre'
-                                            className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                        />
-                                        {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
-                                        <select
-                                            name='category'
-                                            value={selectedCategory}
-                                            onChange={handleCategoryChange}
-                                            className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                        >
-                                            <option value="">Seleccione una categoría...</option>
-                                            {categories && categories.map(category => (
-                                                <optgroup key={category.id} label={category.name}>
-                                                    {category.sub_categories && category.sub_categories.length > 0 && (
-                                                        // Agregar las subcategorías dentro del optgroup
-                                                        category.sub_categories.map(subCategory => (
-                                                            <option key={subCategory.id} value={subCategory.id}>
-                                                                {subCategory.name}
-                                                            </option>
-                                                        ))
-                                                    )}
-                                                </optgroup>
-                                            ))}
-                                        </select>
-                                        {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
-                                        <div className='text-gray-900 text-sm '>
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={description}
-                                                onChange={(event, editor) => {
-                                                    const data = editor.getData();
-                                                    setDescription(data);
-                                                    if (data.length > 5000) {
-                                                        setDescriptionError('La descripción no debe exceder los 5000 caracteres');
-                                                        setFormCanBeSubmitted(false); // Deshabilitar el formulario
-                                                    } else {
-                                                        setDescriptionError('');
-                                                        setFormCanBeSubmitted(true); // Habilitar el formulario
-                                                    }
-                                                }}
-                                                config={{
-                                                    toolbar: {
-                                                        items: ['bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado 
-                                                        ]
-                                                    },
-                                                }}
-                                            />
-                                        </div>
-                                        {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
-                                        {descriptionError && <span className="text-red-500 text-sm">{descriptionError}</span>}
-                                        <input
-                                            name='price'
-                                            type='text'
-                                            placeholder='Precio'
-                                            className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                        />
-                                        {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+                                    <form onSubmit={handleSubmit} className="">
+                                        <div className='mb-4'>
+                                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Nombre tu producto:</label>
 
-                                        <input
-                                            name='tax'
-                                            type='text'
-                                            placeholder='Porcentaje de impuesto por ejemplo, 19, 5, 21, 25, ...'
-                                            className="p-2 rounded-md focus:outline-none bg-gray-300 text-sm sm:leading-6 placeholder:text-gray-600 text-gray-900"
-                                        />
-                                        {errors.tax && <span className="text-red-500 text-sm">{errors.tax}</span>}
+                                            <input
+                                                name='name'
+                                                type='text'
+                                                placeholder='Ejemplo: Celular moro f 2016'
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200"
+                                            />
+                                            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+                                        </div>
+                                        <div className='mb-4'>
+                                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Selecciona a que categoría pertenece tu producto:</label>
+
+                                            <select
+                                                name='category'
+                                                value={selectedCategory}
+                                                onChange={handleCategoryChange}
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-stone-700 text-sm sm:leading-6 text-gray-100"
+                                            >
+                                                <option value="">Seleccione una categoría...</option>
+                                                {categories && categories.map(category => (
+                                                    <optgroup key={category.id} label={category.name}>
+                                                        {category.sub_categories && category.sub_categories.length > 0 && (
+                                                            // Agregar las subcategorías dentro del optgroup
+                                                            category.sub_categories.map(subCategory => (
+                                                                <option key={subCategory.id} value={subCategory.id}>
+                                                                    {subCategory.name}
+                                                                </option>
+                                                            ))
+                                                        )}
+                                                    </optgroup>
+                                                ))}
+                                            </select>
+                                            {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
+                                        </div>
+                                        <div className='mb-4'>
+                                            <div className='text-gray-900 text-sm '>
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Describe tu producto</label>
+
+                                                <CKEditor
+                                                    editor={ClassicEditor}
+                                                    data={description}
+                                                    onChange={(event, editor) => {
+                                                        const data = editor.getData();
+                                                        setDescription(data);
+                                                        if (data.length > 5000) {
+                                                            setDescriptionError('La descripción no debe exceder los 5000 caracteres');
+                                                            setFormCanBeSubmitted(false); // Deshabilitar el formulario
+                                                        } else {
+                                                            setDescriptionError('');
+                                                            setFormCanBeSubmitted(true); // Habilitar el formulario
+                                                        }
+                                                    }}
+                                                    config={{
+                                                        toolbar: {
+                                                            items: ['bold', 'italic', 'underline', '|', // Negrita, cursiva, subrayado 
+                                                            ]
+                                                        },
+                                                    }}
+                                                />
+                                            </div>
+                                            {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
+                                            {descriptionError && <span className="text-red-500 text-sm">{descriptionError}</span>}
+                                        </div>
+
+                                        <div className='mb-4 flex'>
+                                            <div className='w-full mr-2'>
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Precio de tu producto</label>
+                                                <input
+                                                    name='price'
+                                                    type='text'
+                                                    placeholder='Ejemplo: 10000'
+                                                    className=" p-2 rounded-md focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
+                                                />
+                                                {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+                                            </div>
+                                            <div className='w-full'>
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">impuesto de tu producto</label>
+                                                <input
+                                                    name='tax'
+                                                    type='text'
+                                                    placeholder='Porcentajes, ejemplo: 19, 5, 21, 25, ...'
+                                                    className="p-2 rounded-md focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
+                                                />
+                                                {errors.tax && <span className="text-red-500 text-sm">{errors.tax}</span>}
+                                            </div>
+
+
+                                        </div>
+
 
                                         <button
                                             type="submit"

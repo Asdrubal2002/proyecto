@@ -644,4 +644,29 @@ class FAQCreateAPIView(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+
+class ListSearchViewOnline(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, format=None):
+        search_query = request.query_params.get("q", "")
+        search_normalized = normalize_text(search_query)
+
+        # Filtrar tiendas según el término de búsqueda
+        if len(search_query) == 0:
+            search_results = Store.objects.order_by("created_on").all()
+        else:
+            search_results = Store.objects.order_by("-created_on").annotate(
+                normalized_description=RemoveAccents('description'),
+                normalized_name=RemoveAccents('name'),
+                normalized_location=RemoveAccents('location')
+            ).filter(
+                Q(normalized_description__icontains=search_normalized)
+                | Q(normalized_name__icontains=search_normalized)
+                | Q(normalized_location__icontains=search_normalized),
+                is_active=True,
+            )[:10]  # Obtener solo los primeros 10 resultados
+
+        serializer = StoreSerializer(search_results, many=True)
+        return Response({"search_stores": serializer.data})

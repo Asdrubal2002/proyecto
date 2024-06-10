@@ -11,7 +11,7 @@ function Alerta({ alert }) {
     
     const { alertType, msg } = alert;
     return (
-      <div className={`rounded-md p-4 mx-5 mt-3 shadow-xl fixed`} style={{ backgroundColor: alertType }}>
+      <div className={`rounded-md p-4 mx-5 mt-3 shadow-xl fixed top-10 right-10 `} style={{ backgroundColor: alertType, boxShadow: `0 0 10px ${alertType}, 0 0 20px ${alertType}, 0 0 30px ${alertType}` }}>
         
         <ContenedorInfoAlert>
           <ContenedorInfoMSG>

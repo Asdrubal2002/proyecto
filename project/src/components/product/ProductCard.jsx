@@ -133,7 +133,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product, stor
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full max-w-4xl sm:p-6">
-                <button
+                  <button
                     type="button"
                     className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
                     onClick={() => setOpen(false)}
@@ -141,7 +141,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product, stor
                     <span className="sr-only">Close</span>
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
-                  <ProductModal data={data} isAuthenticated={isAuthenticated} closeModal={() => setOpen(false)} storeSlug={storeSlug}/>
+                  <ProductModal data={data} isAuthenticated={isAuthenticated} closeModal={() => setOpen(false)} storeSlug={storeSlug} />
                 </Dialog.Panel>
               </Transition.Child>
             </div>

@@ -21,7 +21,8 @@ from .views import (
     DeactivateSellerAPIView,
     RemoveAssociateAPIView,
     FAQRetrieveByStoreSlugAPIView,
-    FAQCreateAPIView
+    FAQCreateAPIView,
+    ListSearchViewOnline
     
 )
 
@@ -55,5 +56,8 @@ urlpatterns = [
 
     path('<store_slug>/faqs/', FAQRetrieveByStoreSlugAPIView.as_view(), name='faq-list-by-store-slug'),
     path('faqs/create/', FAQCreateAPIView.as_view(), name='faq-create'),
+
+    path('search-online', ListSearchViewOnline.as_view(), name='search'),
+
 
 ]

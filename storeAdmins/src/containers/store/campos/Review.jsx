@@ -1,5 +1,6 @@
 // src/components/Review.js
-import { CheckIcon } from '@heroicons/react/24/outline';
+import { HandRaisedIcon,CreditCardIcon, GlobeAltIcon, BookmarkIcon, BuildingStorefrontIcon, CheckIcon, AtSymbolIcon, MapPinIcon, MapIcon, PhoneArrowDownLeftIcon, InboxArrowDownIcon, ClockIcon , IdentificationIcon, GlobeAmericasIcon} from '@heroicons/react/24/solid';
+
 import React from 'react';
 
 const Review = ({ prevStep, handleSubmit, values, errorSlug, errorEmail, user }) => {
@@ -9,11 +10,12 @@ const Review = ({ prevStep, handleSubmit, values, errorSlug, errorEmail, user })
       <div className="mb-8 p-4 rounded-lg">
         <div className="space-y-4">
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <BuildingStorefrontIcon className="w-6 h-6 mx-2 text-yellow-400" />
+
             <p className="text-yellow-400">Nombre de mi tienda: <strong className="text-white">{values.name}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <BookmarkIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Categoría de mi tienda: <strong className="text-white">{values.category_name}</strong></p>
           </div>
           {errorSlug ? (
@@ -23,20 +25,20 @@ const Review = ({ prevStep, handleSubmit, values, errorSlug, errorEmail, user })
             </div>
           ) : (
             <div className="flex items-center">
-              <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+              <AtSymbolIcon className="w-6 h-6 mx-2 text-yellow-400" />
               <p className="text-yellow-400">Usuario o ruta especial de mi tienda: <strong className="text-white">{values.slug}</strong></p>
             </div>
           )}
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <MapIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Localidades donde tiene alcance mi tienda: <strong className="text-white">{values.location}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <MapPinIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Dirección de mi tienda: <strong className="text-white">{values.address ? values.address : 'No tienes, no ingresaste datos'}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <PhoneArrowDownLeftIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Teléfono de contacto: <strong className="text-white">{values.phone}</strong></p>
           </div>
           {errorEmail ? (
@@ -46,32 +48,32 @@ const Review = ({ prevStep, handleSubmit, values, errorSlug, errorEmail, user })
             </div>
           ) : (
             <div className="flex items-center">
-              <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+              <InboxArrowDownIcon className="w-6 h-6 mx-2 text-yellow-400" />
               <p className="text-yellow-400">Correo Electrónico: <strong className="text-white">{values.email}</strong></p>
             </div>
           )}
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <ClockIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Franja horaria de servicio: <strong className="text-white">{values.schedule}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <IdentificationIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Identificación tributaria: <strong className="text-white">{values.nit ? values.nit : 'No tienes, no ingresaste datos'}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <GlobeAmericasIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Ciudad: <strong className="text-white">{values.city}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <GlobeAltIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">URL de Pago o pasarela de pago: <strong className="text-white">{values.url_pay ? values.url_pay : 'No tienes, no ingresaste datos'}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <CreditCardIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Cuenta bancaria para pagos: <strong className="text-white">{values.account_pay ? values.account_pay : 'No tienes, no ingresaste datos'}</strong></p>
           </div>
           <div className="flex items-center">
-            <CheckIcon className="w-6 h-6 mx-2 text-green-500" />
+            <HandRaisedIcon className="w-6 h-6 mx-2 text-yellow-400" />
             <p className="text-yellow-400">Presentación de mi tienda: <strong className="text-white">{values.description}</strong></p>
           </div>
         </div>
