@@ -12,7 +12,8 @@ import {
     CHANGE_STATUS_SUCCESS,
     CHANGE_STATUS_FAIL,
     UPDATE_CATEGORY_SUCCESS,
-    UPDATE_CATEGORY_FAIL
+    UPDATE_CATEGORY_FAIL,
+    SET_ASSOCIATED_ITEMS,
 } from './types';
 import { setAlert } from '../alert/alert';
 
@@ -79,7 +80,7 @@ export const create_category = (
         });
         try {
             const res = await axios.post(`${apiUrl}/api/product_category/create_categories_products/`, body, config);
-        
+
             if (res.status === 201) {
                 dispatch({
                     type: CREATE_CATEGORY_SUCCESS,
@@ -109,17 +110,16 @@ export const create_category = (
                 type: REMOVE_CATEGORY_LOADING,
             });
         }
-        
+
 
     }
 }
 
-export const delete_category = (
-    id
-) => async dispatch => {
+export const delete_category = (id) => async dispatch => {
     dispatch({
         type: SET_CATEGORY_LOADING,
     });
+
     if (localStorage.getItem('access')) {
         const config = {
             headers: {
@@ -137,23 +137,36 @@ export const delete_category = (
                     type: DELETE_CATEGORY_SUCCESS,
                     payload: res.data
                 });
-                dispatch(
-                    setAlert('Categoria eliminada correctamente.', exito));
+                dispatch(setAlert('Categoría eliminada correctamente.', exito));
             }
+
             dispatch({
                 type: REMOVE_CATEGORY_LOADING,
             });
         } catch (err) {
-            dispatch({
-                type: DELETE_CATEGORY_FAIL
-            });
+            if (err.response && err.response.status === 400) {
+                const associatedProducts = err.response.data.products || [];
+                const associatedCategories = err.response.data.subcategories || [];
+
+                dispatch({
+                    type: SET_ASSOCIATED_ITEMS,
+                    payload: { products: associatedProducts, subcategories: associatedCategories }
+                });
+
+                dispatch(setAlert('La categoría no se puede eliminar, hay categorías o productos asociadas.', error));
+            } else {
+                dispatch({
+                    type: DELETE_CATEGORY_FAIL
+                });
+                dispatch(setAlert('Error al eliminar la categoría.', error));
+            }
+
             dispatch({
                 type: REMOVE_CATEGORY_LOADING,
             });
         }
-
     }
-}
+};
 
 export const change_status_category = (
     id

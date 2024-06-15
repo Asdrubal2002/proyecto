@@ -55,7 +55,6 @@ function CreateOptions({
                 } else if (res.status === 200 && res.data.related_products) {
                     // Si hay productos relacionados, puedes acceder a ellos aquí
                     const relatedProducts = res.data.related_products;
-                    console.log('Productos relacionados:', relatedProducts);
 
                     // Mostrar los productos relacionados en una lista
                     const productList = relatedProducts.map((product, index) => (

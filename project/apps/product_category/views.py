@@ -16,7 +16,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from .permissions import CanEditCategory
 from django.utils.text import slugify
-
+from apps.product.models import Product
+from apps.product.serializer import ProductSerializer
 # Create your views here.
 
 
@@ -166,7 +167,7 @@ class CategoryDeleteAPIView(APIView):
             return Response(
                 {"message": "La categoría no existe"}, status=status.HTTP_404_NOT_FOUND
             )
-        
+
         # Obtener la tienda asociada al usuario autenticado
         user_store = request.user.stores.first()  # Asumiendo que el usuario está asociado a una única tienda
         # Verificar si la categoría pertenece a la tienda del usuario autenticado
@@ -174,6 +175,25 @@ class CategoryDeleteAPIView(APIView):
             return Response(
                 {"message": "No tienes permiso para eliminar esta categoría"},
                 status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Verificar si hay productos asociados con la categoría
+        associated_products = Product.objects.filter(category=category)
+        if associated_products.exists():
+            product_serializer = ProductSerializer(associated_products, many=True)
+            return Response(
+                {
+                    "message": "No se puede eliminar la categoría porque hay productos asociados a ella",
+                    "products": product_serializer.data,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Verificar si hay subcategorías asociadas con la categoría
+        if Category.objects.filter(parent=category).exists():
+            return Response(
+                {"message": "No se puede eliminar la categoría porque hay subcategorías asociadas a ella"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         # Eliminar la categoría
@@ -186,6 +206,8 @@ class CategoryDeleteAPIView(APIView):
         serializer = CategorieStoreSerializer(remaining_categories, many=True)
 
         return Response({"categories": serializer.data}, status=status.HTTP_200_OK)
+
+
 
 class CategoryStateAPIView(APIView):
     permission_classes = (IsAuthenticated,)

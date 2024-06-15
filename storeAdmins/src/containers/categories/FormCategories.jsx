@@ -30,7 +30,6 @@ const steps = [
     // More steps...
 ];
 
-
 function FormCategories({
     get_categories,
     categories,
@@ -38,7 +37,8 @@ function FormCategories({
     create_category,
     delete_category,
     change_status_category,
-    update_category
+    update_category,
+    associatedProducts
 
 }) {
 
@@ -57,6 +57,7 @@ function FormCategories({
     const [openHelp, setOpenHelp] = useState(false)
 
     const [parentEnabled, setParentEnabled] = useState(true); // Estado para habilitar o deshabilitar el campo parent
+    const [showAssociatedProducts, setShowAssociatedProducts] = useState(false); // Estado local para controlar la visibilidad
 
     useEffect(() => {
         get_categories()
@@ -106,11 +107,12 @@ function FormCategories({
         setFormData(initialFormData)
     };
 
-
     const handleDelete = async (categoryId) => {
         await delete_category(categoryId)
         setOpen(false);
         get_categories()
+        setShowAssociatedProducts(true); // Muestra la sección de productos asociados
+
     }
 
     const handleToggleActive = async (categoryId) => {
@@ -224,7 +226,7 @@ function FormCategories({
                         className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-l-md text-white bg-azul_corp hover:bg-azul_corp_ho"
                     >
                         {
-                            messageEdit ? <> Actualizar Categoría</>:<> Guardar Categoía nueva</>
+                            messageEdit ? <> Actualizar Categoría</> : <> Guardar Categoía nueva</>
                         }
                     </button>
                     {
@@ -240,6 +242,25 @@ function FormCategories({
                     <Rings width={20} height={20} color="#fff" radius="6" />
                 ) : (
                     <div className="relative overflow-x-auto shadow-md rounded-lg">
+                        {showAssociatedProducts && ( // Muestra la sección de productos asociados si showAssociatedProducts es true
+                            <div>
+                                <h2 className='m-4 bg-red-700 p-4 rounded-lg font-semibold block'>
+                                   No se puede eliminar la categoría ya que tiene subcategorías asociadas, tienes que gestionar bien sino quieres la categoría.
+                                </h2>
+                                <div>
+                                    <ul className='m-4 font-semibold'>
+                                        {associatedProducts.map((product, index) => (
+                                            <li key={product.id}>
+                                                {index + 1}.{' '}
+                                                <Link to={`/product/${product.slugProduct}`} className='hover:text-azul_corp_ho'>
+                                                    {product.name} - {product.formatted_price}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
                         <div className="w-full p-4 bg-gray-50 bg-gray-800">
                             <input
                                 type="text"
@@ -518,7 +539,7 @@ function FormCategories({
 const mapStateToProps = state => ({
     categories: state.Product_category.categories,
     loading: state.Product_category.loading_category_product,
-
+    associatedProducts: state.Product_category.associatedItems.products
 })
 
 export default connect(mapStateToProps, {

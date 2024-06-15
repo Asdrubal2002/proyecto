@@ -10,14 +10,20 @@ import {
     CHANGE_STATUS_SUCCESS,
     CHANGE_STATUS_FAIL,
     UPDATE_CATEGORY_SUCCESS,
-    UPDATE_CATEGORY_FAIL
+    UPDATE_CATEGORY_FAIL,
+    SET_ASSOCIATED_ITEMS,
 
 } from "../../actions/categories_product/types";
 
 
 const initialState = {
     categories: null,
-    loading_category_product: false
+    loading_category_product: false,
+    associatedItems: {
+        products: [],
+        subcategories: []
+    },
+
 };
 
 export default function Product_category(state = initialState, action) {
@@ -56,12 +62,24 @@ export default function Product_category(state = initialState, action) {
         case DELETE_CATEGORY_SUCCESS:
             return {
                 ...state,
-                categories: payload.categories
-            }
+                categories: state.categories.filter(category => category.id !== payload.id),
+                loading: false
+            };
         case DELETE_CATEGORY_FAIL:
             return {
-                ...state
-            }
+                ...state,
+                error: payload,
+                loading: false
+            };
+
+        case SET_ASSOCIATED_ITEMS:
+            return {
+                ...state,
+                associatedItems: payload,
+                loading: false
+            };
+
+
 
         case CHANGE_STATUS_SUCCESS:
             return {
