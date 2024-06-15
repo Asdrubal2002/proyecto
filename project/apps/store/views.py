@@ -650,23 +650,17 @@ class ListSearchViewOnline(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):
-        search_query = request.query_params.get("q", "")
-        search_normalized = normalize_text(search_query)
+        search_query = request.query_params.get("q", "").strip()
+        normalized_query = normalize_text(search_query)
 
-        # Filtrar tiendas según el término de búsqueda
-        if len(search_query) == 0:
-            search_results = Store.objects.order_by("created_on").all()
+        if not search_query:
+            search_results = Store.objects.all().order_by("created_on")
         else:
-            search_results = Store.objects.order_by("-created_on").annotate(
-                normalized_description=RemoveAccents('description'),
-                normalized_name=RemoveAccents('name'),
-                normalized_location=RemoveAccents('location')
-            ).filter(
-                Q(normalized_description__icontains=search_normalized)
-                | Q(normalized_name__icontains=search_normalized)
-                | Q(normalized_location__icontains=search_normalized),
+            search_results = Store.objects.filter(
+                Q(name__icontains=normalized_query)
+                | Q(location__icontains=normalized_query),
                 is_active=True,
-            )[:10]  # Obtener solo los primeros 10 resultados
+            ).order_by("-created_on")[:10]
 
         serializer = StoreSerializer(search_results, many=True)
         return Response({"search_stores": serializer.data})

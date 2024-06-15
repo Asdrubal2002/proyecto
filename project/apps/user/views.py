@@ -58,8 +58,8 @@ class CustomLoginView(APIView):
             if user.failed_login_attempts >= 3:
                 user.is_active = False
                 user.save()
-                return Response({'error': 'Your account has been blocked due to multiple failed login attempts'}, status=status.HTTP_401_UNAUTHORIZED)
-            return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'Su cuenta ha sido bloqueada debido a múltiples intentos fallidos de inicio de sesión'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Correo electrónico o contraseña no válidos'}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Restablecer el contador de intentos de inicio de sesión fallidos si la autenticación es exitosa
         user.failed_login_attempts = 0

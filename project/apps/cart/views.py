@@ -434,7 +434,7 @@ class ProductsCartViewStore(APIView):
 
         try:
             # Busca el carrito asociado al usuario y a la tienda
-            cart = Cart.objects.get(user=user, store=store)
+            cart = Cart.objects.get(user=user, store=store, is_active=True)
 
             # Serializa y devuelve el carrito
             cart_serializer = CartSerializer(cart)

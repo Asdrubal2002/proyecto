@@ -59,6 +59,11 @@ function EditProduct({
     const [openAddCategory, setOpenAddCategory] = useState(false)
 
     const [editOptionData, setEditOptionData] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
+    };
 
 
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -610,13 +615,25 @@ function EditProduct({
                                                         </button>
                                                     </div>
                                                 </form>
-
-
                                             </>
                                         ) : (
                                             <>
+                                                <p className="flex-grow text-gray-300">
+                                                    {isExpanded
+                                                        ? <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description) }}></span>
+                                                        : <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description.slice(0, 150) + '...') }}></span>
+                                                    }
+                                                </p>
+                                                {product && product.description && product && product.description.length > 150 && (
+                                                    <button
+                                                        onClick={toggleDescription}
+                                                        className="text-blue-500 hover:underline mt-2"
+                                                    >
+                                                        {isExpanded ? 'Ver menos' : 'Ver más información'}
+                                                    </button>
+                                                )}
 
-                                                <span className="flex-grow text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description) }} />
+                                                {/* <span className="flex-grow text-gray-300" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product && product.description) }} /> */}
                                                 <button
                                                     onClick={() => setUpdateDescription(true)}
                                                     className="ml-2 px-4 py-2 rounded-md bg-gray-800 text-azul_corp font-medium hover:bg-gray-800 focus:outline-none  "
@@ -627,7 +644,6 @@ function EditProduct({
                                         )}
                                     </dd>
                                 </div>
-
                                 {/* Precio */}
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                                     <dt className="text-sm font-medium text-gray-200">
@@ -1171,7 +1187,7 @@ function EditProduct({
                                     <div className='flex mb-4'>
                                         <p className='text-sm'>
                                             Aquí puedes crear las categorías que necesites.
-                                            
+
                                         </p>
                                         <button
                                             type="button"

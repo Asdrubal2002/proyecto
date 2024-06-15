@@ -7,7 +7,7 @@ import { get_cities } from '../../redux/actions/cities/cities'
 import axios from "axios"
 import { createStore, get_user_store } from '../../redux/actions/store/store';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Rings } from 'react-loader-spinner';
+import { Rings, DNA } from 'react-loader-spinner';
 import { Disclosure, Transition } from '@headlessui/react';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -114,10 +114,10 @@ function Create({
           );
 
           if (res.status === 201) {
-           
+
             setLoading(false);
             get_user_store();
-            navigate(`/store_admin_home`);
+            navigate(`/update_store`);
           } else {
             setLoading(false);
           }
@@ -150,35 +150,40 @@ function Create({
     } else {
       setErrors(validationErrors);
     }
-    
+
   };
 
   return (
     <>
       {
         loadingS ? (
-          <Rings width={20} height={20} color="#fff" radius="6" />
-        ) : (
-          <div className='max-w-4xl mx-auto mt-8 p-8 bg-stone-900 shadow-md rounded-lg'>
-            <h2 className="text-2xl font-semibold text-gray-100 mb-6">Crea tu negocio</h2>
+          <div className="flex items-center justify-center h-screen">
+            <DNA width={200} height={200} />
 
-            <p className="text-sm text-gray-300 mb-8">
-              La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.
-            </p>
+          </div>) : (
+          <>
+            <div className='max-w-4xl mx-auto mt-8 p-8 bg-stone-900 shadow-md rounded-lg'>
+              <h2 className="text-2xl font-semibold text-gray-100 mb-6">Crea tu negocio</h2>
 
-            <div className={`transition-opacity duration-500 ease-in-out ${step === 1 ? 'opacity-100' : 'opacity-0'}`}>
-              {step === 1 && <Step1 nextStep={nextStep} handleChange={handleChange} values={formData} errors={errors} categories={categories} errorSlug={errorSlug} formData={formData} setFormData={setFormData}/>}
+              <p className="text-sm text-gray-300 mb-8">
+                La siguiente información será registrada como una nueva tienda dentro de Ruvlo. Por favor, ten en cuenta la importancia de los datos que proporcionas, ya que será la presentación de tu negocio.
+              </p>
+
+              <div className={`transition-opacity duration-500 ease-in-out ${step === 1 ? 'opacity-100' : 'opacity-0'}`}>
+                {step === 1 && <Step1 nextStep={nextStep} handleChange={handleChange} values={formData} errors={errors} categories={categories} errorSlug={errorSlug} formData={formData} setFormData={setFormData} />}
+              </div>
+              <div className={`transition-opacity duration-500 ease-in-out ${step === 2 ? 'opacity-100' : 'opacity-0'}`}>
+                {step === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} values={formData} errors={errors} errorEmail={errorEmail} />}
+              </div>
+              <div className={`transition-opacity duration-500 ease-in-out ${step === 3 ? 'opacity-100' : 'opacity-0'}`}>
+                {step === 3 && <Step3 nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} values={formData} errors={errors} cities={cities} setFormData={setFormData} />}
+              </div>
+              <div className={`transition-opacity duration-500 ease-in-out ${step === 4 ? 'opacity-100' : 'opacity-0'}`}>
+                {step === 4 && <Review prevStep={prevStep} handleSubmit={handleSubmit} values={formData} errorSlug={errorSlug} errorEmail={errorEmail} user={user} />}
+              </div>
             </div>
-            <div className={`transition-opacity duration-500 ease-in-out ${step === 2 ? 'opacity-100' : 'opacity-0'}`}>
-              {step === 2 && <Step2 nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} values={formData} errors={errors} errorEmail={errorEmail}/>}
-            </div>
-            <div className={`transition-opacity duration-500 ease-in-out ${step === 3 ? 'opacity-100' : 'opacity-0'}`}>
-              {step === 3 && <Step3 nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} values={formData} errors={errors} cities={cities} setFormData={setFormData} />}
-            </div>
-            <div className={`transition-opacity duration-500 ease-in-out ${step === 4 ? 'opacity-100' : 'opacity-0'}`}>
-              {step === 4 && <Review prevStep={prevStep} handleSubmit={handleSubmit} values={formData} errorSlug={errorSlug} errorEmail={errorEmail} user={user}/>}
-            </div>
-          </div>
+          </>
+
         )
       }
     </>
@@ -281,7 +286,7 @@ const mapStateToProps = state => ({
   categories: state.Store_Categories.categories,
   cities: state.Cities.cities,
   loading: state.Store.loading,
-  user:state.Profile.profile
+  user: state.Profile.profile
 })
 
 export default connect(mapStateToProps, {

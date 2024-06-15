@@ -196,20 +196,22 @@ export const login = (email, password) => async (dispatch) => {
         } else {
             dispatch({
                 type: LOGIN_FAIL,
+                payload: err.response.data
             });
             dispatch({
                 type: REMOVE_AUTH_LOADING,
             });
-            dispatch(setAlert("Error al iniciar sesion.", error));
+            dispatch(setAlert(err.response.data.error, error));
         }
     } catch (err) {
         dispatch({
             type: LOGIN_FAIL,
+            payload: err.response.data
         });
         dispatch({
             type: REMOVE_AUTH_LOADING,
         });
-        dispatch(setAlert("Error al iniciar sesion.", error));
+        dispatch(setAlert(err.response.data.error, error));
     }
 };
 

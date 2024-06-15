@@ -23,7 +23,10 @@ import {
     GET_STORE_FAQ_FAIL,
 
     SET_LOADING_STORE_FAQS,
-    REMOVE_LOADING_GET_STORE_FAQS
+    REMOVE_LOADING_GET_STORE_FAQS,
+
+    GET_STORE_LIKES_DISLIKE_SUCCESS,
+    GET_STORE_LIKES_DISLIKE_FAIL
 
 } from './types';
 
@@ -271,6 +274,43 @@ export const get_store_faqs = (storeSlug) => async dispatch => {
         });
         dispatch({
             type: REMOVE_LOADING_GET_STORE_FAQS
+        });
+    }
+}
+
+export const get_stores_likes = (storeSlug) => async dispatch => {
+    dispatch({
+        type: SET_LOADED_STORE
+    });
+
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try {
+        const res = await axios.get(`${apiUrl}/api/store/store/${storeSlug}/likes/`, config);
+
+        if (res.status === 200) {
+            dispatch({
+                type: GET_STORE_LIKES_DISLIKE_SUCCESS,
+                payload: res.data
+            });
+        } else {
+            dispatch({
+                type: GET_STORE_LIKES_DISLIKE_FAIL
+            });
+        }
+        dispatch({
+            type: REMOVE_LOADED_STORE
+        });
+    } catch (err) {
+        dispatch({
+            type: GET_STORE_LIKES_DISLIKE_FAIL
+        });
+        dispatch({
+            type: REMOVE_LOADED_STORE
         });
     }
 }

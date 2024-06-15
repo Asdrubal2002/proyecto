@@ -5,7 +5,7 @@ import { get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
 import { ArchiveBoxArrowDownIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, InformationCircleIcon, LockClosedIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Create from './Create';
-import { Rings } from 'react-loader-spinner';
+import { DNA, Rings } from 'react-loader-spinner';
 import axios from "axios"
 import { Dialog, Menu, Transition, Disclosure, Tab } from '@headlessui/react'
 import { get_store_comments } from '../../redux/actions/comments/Comments_store';
@@ -17,7 +17,8 @@ function UpdateStore({
   loading,
   get_store_comments,
   count_comments,
-  comments
+  comments,
+  likes
 }) {
 
   useEffect(() => {
@@ -318,7 +319,10 @@ function UpdateStore({
     <Layout>
       {
         loading ?
-          <Rings width={30} height={30} color="#fff" radius="6" />
+          <div className="flex items-center justify-center h-screen">
+            <DNA width={200} height={200} />
+
+          </div>
           : <>
             {userStore ? (
               <>
@@ -333,7 +337,7 @@ function UpdateStore({
                               ? 'bg-white text-azul_corp_ho shadow'
                               : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
                           )
-                        }>Actualización</Tab>
+                        }>Ficha de mi tienda</Tab>
                       <Tab className={({ selected }) =>
                         classNames(
                           'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
@@ -360,7 +364,7 @@ function UpdateStore({
                           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                             <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden">
                               {/* Banner */}
-                              <div className="relative overflow-hidden w-full h-32">
+                              <div className="relative overflow-hidden w-full h-32 bg-gray-700">
                                 {previewImageBanner ? (
                                   <img src={previewImageBanner} className="w-full h-32 object-cover" alt="Preview" />
                                 ) : (
@@ -471,7 +475,7 @@ function UpdateStore({
                                       </form>
                                     </>
                                   ) : (
-                                    <>
+                                    < div className='flex'>
                                       <button
                                         onClick={() => setUpdatePhoto(true)}
                                         className="flex items-center justify-center px-4 py-2 rounded-md bg-gray-800 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -479,9 +483,11 @@ function UpdateStore({
                                         <UserCircleIcon className="mr-2" width={20} height={20} color="#fff" radius="6" />
                                         Agregar el perfil a mi tienda
                                       </button>
-                                    </>
+                                      <button className=" text-gray-500 ml-4" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button>
+
+                                    </div>
+
                                   )}
-                                  {/* <button className=" text-gray-500" onClick={qrModal}> <QrCodeIcon width={20} height={20} color="#929292" radius="6" /></button> */}
                                 </div>
                               </div>
                               {/* Información adicional de la tienda */}
@@ -925,7 +931,7 @@ function UpdateStore({
                                   </div>
 
                                   <div className="py-3 flex justify-between sm:px-4 sm:py-5">
-                                    <dt className="text-sm font-medium text-gray-200"> Me gusta</dt>
+                                    <dt className="text-sm font-medium text-gray-200">{likes} Me gusta</dt>
                                     <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">Se inauguró el {userStore.get_formatted_created_on}</dd>
                                   </div>
                                   {/* Agrega más información de la tienda según sea necesario */}
@@ -1113,6 +1119,7 @@ const mapStateToProps = state => ({
   loading: state.Store.loading,
   count_comments: state.Comments_Store.comments ? state.Comments_Store.comments.comments_count : 0,
   comments: state.Comments_Store.comments ? state.Comments_Store.comments.comments : [],
+  likes: state.Store.likes ? state.Store.likes.total_likes : 0
 
 })
 export default connect(mapStateToProps, {

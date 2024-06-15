@@ -34,6 +34,9 @@ import {
     GET_FILTERED_PRODUCTS_ORDER_SUCCESS,
     GET_FILTERED_PRODUCTS_ORDER_FAIL
 } from './types';
+import { setAlert } from './alert';
+
+const notification = '#0C4896';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -319,11 +322,12 @@ export const add_like_dislike_product = (slugProduct) => async dispatch => {
         // Manejar la respuesta exitosa aquí si es necesario
 
         if (res.status === 200) {
-            const { total_likes, user_liked } = res.data; // Desestructura los datos de la respuesta
+            const { total_likes, user_liked,message  } = res.data; // Desestructura los datos de la respuesta
             dispatch({
                 type: ADD_PRODUCT_LIKES_DISLIKE_SUCCESS,
-                payload: { total_likes, user_liked }, // Actualiza el estado con los datos del usuario
+                payload: { total_likes, user_liked, message }, // Actualiza el estado con los datos del usuario
             });
+            dispatch(setAlert(message, notification));
         } else {
             dispatch({
                 type: ADD_PRODUCT_LIKES_DISLIKE_FAIL

@@ -146,11 +146,12 @@ export const login = (email, password) => async (dispatch) => {
     } catch (err) {
         dispatch({
             type: LOGIN_FAIL,
+            payload: err.response.data
         });
         dispatch({
             type: REMOVE_AUTH_LOADING,
         });
-        dispatch(setAlert("Lamentablemente, parece que no cuentas con los privilegios de vendedor necesarios o tus credenciales no son válidas. Te recomendamos verificar que estás utilizando las credenciales correctas para acceder.", error));
+        dispatch(setAlert(err.response.data.error, error));
 
     }
 };

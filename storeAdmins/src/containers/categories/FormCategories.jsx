@@ -175,7 +175,7 @@ function FormCategories({
                         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2 flex-grow">Nombre:</label>
                         <div
                             onClick={e => setOpenHelp(true)}
-                            className='flex text-gray-400'>
+                            className='flex text-yellow-400'>
                             <InformationCircleIcon className="w-5 h-5 " />
                             <p className='font-semibold text-sm cursor-pointer'>Necesitas ayuda</p>
                         </div>
@@ -221,13 +221,15 @@ function FormCategories({
                 <div className='flex'>
                     <button
                         type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-azul_corp hover:bg-azul_corp_ho"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-l-md text-white bg-azul_corp hover:bg-azul_corp_ho"
                     >
-                        Guardar Categoria
+                        {
+                            messageEdit ? <> Actualizar Categoría</>:<> Guardar Categoía nueva</>
+                        }
                     </button>
                     {
                         messageEdit ? <>
-                            <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
+                            <button onClick={() => clearFormData()} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-r-md text-white bg-red-500 hover:bg-red-400">Cancelar la edición de mi categoría.</button>
 
                         </> : <></>
                     }
@@ -282,7 +284,14 @@ function FormCategories({
                                                         {/* Icono o imagen */}
                                                     </div>
                                                     <div className="ml-4">
-                                                        <div className="text-sm font-medium text-gray-900 dark:text-white">{category.name}</div>
+                                                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                            {category.name}
+                                                            {category.sub_categories && (
+                                                                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                                                                    ({category.sub_categories.length})
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -355,7 +364,6 @@ function FormCategories({
                                                 <td className={`px-6 py-4 whitespace-nowrap ${subCategory.is_active ? 'bg-green-600 text-white' : 'bg-rose-600 text-white'}`}>
                                                     {subCategory.is_active ? "Activa" : "Inactiva"}
                                                 </td>
-
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {category.name} {/* Aquí se muestra el nombre de la categoría padre */}
                                                 </td>
@@ -374,6 +382,7 @@ function FormCategories({
                                     </tr>
                                 )}
                             </tbody>
+
                         </table>
                     </div>
 
@@ -472,7 +481,6 @@ function FormCategories({
                                                     <article key={post.id} className="flex max-w-xl flex-col items-start justify-between">
                                                         <div className="flex items-center text-xs">
                                                             <div
-
                                                                 className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
                                                             >
                                                                 {post.step}
@@ -487,9 +495,13 @@ function FormCategories({
                                                             </h3>
                                                             <p className="mt-5 text-sm leading-6 ">{post.description}</p>
                                                         </div>
-
                                                     </article>
                                                 ))}
+                                            </div>
+                                            <div className='mt-6'>
+                                                <div className="mx-auto max-w-2xl lg:mx-0">
+                                                    Ahora puedes <Link to="/products" className="text-blue-600 hover:underline font-bold">añadir productos</Link> a las categorías que has creado.
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -499,9 +511,6 @@ function FormCategories({
                     </div>
                 </Dialog>
             </Transition.Root>
-
-
-
         </>
     )
 }

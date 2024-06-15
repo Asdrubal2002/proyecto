@@ -126,7 +126,7 @@ function CreateProduct({
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-gray-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
                                     <div className='py-4'>
                                         <Disclosure>
                                             <div className='flex'>
@@ -143,8 +143,6 @@ function CreateProduct({
                                                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                                 </button>
                                             </div>
-
-
                                             <Disclosure.Panel className="text-gray-500">
                                                 <FormCategories />
                                             </Disclosure.Panel>
@@ -153,23 +151,21 @@ function CreateProduct({
                                     <form onSubmit={handleSubmit} className="">
                                         <div className='mb-4'>
                                             <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Nombre tu producto:</label>
-
                                             <input
                                                 name='name'
                                                 type='text'
                                                 placeholder='Ejemplo: Celular moro f 2016'
-                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200"
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200"
                                             />
                                             {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                                         </div>
                                         <div className='mb-4'>
-                                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Selecciona a que categoría pertenece tu producto:</label>
-
+                                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 flex-grow">Selecciona a que subcategoría pertenece tu producto:</label>
                                             <select
                                                 name='category'
                                                 value={selectedCategory}
                                                 onChange={handleCategoryChange}
-                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-stone-700 text-sm sm:leading-6 text-gray-100"
+                                                className="mt-1 p-2 rounded-md w-full focus:outline-none bg-gray-700 text-sm sm:leading-6 text-gray-100"
                                             >
                                                 <option value="">Seleccione una categoría...</option>
                                                 {categories && categories.map(category => (
@@ -224,7 +220,7 @@ function CreateProduct({
                                                     name='price'
                                                     type='text'
                                                     placeholder='Ejemplo: 10000'
-                                                    className=" p-2 rounded-md focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
+                                                    className=" p-2 rounded-md focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
                                                 />
                                                 {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
                                             </div>
@@ -234,7 +230,7 @@ function CreateProduct({
                                                     name='tax'
                                                     type='text'
                                                     placeholder='Porcentajes, ejemplo: 19, 5, 21, 25, ...'
-                                                    className="p-2 rounded-md focus:outline-none bg-stone-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
+                                                    className="p-2 rounded-md focus:outline-none bg-gray-700 text-sm sm:leading-6 placeholder:text-gray-400 text-gray-200 w-full"
                                                 />
                                                 {errors.tax && <span className="text-red-500 text-sm">{errors.tax}</span>}
                                             </div>

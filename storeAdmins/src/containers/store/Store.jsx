@@ -1,11 +1,11 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from "react-redux"
 import Layout from '../../hocs/Layout'
-import { get_user_store } from '../../redux/actions/store/store'
+import { get_stores_likes, get_user_store } from '../../redux/actions/store/store'
 import { Link } from 'react-router-dom';
 import { ArchiveBoxArrowDownIcon, BuildingStorefrontIcon, ChatBubbleBottomCenterTextIcon, CheckBadgeIcon, CheckIcon, CloudArrowUpIcon, InformationCircleIcon, LockClosedIcon, PaperClipIcon, PencilIcon, PhotoIcon, PlusIcon, QrCodeIcon, ServerIcon, UserCircleIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Create from './Create';
-import { Rings } from 'react-loader-spinner';
+import { DNA, Rings } from 'react-loader-spinner';
 import axios from "axios"
 import { Dialog, Menu, Transition, Disclosure, Tab } from '@headlessui/react'
 import { get_store_comments } from '../../redux/actions/comments/Comments_store';
@@ -14,44 +14,49 @@ import PoliticsFoundations from '../../components/store/PoliticsFoundations';
 import Compressor from 'compressorjs';
 import FormCreateFAQS from '../../components/store/FormCreateFAQS';
 
-const links = [
-  { name: 'Editar datos de mi tienda', href: '/update_store' },
-  { name: 'Crear políticas', href: '/create_policies' },
-  { name: 'Crear preguntas frecuentes', href: '/create_faqs' },
-  { name: '¿Necesitas ayuda?', href: '/help' },
-]
-const stats = [
-  { name: 'Offices worldwide', value: '12' },
-  { name: 'Full-time colleagues', value: '300+' },
-  { name: 'Hours per week', value: '40' },
-  { name: 'Paid time off', value: 'Unlimited' },
-]
+
 
 function Store({
   get_user_store,
   userStore,
   loading,
+  get_stores_likes,
+  likes
 }) {
+
+  const links = [
+    { name: 'Editar datos de mi tienda', href: '/update_store' },
+    { name: 'Crear políticas', href: '/create_policies' },
+    { name: 'Crear preguntas frecuentes', href: '/create_faqs' },
+    { name: '¿Necesitas ayuda?', href: '/help' },
+  ]
+  const stats = [
+    { name: 'Me gusta', value: likes },
+    { name: 'Full-time colleagues', value: '300+' },
+    { name: 'Hours per week', value: '40' },
+    { name: 'Paid time off', value: 'Unlimited' },
+  ]
 
   useEffect(() => {
     window.scrollTo(0, 0)
     get_user_store()
+    get_stores_likes(userStore && userStore.slug)
   }, []);
 
-
   const bannerImagePath = userStore && userStore.banner ? import.meta.env.VITE_REACT_APP_API_URL + userStore.banner : null;
-
 
 
   return (
     <Layout>
       {
         loading ?
-          <Rings width={30} height={30} color="#fff" radius="6" />
-          : <>
+          <div className="flex items-center justify-center h-screen">
+            <DNA width={200} height={200} />
+
+          </div> : <>
             {userStore ? (
               <>
-                <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 rounded-lg ">
+                <div className="relative isolate overflow-hidden bg-gray-900 sm:py-16 py-24 rounded-lg ">
 
                   <img
                     src={bannerImagePath}
@@ -82,11 +87,6 @@ function Store({
                       }}
                     />
                   </div>
-
-
-
-
-
                   <div className="mx-auto max-w-7xl px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl lg:mx-0">
                       <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">{userStore.name} {userStore.verified ? <CheckBadgeIcon className="h-5 w-5 inline-block text-blue-500" /> : <></>}</h2>
@@ -128,9 +128,10 @@ const mapStateToProps = state => ({
   loading: state.Store.loading,
   count_comments: state.Comments_Store.comments ? state.Comments_Store.comments.comments_count : 0,
   comments: state.Comments_Store.comments ? state.Comments_Store.comments.comments : [],
-
+  likes: state.Store.likes ? state.Store.likes.total_likes : 0
 })
 export default connect(mapStateToProps, {
   get_user_store,
-  get_store_comments
+  get_store_comments,
+  get_stores_likes
 })(Store)

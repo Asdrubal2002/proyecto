@@ -112,7 +112,7 @@ function Searcher({ get_categories, categories }) {
                     <div className="absolute top-full w-full ">
                         <ul>
                             {searchResults.map((result, index) => (
-                                <li key={index} className="bg-stone-600 p-2 mb-2 rounded-md shadow-sm flex items-center">
+                                <li key={index} className="bg-stone-600 p-2 shadow-sm flex items-center">
                                     <MagnifyingGlassIcon className="mr-2 h-4 w-4" />
                                     {result.location} - {result.city.nombre}</li>
                             ))}
@@ -120,8 +120,6 @@ function Searcher({ get_categories, categories }) {
                     </div>
                 )}
             </div>
-
-
         </>
     );
 }

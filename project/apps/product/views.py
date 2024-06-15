@@ -470,15 +470,15 @@ class ProductLikeDislikeAPIView(APIView):
         try:
             like = Like.objects.get(user=user, product=product)
             like.delete()  # Eliminar el like/dislike si ya existe
-            message = 'Like removido correctamente'
+            message = 'Eliminado de tus productos favoritos'
             user_liked = False
         except Like.DoesNotExist:
             Like.objects.create(user=user, product=product, liked=True)  # Agregar el like/dislike
-            message = 'Like agregado correctamente'
+            message = 'Añadido a tus productos favoritos'
             user_liked = True
         
         total_likes = Like.objects.filter(product=product, liked=True).count()  # Recalcular el recuento de likes
-        return Response({'total_likes': total_likes, 'user_liked': user_liked}, status=status.HTTP_200_OK)
+        return Response({'total_likes': total_likes, 'user_liked': user_liked, 'message':message}, status=status.HTTP_200_OK)
 
 class ProductLikesAPIView(APIView):
     def get(self, request, slugProduct):

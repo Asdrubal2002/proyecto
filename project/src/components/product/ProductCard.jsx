@@ -96,7 +96,7 @@ function dataCard({ data, index, isAuthenticated, add_like_dislike_product, stor
             {showBubble && (
               <div className="absolute bottom-16 right-4 bg-azul_corp text-white p-2 rounded-lg font-sm">
                 {isAuthenticated ? (
-                  <>Se agregado a favoritos</>
+                  <>Producto seleccionado</>
                 ) : (
                   <>Tienes que ingresar a tu cuenta</>
                 )}

@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { get_shippings, create_shippings, delete_shipping, change_status_shipping, update_shipping } from '../../redux/actions/shipping/shippings';
 import { Rings } from 'react-loader-spinner';
 import { Dialog, Menu, Transition } from '@headlessui/react'
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -37,6 +37,7 @@ function FormShippings({
   const [shippingIdToDelete, setShippingIdToDelete] = useState(null);
   const [editingShippingId, setEditingShippingId] = useState(null);
   const [messageEdit, setMessageEdit] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false)
 
 
   const onSubmit = async (e) => {
@@ -154,12 +155,21 @@ function FormShippings({
     <div>
       <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-300">Nombre de entrega *</label>
+          <div className="flex items-center">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2 flex-grow">Nombre de entrega *:</label>
+            <div
+              onClick={e => setOpenHelp(true)}
+              className='flex text-yellow-400'>
+              <InformationCircleIcon className="w-5 h-5 " />
+              <p className='font-semibold text-sm cursor-pointer'>Necesitas ayuda</p>
+            </div>
+          </div>
+
           <input
             type="text"
             name="name"
             id="name"
-            placeholder="Nombra a tu método"
+            placeholder="Por ejemplo, 'Envío estándar', 'Envío rápido', 'Envío nacional'."
             className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
             value={formData.name}
             onChange={handleChange}
@@ -174,7 +184,7 @@ function FormShippings({
             type="text"
             name="time_to_delivery"
             id="time_to_delivery"
-            placeholder="Tiempo estimado"
+            placeholder="Especifica cuánto tiempo tardará el envío. Por ejemplo, '3-5 días hábiles', '2 horas', o si es entrega en el punto de venta."
             className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
             value={formData.time_to_delivery}
             onChange={handleChange}
@@ -189,7 +199,7 @@ function FormShippings({
             type="text"
             name="price"
             id="price"
-            placeholder="Precio"
+            placeholder="Introduce el costo del envío. Por ejemplo, '10.00' o gratis '0'."
             className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
             value={formData.price}
             onChange={handleChange}
@@ -203,7 +213,7 @@ function FormShippings({
           <textarea
             name="additional_notes"
             id="additional_notes"
-            placeholder="Notas adicionales"
+            placeholder="Puedes agregar cualquier información adicional sobre el método de entrega."
             className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
             value={formData.additional_notes}
             onChange={handleChange}
@@ -215,13 +225,13 @@ function FormShippings({
         <div className="flex">
           <button
             type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-azul_corp hover:bg-azul_corp_ho"
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-l-md text-white bg-azul_corp hover:bg-azul_corp_ho"
           >
-            Guardar Método
+            Guardar Método nuevo
           </button>
           {
             messageEdit ? <>
-              <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
+              <button onClick={() => clearFormData()} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-r-md text-white bg-red-500 hover:bg-red-400">Cancelar la edición de mi método.</button>
 
             </> : <></>
           }
@@ -356,7 +366,69 @@ function FormShippings({
           </div>
         </Dialog>
       </Transition.Root>
+
+      <Transition.Root show={openHelp} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={setOpenHelp}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                  <div className="py-6 sm:py-6">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-8 text-gray-200">
+                      <div className="mx-auto max-w-2xl lg:mx-0">
+                        <h2 className="text-3xl font-bold tracking-tight  sm:text-4xl">Métodos de entrega</h2>
+                      </div>
+                      <div className='mt-4'>
+                        <ul className="list-disc pl-5">
+                          <li className="mb-2">
+                            <strong>Nombre de entrega:</strong> Este campo es obligatorio y debe contener el nombre del método de entrega. Por ejemplo, puedes nombrarlo como "Envío estándar" o "Envío rápido" para diferenciar entre los distintos tipos de entrega que ofreces.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Tiempo estimado de entrega:</strong> Aquí debes especificar el tiempo que tomará el envío para llegar a su destino. Este campo es obligatorio y puede ser un rango de días, como "3-5 días hábiles".
+                          </li>
+                          <li className="mb-2">
+                            <strong>Precio:</strong> En este campo, puedes introducir el costo del envío. Si el envío es gratuito, puedes escribir "gratis" o ingresar un valor numérico como "10000" para indicar el costo en tu moneda local.
+                          </li>
+                          <li>
+                            <strong>Notas adicionales:</strong> Utiliza este campo para agregar cualquier información adicional relevante sobre el método de entrega, como restricciones de envío, condiciones especiales o cualquier detalle que consideres importante para tus clientes. Este campo es opcional.
+                          </li>
+
+                          <li>
+                            <strong>Guarda y Activa el método</strong> 
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </div>
+
+
+
   )
 }
 

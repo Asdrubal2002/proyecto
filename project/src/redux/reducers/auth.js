@@ -27,6 +27,7 @@ const initialState = {
     isAuthenticated: null,
     user: null,
     loading: false,
+    message: ''
 };
 
 export default function Auth(state = initialState, action) {

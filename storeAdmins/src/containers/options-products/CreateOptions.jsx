@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { get_options_admin } from '../../redux/actions/products/products';
 import { Rings } from 'react-loader-spinner';
-import { CheckIcon, GlobeAltIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, GlobeAltIcon, InformationCircleIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import axios from "axios"
 import { Link } from 'react-router-dom';
+import { Dialog, Menu, Transition, Disclosure } from '@headlessui/react'
 
 
 
@@ -28,6 +29,7 @@ function CreateOptions({
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [messageEdit, setMessageEdit] = useState(false);
+    const [openHelp, setOpenHelp] = useState(false)
 
     const handleDeleteOption = (option) => {
         const config = {
@@ -97,10 +99,16 @@ function CreateOptions({
             }
         };
 
+        if (!formData.valueOption.trim()) {
+            setError(`El campo de nombre de opción no puede estar vacío`);
+            return;
+        }
+
         if (formData.valueOption.length > maxChars) {
             setError(`El nombre de la opción no puede exceder los ${maxChars} caracteres.`);
             return;
         }
+
 
         if (editingOptionId) {
             const formDataToSendEdit = new FormData();
@@ -193,7 +201,15 @@ function CreateOptions({
         <>
             <form onSubmit={onSubmit} className="bg-gray-900 rounded-lg shadow-md p-6 mb-4">
                 <div className="mb-4">
-                    <label htmlFor="valueOption" className="block text-sm font-medium text-gray-300">Nombre de la opción *</label>
+                <div className="flex items-center">
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mr-2 flex-grow">Nombre de la opción: *</label>
+                        <div
+                            onClick={e => setOpenHelp(true)}
+                            className='flex text-yellow-400'>
+                            <InformationCircleIcon className="w-5 h-5 " />
+                            <p className='font-semibold text-sm cursor-pointer'>Necesitas ayuda</p>
+                        </div>
+                    </div>
                     <input
                         type="text"
                         name="valueOption"
@@ -202,7 +218,7 @@ function CreateOptions({
                         className="placeholder:text-sm mt-1 p-2 block w-full border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-300"
                         value={formData.valueOption}
                         onChange={handleChange}
-                        required
+                        
                     />
                     {error && (
                         <p className="text-red-500 text-sm mt-1">{error}</p>
@@ -212,13 +228,16 @@ function CreateOptions({
                 <div className="flex">
                     <button
                         type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-azul_corp hover:bg-azul_corp_ho"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-l-md text-white bg-azul_corp hover:bg-azul_corp_ho"
                     >
-                        Guardar Opción
+                        {
+                            messageEdit ? <> Actualizar Opción</>:<> Guardar Opción global nueva</>
+                        }
+                       
                     </button>
                     {
                         messageEdit ? <>
-                            <button onClick={() => clearFormData()} className="m-2 text-gray-100 text-sm bg-red-500 px-2 rounded-md font-medium">Cancelar la edición.</button>
+                            <button onClick={() => clearFormData()} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-r-md text-white bg-red-500 hover:bg-red-400">Cancelar la edición de mi opción.</button>
 
                         </> : <></>
                     }
@@ -265,6 +284,47 @@ function CreateOptions({
                     </table>
                 </>
             )}
+            <Transition.Root show={openHelp} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpenHelp}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-stone-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
+                                    <div className="py-6 sm:py-6">
+                                        <div className="mx-auto max-w-7xl px-6 lg:px-8 text-gray-200">
+                                            <div className="mx-auto max-w-2xl lg:mx-0">
+                                                <h2 className="text-3xl font-bold tracking-tight  sm:text-4xl">Opciones de producto</h2>
+                                            </div>
+                                            <div className='mt-4'>
+                                            Este sistema permite a las tiendas definir opciones globales específicas (como colores o tamaños) y asociarlas a productos individuales. Además, gestiona el inventario de estas opciones y envía alertas cuando el stock es bajo, ayudando a mantener el control sobre la disponibilidad de productos en la tienda.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </>
     );
 }

@@ -17,7 +17,9 @@ import {
     GET_STORE_FAQ_SUCCESS,
     GET_STORE_FAQ_FAIL,
     SET_LOADING_STORE_FAQS,
-    REMOVE_LOADING_GET_STORE_FAQS
+    REMOVE_LOADING_GET_STORE_FAQS,
+    GET_STORE_LIKES_DISLIKE_SUCCESS,
+    GET_STORE_LIKES_DISLIKE_FAIL
 } from "../../actions/store/types";
 
 const initialState = {
@@ -26,7 +28,8 @@ const initialState = {
     policies: null,
     loading_policies: false,
     faqs: null,
-    loading_faqs: false
+    loading_faqs: false,
+    likes:null
 
 };
 
@@ -112,6 +115,18 @@ export default function Store(state = initialState, action) {
                 ...state,
                 loading_faqs: false,
             };
+
+        case GET_STORE_LIKES_DISLIKE_SUCCESS:
+            return {
+                ...state,
+                likes: payload
+            }
+
+        case GET_STORE_LIKES_DISLIKE_FAIL:
+            return {
+                ...state,
+                likes: null,
+            }
 
 
 
